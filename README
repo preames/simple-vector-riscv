@@ -1,0 +1,6 @@
+
+This repo contains a small corpus of simple vectorizable loops and the corresponding LLVM IR and assembly.  These are compiled with an arbitrary (and changing) local snapshot of ToT clang for a somewhat representative riscv64 configuration.
+
+The primary point of this is to help me in my LLVM development efforts (i.e. I analyze the assembly looking for oppurtunities), and to be able to link to things easily in public discussion.
+
+Everything in this repo can be considered to be in the public domain.

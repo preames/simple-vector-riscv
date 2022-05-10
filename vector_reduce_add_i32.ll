@@ -1,10 +1,10 @@
-; ModuleID = 'vector_add_reduce_i32.c'
-source_filename = "vector_add_reduce_i32.c"
+; ModuleID = 'vector_reduce_add_i32.c'
+source_filename = "vector_reduce_add_i32.c"
 target datalayout = "e-m:e-p:64:64-i64:64-i128:128-n64-S128"
 target triple = "riscv64"
 
 ; Function Attrs: argmemonly nofree norecurse nosync nounwind readonly
-define dso_local signext i32 @vector_add_reduce_i32(ptr nocapture noundef readonly %a, i32 noundef signext %a_len) local_unnamed_addr #0 {
+define dso_local signext i32 @vector_reduce_add_i32(ptr nocapture noundef readonly %a, i32 noundef signext %a_len) local_unnamed_addr #0 {
 entry:
   %cmp4.not = icmp eq i32 %a_len, 0
   br i1 %cmp4.not, label %for.cond.cleanup, label %for.body.preheader
@@ -61,7 +61,7 @@ for.body:                                         ; preds = %for.body.preheader9
 ; Function Attrs: nocallback nofree nosync nounwind readnone willreturn
 declare i32 @llvm.vector.reduce.add.v4i32(<4 x i32>) #1
 
-attributes #0 = { argmemonly nofree norecurse nosync nounwind readonly "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl32b,+zvl64b,-save-restore" }
+attributes #0 = { argmemonly nofree norecurse nosync nounwind readonly "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,-save-restore" }
 attributes #1 = { nocallback nofree nosync nounwind readnone willreturn }
 
 !llvm.module.flags = !{!0, !1, !2}
@@ -70,7 +70,7 @@ attributes #1 = { nocallback nofree nosync nounwind readnone willreturn }
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 15.0.0 (git@github.com:llvm/llvm-project.git 3ea191ed03d40489357c5069aedd3383abb3ad58)"}
+!3 = !{!"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 98d4547be003bbbf8581939e86bf2f4d9fdb7234)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"int", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}
