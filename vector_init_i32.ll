@@ -4,7 +4,7 @@ target datalayout = "e-m:e-p:64:64-i64:64-i128:128-n64-S128"
 target triple = "riscv64"
 
 ; Function Attrs: argmemonly nofree norecurse nosync nounwind writeonly
-define dso_local void @vector_init_i32(ptr nocapture noundef writeonly %a, i32 noundef signext %a_len, i32 noundef signext %b) local_unnamed_addr #0 {
+define dso_local void @vector_init_i32(ptr nocapture noundef writeonly %a, i32 noundef signext %a_len) local_unnamed_addr #0 {
 entry:
   %cmp4.not = icmp eq i32 %a_len, 0
   br i1 %cmp4.not, label %for.cond.cleanup, label %for.body.preheader
