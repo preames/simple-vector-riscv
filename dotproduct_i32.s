@@ -57,6 +57,6 @@ dotproduct_i32:
 .Lfunc_end0:
 	.size	dotproduct_i32, .Lfunc_end0-dotproduct_i32
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 98d4547be003bbbf8581939e86bf2f4d9fdb7234)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 93dc8b18e7594c7c3b48744b9fa4034e13aac46f)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

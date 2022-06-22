@@ -21,17 +21,16 @@ vector_reduce_add_i32:
 	mv	a4, a0
 	vmv.v.i	v9, 0
 .LBB0_4:
-	vmv1r.v	v10, v9
-	vmv1r.v	v9, v8
-	vsetvli	zero, zero, e8, mf4, ta, mu
-	vle8.v	v8, (a4)
+	vsetvli	zero, zero, e16, mf2, ta, mu
+	vle8.v	v10, (a4)
 	addi	a5, a4, 4
 	vle8.v	v11, (a5)
-	vsetvli	zero, zero, e16, mf2, ta, mu
-	vzext.vf2	v12, v8
-	vwaddu.wv	v8, v9, v12
-	vzext.vf2	v12, v11
-	vwaddu.wv	v9, v10, v12
+	vmv1r.v	v12, v9
+	vmv1r.v	v9, v8
+	vzext.vf2	v13, v10
+	vwaddu.wv	v8, v9, v13
+	vzext.vf2	v10, v11
+	vwaddu.wv	v9, v12, v10
 	addi	a1, a1, -8
 	addi	a4, a4, 8
 	bnez	a1, .LBB0_4
@@ -56,6 +55,6 @@ vector_reduce_add_i32:
 .Lfunc_end0:
 	.size	vector_reduce_add_i32, .Lfunc_end0-vector_reduce_add_i32
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 98d4547be003bbbf8581939e86bf2f4d9fdb7234)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 93dc8b18e7594c7c3b48744b9fa4034e13aac46f)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig
