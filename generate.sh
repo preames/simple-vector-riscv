@@ -6,8 +6,14 @@ echo $TARGET_OPTS
 
 # uncmment if you want command lines
 #set -x
+    output_dir="./output/"
+    mkdir -p $output_dir
 for f in *.c; do
-    echo "Compiling $f.."; 
-    $CLANG -S $f $TARGET_OPTS -O2
-    $CLANG -S $f $TARGET_OPTS -O2 -emit-llvm
+    echo "Compiling $f..";
+    filename=$(basename -- "$f")
+    filename="${filename%.*}"
+    output_filename=$output_dir$filename
+
+    $CLANG -S $f $TARGET_OPTS -O2 -o $output_filename.s
+    $CLANG -S $f $TARGET_OPTS -O2 -emit-llvm -o $output_filename.ll
 done
