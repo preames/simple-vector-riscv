@@ -7,42 +7,41 @@
 	.type	vector_reduce_add_i32,@function
 vector_reduce_add_i32:
 	beqz	a1, .LBB0_8
-	li	a3, 8
-	zext.w	a2, a1
-	bgeu	a1, a3, .LBB0_3
+	zext.w	t0, a1
+	csrr	a4, vlenb
+	srli	a1, a4, 1
+	bgeu	t0, a1, .LBB0_3
 	li	a3, 0
 	li	a1, 0
 	j	.LBB0_6
 .LBB0_3:
-	vsetivli	zero, 4, e32, m1, ta, mu
+	li	a5, 0
+	remu	a6, t0, a1
+	sub	a3, t0, a6
+	srli	a7, a4, 2
+	vsetvli	a4, zero, e32, m1, ta, mu
 	vmv.v.i	v8, 0
-	andi	a3, a2, -8
-	mv	a1, a3
-	mv	a4, a0
+	add	a4, a0, a7
 	vmv.v.i	v9, 0
 .LBB0_4:
-	vsetvli	zero, zero, e16, mf2, ta, mu
-	vle8.v	v10, (a4)
-	addi	a5, a4, 4
-	vle8.v	v11, (a5)
-	vmv1r.v	v12, v9
-	vmv1r.v	v9, v8
-	vzext.vf2	v13, v10
-	vwaddu.wv	v8, v9, v13
-	vzext.vf2	v10, v11
-	vwaddu.wv	v9, v12, v10
-	addi	a1, a1, -8
-	addi	a4, a4, 8
-	bnez	a1, .LBB0_4
-	vsetvli	zero, zero, e32, m1, ta, mu
+	add	a2, a0, a5
+	vle8.v	v10, (a2)
+	add	a2, a4, a5
+	vle8.v	v11, (a2)
+	vzext.vf4	v12, v10
+	vzext.vf4	v10, v11
+	vadd.vv	v8, v8, v12
+	add	a5, a5, a1
+	vadd.vv	v9, v9, v10
+	bne	a5, a3, .LBB0_4
 	vadd.vv	v8, v9, v8
 	vmv.s.x	v9, zero
 	vredsum.vs	v8, v8, v9
 	vmv.x.s	a1, v8
-	beq	a3, a2, .LBB0_8
+	beqz	a6, .LBB0_8
 .LBB0_6:
 	add	a0, a0, a3
-	sub	a2, a2, a3
+	sub	a2, t0, a3
 .LBB0_7:
 	lbu	a3, 0(a0)
 	addw	a1, a1, a3
@@ -55,6 +54,6 @@ vector_reduce_add_i32:
 .Lfunc_end0:
 	.size	vector_reduce_add_i32, .Lfunc_end0-vector_reduce_add_i32
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 93dc8b18e7594c7c3b48744b9fa4034e13aac46f)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 9803b0d1e7b3cbcce33c1c91d4e1cd1f20eea3d4)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

@@ -63,6 +63,6 @@ my_memset:
 .Lfunc_end0:
 	.size	my_memset, .Lfunc_end0-my_memset
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 93dc8b18e7594c7c3b48744b9fa4034e13aac46f)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 9803b0d1e7b3cbcce33c1c91d4e1cd1f20eea3d4)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

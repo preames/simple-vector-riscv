@@ -6,63 +6,66 @@
 	.p2align	1
 	.type	vector_reduce_max_i32,@function
 vector_reduce_max_i32:
-	lui	a4, 807449
+	lui	a2, 807449
 	beqz	a1, .LBB0_3
-	li	a3, 16
-	zext.w	a2, a1
-	bgeu	a1, a3, .LBB0_4
-	li	a3, 0
-	addiw	a1, a4, 1871
-	j	.LBB0_8
+	zext.w	a7, a1
+	csrr	t1, vlenb
+	srli	a4, t1, 1
+	bgeu	a7, a4, .LBB0_4
+	li	t0, 0
+	addiw	a1, a2, 1871
+	j	.LBB0_7
 .LBB0_3:
-	addiw	a0, a4, 1871
+	addiw	a0, a2, 1871
 	ret
 .LBB0_4:
-	andi	a3, a2, -16
-	lui	a1, 807449
-	addiw	a1, a1, 1871
-	vsetivli	zero, 8, e32, m1, ta, mu
-	vmv.v.x	v8, a1
-	mv	a1, a3
-	mv	a4, a0
+	li	a5, 0
+	remu	a6, a7, a4
+	sub	t0, a7, a6
+	lui	a2, 807449
+	addiw	a2, a2, 1871
+	vsetvli	a3, zero, e32, m1, ta, mu
+	vmv.v.x	v8, a2
+	slli	a2, t1, 1
+	mv	a3, a0
 	vmv.v.v	v9, v8
 .LBB0_5:
-	addi	a5, a4, 32
-	vle32.v	v10, (a4)
-	vle32.v	v11, (a5)
+	vl1re32.v	v10, (a3)
+	add	a1, a3, t1
+	vl1re32.v	v11, (a1)
 	vmax.vv	v8, v10, v8
 	vmax.vv	v9, v11, v9
-	addi	a1, a1, -16
-	addi	a4, a4, 64
-	bnez	a1, .LBB0_5
+	add	a5, a5, a4
+	add	a3, a3, a2
+	bne	a5, t0, .LBB0_5
 	vmax.vv	v8, v8, v9
 	lui	a1, 524288
 	vmv.s.x	v9, a1
 	vredmax.vs	v8, v8, v9
 	vmv.x.s	a1, v8
-	bne	a3, a2, .LBB0_8
+	beqz	a6, .LBB0_11
 .LBB0_7:
-	mv	a0, a1
-	ret
-.LBB0_8:
-	sh2add	a0, a3, a0
-	sub	a2, a2, a3
+	sh2add	a0, t0, a0
+	sub	a2, a7, t0
 	mv	a3, a1
-	j	.LBB0_10
-.LBB0_9:
+	j	.LBB0_9
+.LBB0_8:
 	addi	a2, a2, -1
 	addi	a0, a0, 4
 	mv	a3, a1
-	beqz	a2, .LBB0_7
-.LBB0_10:
+	beqz	a2, .LBB0_11
+.LBB0_9:
 	lw	a1, 0(a0)
 	sext.w	a3, a3
-	blt	a3, a1, .LBB0_9
+	blt	a3, a1, .LBB0_8
 	mv	a1, a3
-	j	.LBB0_9
+	j	.LBB0_8
+.LBB0_11:
+	mv	a0, a1
+	ret
 .Lfunc_end0:
 	.size	vector_reduce_max_i32, .Lfunc_end0-vector_reduce_max_i32
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 93dc8b18e7594c7c3b48744b9fa4034e13aac46f)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 9803b0d1e7b3cbcce33c1c91d4e1cd1f20eea3d4)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

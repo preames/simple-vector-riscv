@@ -7,40 +7,43 @@
 	.type	vector_init_i32,@function
 vector_init_i32:
 	beqz	a1, .LBB0_8
-	li	a6, 32
-	zext.w	a2, a1
-	bgeu	a1, a6, .LBB0_3
-	li	a1, 0
+	zext.w	t1, a1
+	csrr	t0, vlenb
+	srli	a7, t0, 1
+	bgeu	t1, a7, .LBB0_3
+	li	a2, 0
 	j	.LBB0_6
 .LBB0_3:
-	vsetivli	zero, 16, e32, m1, ta, mu
+	li	a5, 0
+	remu	a6, t1, a7
+	sub	a2, t1, a6
+	vsetvli	a1, zero, e32, m1, ta, mu
 	vid.v	v8
-	andi	a1, a2, -32
-	li	a7, 16
-	mv	a5, a1
-	mv	a3, a0
+	srli	a4, t0, 2
+	slli	t2, t0, 1
+	mv	a1, a0
 .LBB0_4:
-	addi	a4, a3, 64
-	vadd.vx	v9, v8, a7
-	vse32.v	v8, (a3)
-	vse32.v	v9, (a4)
-	vadd.vx	v8, v8, a6
-	addi	a5, a5, -32
-	addi	a3, a3, 128
-	bnez	a5, .LBB0_4
-	beq	a1, a2, .LBB0_8
+	vadd.vx	v9, v8, a4
+	vs1r.v	v8, (a1)
+	add	a3, a1, t0
+	vs1r.v	v9, (a3)
+	add	a5, a5, a7
+	vadd.vx	v8, v9, a4
+	add	a1, a1, t2
+	bne	a5, a2, .LBB0_4
+	beqz	a6, .LBB0_8
 .LBB0_6:
-	sh2add	a0, a1, a0
+	sh2add	a0, a2, a0
 .LBB0_7:
-	sw	a1, 0(a0)
-	addi	a1, a1, 1
+	sw	a2, 0(a0)
+	addi	a2, a2, 1
 	addi	a0, a0, 4
-	bne	a2, a1, .LBB0_7
+	bne	t1, a2, .LBB0_7
 .LBB0_8:
 	ret
 .Lfunc_end0:
 	.size	vector_init_i32, .Lfunc_end0-vector_init_i32
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 93dc8b18e7594c7c3b48744b9fa4034e13aac46f)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 9803b0d1e7b3cbcce33c1c91d4e1cd1f20eea3d4)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

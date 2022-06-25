@@ -7,42 +7,47 @@
 	.type	dotproduct_i32,@function
 dotproduct_i32:
 	beqz	a0, .LBB0_8
-	li	a3, 16
-	zext.w	a6, a0
-	bgeu	a0, a3, .LBB0_3
-	li	a7, 0
+	zext.w	a7, a0
+	csrr	t3, vlenb
+	srli	t1, t3, 1
+	bgeu	a7, t1, .LBB0_3
+	li	t0, 0
 	li	a0, 0
 	j	.LBB0_6
 .LBB0_3:
-	vsetivli	zero, 8, e32, m1, ta, mu
+	li	a5, 0
+	li	a3, 0
+	remu	a6, a7, t1
+	sub	t0, a7, a6
+	slli	t2, t3, 1
+	add	t4, a1, t3
+	vsetvli	a4, zero, e32, m1, ta, mu
 	vmv.v.i	v8, 0
-	andi	a7, a6, -16
-	mv	a0, a7
-	mv	a5, a2
-	mv	a3, a1
+	add	a4, a2, t3
 	vmv.v.i	v9, 0
 .LBB0_4:
-	addi	t0, a5, 32
-	addi	a4, a3, 32
-	vle32.v	v10, (a3)
-	vle32.v	v11, (a4)
-	vle32.v	v12, (a5)
-	vle32.v	v13, (t0)
+	add	a0, a1, a5
+	vl1re32.v	v10, (a0)
+	add	a0, t4, a5
+	vl1re32.v	v11, (a0)
+	add	a0, a2, a5
+	vl1re32.v	v12, (a0)
+	add	a0, a4, a5
+	vl1re32.v	v13, (a0)
 	vmacc.vv	v8, v12, v10
 	vmacc.vv	v9, v13, v11
-	addi	a3, a3, 64
-	addi	a0, a0, -16
-	addi	a5, a5, 64
-	bnez	a0, .LBB0_4
+	add	a3, a3, t1
+	add	a5, a5, t2
+	bne	a3, t0, .LBB0_4
 	vadd.vv	v8, v9, v8
 	vmv.s.x	v9, zero
 	vredsum.vs	v8, v8, v9
 	vmv.x.s	a0, v8
-	beq	a7, a6, .LBB0_8
+	beqz	a6, .LBB0_8
 .LBB0_6:
-	sh2add	a1, a7, a1
-	sh2add	a2, a7, a2
-	sub	a3, a6, a7
+	sh2add	a1, t0, a1
+	sh2add	a2, t0, a2
+	sub	a3, a7, t0
 .LBB0_7:
 	lw	a4, 0(a1)
 	lw	a5, 0(a2)
@@ -57,6 +62,6 @@ dotproduct_i32:
 .Lfunc_end0:
 	.size	dotproduct_i32, .Lfunc_end0-dotproduct_i32
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 93dc8b18e7594c7c3b48744b9fa4034e13aac46f)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 9803b0d1e7b3cbcce33c1c91d4e1cd1f20eea3d4)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig
