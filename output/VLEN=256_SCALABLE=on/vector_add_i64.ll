@@ -11,54 +11,56 @@ entry:
 
 for.body.preheader:                               ; preds = %entry
   %wide.trip.count = zext i32 %a_len to i64
-  %min.iters.check = icmp ult i32 %a_len, 8
-  br i1 %min.iters.check, label %for.body.preheader8, label %vector.ph
+  %0 = call i64 @llvm.vscale.i64()
+  %min.iters.check = icmp ugt i64 %0, %wide.trip.count
+  br i1 %min.iters.check, label %for.body.preheader5, label %vector.ph
 
 vector.ph:                                        ; preds = %for.body.preheader
-  %n.vec = and i64 %wide.trip.count, 4294967288
-  %broadcast.splatinsert = insertelement <4 x i64> poison, i64 %b, i64 0
-  %broadcast.splat = shufflevector <4 x i64> %broadcast.splatinsert, <4 x i64> poison, <4 x i32> zeroinitializer
-  %broadcast.splatinsert6 = insertelement <4 x i64> poison, i64 %b, i64 0
-  %broadcast.splat7 = shufflevector <4 x i64> %broadcast.splatinsert6, <4 x i64> poison, <4 x i32> zeroinitializer
+  %1 = call i64 @llvm.vscale.i64()
+  %n.mod.vf = urem i64 %wide.trip.count, %1
+  %n.vec = sub nuw nsw i64 %wide.trip.count, %n.mod.vf
+  %broadcast.splatinsert = insertelement <vscale x 1 x i64> poison, i64 %b, i64 0
+  %broadcast.splat = shufflevector <vscale x 1 x i64> %broadcast.splatinsert, <vscale x 1 x i64> poison, <vscale x 1 x i32> zeroinitializer
+  %2 = call i64 @llvm.vscale.i64()
   br label %vector.body
 
 vector.body:                                      ; preds = %vector.body, %vector.ph
   %index = phi i64 [ 0, %vector.ph ], [ %index.next, %vector.body ]
-  %0 = getelementptr inbounds i64, ptr %a, i64 %index
-  %wide.load = load <4 x i64>, ptr %0, align 8, !tbaa !4
-  %1 = getelementptr inbounds i64, ptr %0, i64 4
-  %wide.load5 = load <4 x i64>, ptr %1, align 8, !tbaa !4
-  %2 = add nsw <4 x i64> %wide.load, %broadcast.splat
-  %3 = add nsw <4 x i64> %wide.load5, %broadcast.splat7
-  store <4 x i64> %2, ptr %0, align 8, !tbaa !4
-  store <4 x i64> %3, ptr %1, align 8, !tbaa !4
-  %index.next = add nuw i64 %index, 8
-  %4 = icmp eq i64 %index.next, %n.vec
-  br i1 %4, label %middle.block, label %vector.body, !llvm.loop !8
+  %3 = getelementptr inbounds i64, ptr %a, i64 %index
+  %wide.load = load <vscale x 1 x i64>, ptr %3, align 8, !tbaa !4
+  %4 = add nsw <vscale x 1 x i64> %wide.load, %broadcast.splat
+  store <vscale x 1 x i64> %4, ptr %3, align 8, !tbaa !4
+  %index.next = add nuw i64 %index, %2
+  %5 = icmp eq i64 %index.next, %n.vec
+  br i1 %5, label %middle.block, label %vector.body, !llvm.loop !8
 
 middle.block:                                     ; preds = %vector.body
-  %cmp.n = icmp eq i64 %n.vec, %wide.trip.count
-  br i1 %cmp.n, label %for.cond.cleanup, label %for.body.preheader8
+  %cmp.n = icmp eq i64 %n.mod.vf, 0
+  br i1 %cmp.n, label %for.cond.cleanup, label %for.body.preheader5
 
-for.body.preheader8:                              ; preds = %for.body.preheader, %middle.block
+for.body.preheader5:                              ; preds = %for.body.preheader, %middle.block
   %indvars.iv.ph = phi i64 [ 0, %for.body.preheader ], [ %n.vec, %middle.block ]
   br label %for.body
 
 for.cond.cleanup:                                 ; preds = %for.body, %middle.block, %entry
   ret void
 
-for.body:                                         ; preds = %for.body.preheader8, %for.body
-  %indvars.iv = phi i64 [ %indvars.iv.next, %for.body ], [ %indvars.iv.ph, %for.body.preheader8 ]
+for.body:                                         ; preds = %for.body.preheader5, %for.body
+  %indvars.iv = phi i64 [ %indvars.iv.next, %for.body ], [ %indvars.iv.ph, %for.body.preheader5 ]
   %arrayidx = getelementptr inbounds i64, ptr %a, i64 %indvars.iv
-  %5 = load i64, ptr %arrayidx, align 8, !tbaa !4
-  %add = add nsw i64 %5, %b
+  %6 = load i64, ptr %arrayidx, align 8, !tbaa !4
+  %add = add nsw i64 %6, %b
   store i64 %add, ptr %arrayidx, align 8, !tbaa !4
   %indvars.iv.next = add nuw nsw i64 %indvars.iv, 1
   %exitcond.not = icmp eq i64 %indvars.iv.next, %wide.trip.count
   br i1 %exitcond.not, label %for.cond.cleanup, label %for.body, !llvm.loop !11
 }
 
+; Function Attrs: nocallback nofree nosync nounwind readnone willreturn
+declare i64 @llvm.vscale.i64() #1
+
 attributes #0 = { argmemonly nofree norecurse nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,-save-restore" }
+attributes #1 = { nocallback nofree nosync nounwind readnone willreturn }
 
 !llvm.module.flags = !{!0, !1, !2}
 !llvm.ident = !{!3}
@@ -66,7 +68,7 @@ attributes #0 = { argmemonly nofree norecurse nosync nounwind "frame-pointer"="n
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 9803b0d1e7b3cbcce33c1c91d4e1cd1f20eea3d4)"}
+!3 = !{!"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 20dd3297b1c08ce08cbefa4fa41041e68c8e81a4)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"long", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}

@@ -6,70 +6,42 @@
 	.p2align	1
 	.type	vector_add_i64,@function
 vector_add_i64:
-	beqz	a1, .LBB0_14
-	li	a3, 32
+	beqz	a1, .LBB0_8
 	zext.w	a7, a1
-	bgeu	a1, a3, .LBB0_3
-	li	t0, 0
-	j	.LBB0_12
+	csrr	t0, vlenb
+	srli	a5, t0, 3
+	bgeu	a7, a5, .LBB0_3
+	li	a4, 0
+	j	.LBB0_6
 .LBB0_3:
-	li	a3, -128
-	li	a4, 128
-	zext.w	a6, a3
-	bgeu	a1, a4, .LBB0_5
-	li	t0, 0
-	j	.LBB0_9
-.LBB0_5:
-	and	t0, a7, a6
-	li	a5, 64
-	mv	a1, t0
+	li	a1, 0
+	remu	a6, a7, a5
+	sub	a4, a7, a6
+	vsetvli	a3, zero, e64, m1, ta, mu
 	mv	a3, a0
+.LBB0_4:
+	vl1re64.v	v8, (a3)
+	vadd.vx	v8, v8, a2
+	vs1r.v	v8, (a3)
+	add	a1, a1, a5
+	add	a3, a3, t0
+	bne	a1, a4, .LBB0_4
+	beqz	a6, .LBB0_8
 .LBB0_6:
-	addi	a4, a3, 512
-	vsetvli	zero, a5, e64, m1, ta, mu
-	vle64.v	v8, (a3)
-	vle64.v	v9, (a4)
-	vadd.vx	v8, v8, a2
-	vadd.vx	v9, v9, a2
-	vse64.v	v8, (a3)
-	vse64.v	v9, (a4)
-	addi	a1, a1, -128
-	addi	a3, a3, 1024
-	bnez	a1, .LBB0_6
-	beq	t0, a7, .LBB0_14
-	andi	a1, a7, 96
-	beqz	a1, .LBB0_12
-.LBB0_9:
-	mv	a3, t0
-	addi	a1, a6, 96
-	and	t0, a7, a1
-	sh3add	a1, a3, a0
-	sub	a3, a3, t0
-	li	a5, 32
-.LBB0_10:
-	vsetvli	zero, a5, e64, m1, ta, mu
-	vle64.v	v8, (a1)
-	vadd.vx	v8, v8, a2
-	vse64.v	v8, (a1)
-	addi	a3, a3, 32
-	addi	a1, a1, 256
-	bnez	a3, .LBB0_10
-	beq	t0, a7, .LBB0_14
-.LBB0_12:
-	sh3add	a0, t0, a0
-	sub	a1, a7, t0
-.LBB0_13:
+	sh3add	a0, a4, a0
+	sub	a1, a7, a4
+.LBB0_7:
 	ld	a3, 0(a0)
 	add	a3, a3, a2
 	sd	a3, 0(a0)
 	addi	a1, a1, -1
 	addi	a0, a0, 8
-	bnez	a1, .LBB0_13
-.LBB0_14:
+	bnez	a1, .LBB0_7
+.LBB0_8:
 	ret
 .Lfunc_end0:
 	.size	vector_add_i64, .Lfunc_end0-vector_add_i64
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 9803b0d1e7b3cbcce33c1c91d4e1cd1f20eea3d4)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 20dd3297b1c08ce08cbefa4fa41041e68c8e81a4)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig
