@@ -71,14 +71,14 @@ vec.epilog.ph:                                    ; preds = %vector.main.loop.it
 vec.epilog.vector.body:                           ; preds = %vec.epilog.vector.body, %vec.epilog.ph
   %offset.idx = phi i64 [ %vec.epilog.resume.val, %vec.epilog.ph ], [ %index.next25, %vec.epilog.vector.body ]
   %8 = getelementptr inbounds float, ptr %x, i64 %offset.idx
-  %wide.load21 = load <16 x float>, ptr %8, align 4, !tbaa !4
+  %wide.load21 = load <16 x float>, ptr %8, align 4, !tbaa !4, !alias.scope !16
   %9 = getelementptr inbounds float, ptr %y, i64 %offset.idx
-  %wide.load22 = load <16 x float>, ptr %9, align 4, !tbaa !4
+  %wide.load22 = load <16 x float>, ptr %9, align 4, !tbaa !4, !alias.scope !19, !noalias !16
   %10 = call <16 x float> @llvm.fmuladd.v16f32(<16 x float> %broadcast.splat24, <16 x float> %wide.load21, <16 x float> %wide.load22)
-  store <16 x float> %10, ptr %9, align 4, !tbaa !4
+  store <16 x float> %10, ptr %9, align 4, !tbaa !4, !alias.scope !19, !noalias !16
   %index.next25 = add nuw i64 %offset.idx, 16
   %11 = icmp eq i64 %index.next25, %n.vec18
-  br i1 %11, label %vec.epilog.middle.block, label %vec.epilog.vector.body, !llvm.loop !16
+  br i1 %11, label %vec.epilog.middle.block, label %vec.epilog.vector.body, !llvm.loop !21
 
 vec.epilog.middle.block:                          ; preds = %vec.epilog.vector.body
   %cmp.n19 = icmp eq i64 %n.vec18, %n
@@ -98,7 +98,7 @@ for.body:                                         ; preds = %for.body.preheader,
   store float %14, ptr %arrayidx1, align 4, !tbaa !4
   %inc = add nuw nsw i64 %i.09, 1
   %exitcond.not = icmp eq i64 %inc, %n
-  br i1 %exitcond.not, label %for.end, label %for.body, !llvm.loop !18
+  br i1 %exitcond.not, label %for.end, label %for.body, !llvm.loop !23
 
 for.end:                                          ; preds = %for.body, %middle.block, %vec.epilog.middle.block, %entry
   ret void
@@ -123,7 +123,7 @@ attributes #2 = { nocallback nofree nosync nounwind readnone speculatable willre
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 20dd3297b1c08ce08cbefa4fa41041e68c8e81a4)"}
+!3 = !{!"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 875ee0ed1c5af58cb4909f239093e25a35d7a21a)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"float", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}
@@ -136,6 +136,11 @@ attributes #2 = { nocallback nofree nosync nounwind readnone speculatable willre
 !13 = distinct !{!13, !14, !15}
 !14 = !{!"llvm.loop.mustprogress"}
 !15 = !{!"llvm.loop.isvectorized", i32 1}
-!16 = distinct !{!16, !14, !15, !17}
-!17 = !{!"llvm.loop.unroll.runtime.disable"}
-!18 = distinct !{!18, !14, !15}
+!16 = !{!17}
+!17 = distinct !{!17, !18}
+!18 = distinct !{!18, !"LVerDomain"}
+!19 = !{!20}
+!20 = distinct !{!20, !18}
+!21 = distinct !{!21, !14, !15, !22}
+!22 = !{!"llvm.loop.unroll.runtime.disable"}
+!23 = distinct !{!23, !14, !15}
