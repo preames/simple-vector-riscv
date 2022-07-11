@@ -13,46 +13,44 @@ entry:
 
 for.body.preheader:                               ; preds = %entry
   %wide.trip.count = zext i32 %len to i64
-  %0 = call i64 @llvm.vscale.i64()
-  %1 = shl i64 %0, 4
-  %min.iters.check = icmp ugt i64 %1, %wide.trip.count
+  %min.iters.check = icmp ult i32 %len, 32
   br i1 %min.iters.check, label %for.body.preheader11, label %vector.memcheck
 
 vector.memcheck:                                  ; preds = %for.body.preheader
-  %2 = call i64 @llvm.vscale.i64()
-  %3 = shl i64 %2, 4
-  %4 = sub i64 %a8, %b9
-  %diff.check = icmp ult i64 %4, %3
+  %0 = call i64 @llvm.vscale.i64()
+  %1 = shl i64 %0, 4
+  %2 = sub i64 %a8, %b9
+  %diff.check = icmp ult i64 %2, %1
   br i1 %diff.check, label %for.body.preheader11, label %vector.ph
 
 vector.ph:                                        ; preds = %vector.memcheck
-  %5 = call i64 @llvm.vscale.i64()
-  %6 = shl i64 %5, 4
-  %n.mod.vf = urem i64 %wide.trip.count, %6
+  %3 = call i64 @llvm.vscale.i64()
+  %4 = shl i64 %3, 4
+  %n.mod.vf = urem i64 %wide.trip.count, %4
   %n.vec = sub nuw nsw i64 %wide.trip.count, %n.mod.vf
-  %7 = call i32 @llvm.vscale.i32()
-  %8 = shl i32 %7, 3
-  %9 = sext i32 %8 to i64
-  %10 = call i32 @llvm.vscale.i32()
-  %11 = shl i32 %10, 3
-  %12 = sext i32 %11 to i64
-  %13 = call i64 @llvm.vscale.i64()
-  %14 = shl i64 %13, 4
+  %5 = call i32 @llvm.vscale.i32()
+  %6 = shl i32 %5, 3
+  %7 = sext i32 %6 to i64
+  %8 = call i32 @llvm.vscale.i32()
+  %9 = shl i32 %8, 3
+  %10 = sext i32 %9 to i64
+  %11 = call i64 @llvm.vscale.i64()
+  %12 = shl i64 %11, 4
   br label %vector.body
 
 vector.body:                                      ; preds = %vector.body, %vector.ph
   %index = phi i64 [ 0, %vector.ph ], [ %index.next, %vector.body ]
-  %15 = getelementptr inbounds i8, ptr %b, i64 %index
-  %wide.load = load <vscale x 8 x i8>, ptr %15, align 1, !tbaa !4
-  %16 = getelementptr inbounds i8, ptr %15, i64 %9
-  %wide.load10 = load <vscale x 8 x i8>, ptr %16, align 1, !tbaa !4
-  %17 = getelementptr inbounds i8, ptr %a, i64 %index
-  store <vscale x 8 x i8> %wide.load, ptr %17, align 1, !tbaa !4
-  %18 = getelementptr inbounds i8, ptr %17, i64 %12
-  store <vscale x 8 x i8> %wide.load10, ptr %18, align 1, !tbaa !4
-  %index.next = add nuw i64 %index, %14
-  %19 = icmp eq i64 %index.next, %n.vec
-  br i1 %19, label %middle.block, label %vector.body, !llvm.loop !7
+  %13 = getelementptr inbounds i8, ptr %b, i64 %index
+  %wide.load = load <vscale x 8 x i8>, ptr %13, align 1, !tbaa !4
+  %14 = getelementptr inbounds i8, ptr %13, i64 %7
+  %wide.load10 = load <vscale x 8 x i8>, ptr %14, align 1, !tbaa !4
+  %15 = getelementptr inbounds i8, ptr %a, i64 %index
+  store <vscale x 8 x i8> %wide.load, ptr %15, align 1, !tbaa !4
+  %16 = getelementptr inbounds i8, ptr %15, i64 %10
+  store <vscale x 8 x i8> %wide.load10, ptr %16, align 1, !tbaa !4
+  %index.next = add nuw i64 %index, %12
+  %17 = icmp eq i64 %index.next, %n.vec
+  br i1 %17, label %middle.block, label %vector.body, !llvm.loop !7
 
 middle.block:                                     ; preds = %vector.body
   %cmp.n = icmp eq i64 %n.mod.vf, 0
@@ -68,9 +66,9 @@ for.cond.cleanup:                                 ; preds = %for.body, %middle.b
 for.body:                                         ; preds = %for.body.preheader11, %for.body
   %indvars.iv = phi i64 [ %indvars.iv.next, %for.body ], [ %indvars.iv.ph, %for.body.preheader11 ]
   %arrayidx = getelementptr inbounds i8, ptr %b, i64 %indvars.iv
-  %20 = load i8, ptr %arrayidx, align 1, !tbaa !4
+  %18 = load i8, ptr %arrayidx, align 1, !tbaa !4
   %arrayidx2 = getelementptr inbounds i8, ptr %a, i64 %indvars.iv
-  store i8 %20, ptr %arrayidx2, align 1, !tbaa !4
+  store i8 %18, ptr %arrayidx2, align 1, !tbaa !4
   %indvars.iv.next = add nuw nsw i64 %indvars.iv, 1
   %exitcond.not = icmp eq i64 %indvars.iv.next, %wide.trip.count
   br i1 %exitcond.not, label %for.cond.cleanup, label %for.body, !llvm.loop !10
@@ -91,7 +89,7 @@ attributes #1 = { nocallback nofree nosync nounwind readnone willreturn }
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 875ee0ed1c5af58cb4909f239093e25a35d7a21a)"}
+!3 = !{!"clang version 15.0.0 (https://github.com/llvm/llvm-project.git c7fd7512a5c5b133665bfecbe2e9748c0607286e)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"omnipotent char", !6, i64 0}
 !6 = !{!"Simple C/C++ TBAA"}

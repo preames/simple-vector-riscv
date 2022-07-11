@@ -10,7 +10,7 @@ pairwise_dotproduct_fp32:
 	beqz	a0, .LBB0_9
 	zext.w	t0, a0
 	addi	a0, t0, -1
-	li	a4, 14
+	li	a4, 30
 	bgeu	a0, a4, .LBB0_3
 	li	a4, 0
 	j	.LBB0_7
@@ -61,9 +61,8 @@ pairwise_dotproduct_fp32:
 	addi	a0, a0, 4
 	add	a2, a2, a0
 	add	a3, a3, a0
-	slli	a0, a4, 1
-	andi	a0, a0, -4
-	add	a1, a1, a0
+	srli	a0, a4, 1
+	sh2add	a1, a0, a1
 .LBB0_8:
 	flw	ft0, -4(a2)
 	flw	ft1, 0(a2)
@@ -82,6 +81,6 @@ pairwise_dotproduct_fp32:
 .Lfunc_end0:
 	.size	pairwise_dotproduct_fp32, .Lfunc_end0-pairwise_dotproduct_fp32
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 875ee0ed1c5af58cb4909f239093e25a35d7a21a)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git c7fd7512a5c5b133665bfecbe2e9748c0607286e)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

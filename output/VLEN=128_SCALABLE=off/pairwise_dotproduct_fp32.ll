@@ -15,7 +15,7 @@ for.body.preheader:                               ; preds = %entry
   %1 = add nsw i64 %0, -1
   %2 = lshr i64 %1, 1
   %3 = add nuw i64 %2, 1
-  %min.iters.check = icmp ult i64 %1, 6
+  %min.iters.check = icmp ult i64 %1, 22
   br i1 %min.iters.check, label %for.body.preheader36, label %vector.memcheck
 
 vector.memcheck:                                  ; preds = %for.body.preheader
@@ -116,7 +116,7 @@ attributes #3 = { nocallback nofree nosync nounwind readnone speculatable willre
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 875ee0ed1c5af58cb4909f239093e25a35d7a21a)"}
+!3 = !{!"clang version 15.0.0 (https://github.com/llvm/llvm-project.git c7fd7512a5c5b133665bfecbe2e9748c0607286e)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"float", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}

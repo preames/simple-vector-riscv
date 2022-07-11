@@ -7,10 +7,9 @@
 	.type	saxpy,@function
 saxpy:
 	blez	a0, .LBB0_9
-	csrr	a7, vlenb
-	srli	t0, a7, 1
+	li	a4, 32
 	fmv.w.x	ft0, a1
-	bgeu	a0, t0, .LBB0_3
+	bgeu	a0, a4, .LBB0_3
 	li	t3, 0
 	j	.LBB0_7
 .LBB0_3:
@@ -22,28 +21,30 @@ saxpy:
 	li	t3, 0
 	bnez	a4, .LBB0_7
 	li	a5, 0
-	remu	a6, a0, t0
+	csrr	t2, vlenb
+	srli	a7, t2, 1
+	remu	a6, a0, a7
 	sub	t3, a0, a6
 	vsetvli	a1, zero, e32, m1, ta, mu
 	vfmv.v.f	v8, ft0
-	slli	t1, a7, 1
-	add	t2, a2, a7
-	add	a7, a7, a3
+	slli	t0, t2, 1
+	add	t1, a2, t2
+	add	t2, t2, a3
 .LBB0_5:
 	add	a1, a2, a5
 	vl1re32.v	v9, (a1)
-	add	a1, t2, a5
+	add	a1, t1, a5
 	vl1re32.v	v10, (a1)
 	add	t4, a3, a5
 	vl1re32.v	v11, (t4)
-	add	a1, a7, a5
+	add	a1, t2, a5
 	vl1re32.v	v12, (a1)
 	vfmacc.vv	v11, v8, v9
 	vfmacc.vv	v12, v8, v10
 	vs1r.v	v11, (t4)
 	vs1r.v	v12, (a1)
-	add	a4, a4, t0
-	add	a5, a5, t1
+	add	a4, a4, a7
+	add	a5, a5, t0
 	bne	a4, t3, .LBB0_5
 	beqz	a6, .LBB0_9
 .LBB0_7:
@@ -64,6 +65,6 @@ saxpy:
 .Lfunc_end0:
 	.size	saxpy, .Lfunc_end0-saxpy
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 875ee0ed1c5af58cb4909f239093e25a35d7a21a)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git c7fd7512a5c5b133665bfecbe2e9748c0607286e)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig
