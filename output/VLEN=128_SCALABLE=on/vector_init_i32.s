@@ -15,7 +15,8 @@ vector_init_i32:
 	j	.LBB0_6
 .LBB0_3:
 	li	a5, 0
-	remu	a6, t1, a7
+	addi	a1, a7, -1
+	and	a6, t1, a1
 	sub	a2, t1, a6
 	vsetvli	a1, zero, e32, m1, ta, mu
 	vid.v	v8
@@ -44,6 +45,6 @@ vector_init_i32:
 .Lfunc_end0:
 	.size	vector_init_i32, .Lfunc_end0-vector_init_i32
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git c7fd7512a5c5b133665bfecbe2e9748c0607286e)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git dde2a7fb6da46da2b2f765fa569d8fddb4270eb6)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

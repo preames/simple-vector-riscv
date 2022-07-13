@@ -46,7 +46,8 @@ vector_abs_diff:
 	or	a3, a3, a4
 	li	a5, 0
 	bnez	a3, .LBB2_7
-	remu	a6, a7, t1
+	addi	a4, t1, -1
+	and	a6, a7, a4
 	sub	a5, a7, a6
 	add	t2, a1, t0
 	add	t3, a2, t0
@@ -98,6 +99,6 @@ vector_abs_diff:
 .Lfunc_end2:
 	.size	vector_abs_diff, .Lfunc_end2-vector_abs_diff
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git c7fd7512a5c5b133665bfecbe2e9748c0607286e)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git dde2a7fb6da46da2b2f765fa569d8fddb4270eb6)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

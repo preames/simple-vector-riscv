@@ -17,7 +17,8 @@ dotproduct_i32:
 .LBB0_3:
 	li	a5, 0
 	li	a3, 0
-	remu	a6, a7, t1
+	addi	a0, t1, -1
+	and	a6, a7, a0
 	sub	t0, a7, a6
 	slli	t2, t3, 1
 	add	t4, a1, t3
@@ -62,6 +63,6 @@ dotproduct_i32:
 .Lfunc_end0:
 	.size	dotproduct_i32, .Lfunc_end0-dotproduct_i32
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git c7fd7512a5c5b133665bfecbe2e9748c0607286e)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git dde2a7fb6da46da2b2f765fa569d8fddb4270eb6)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

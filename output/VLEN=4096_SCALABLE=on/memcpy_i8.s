@@ -10,10 +10,10 @@ my_memcpy:
 	li	a3, 512
 	zext.w	a7, a0
 	bltu	a0, a3, .LBB0_3
-	csrr	a4, vlenb
-	slli	t0, a4, 1
+	csrr	t0, vlenb
+	slli	t1, t0, 1
 	sub	a0, a1, a2
-	bgeu	a0, t0, .LBB0_7
+	bgeu	a0, t1, .LBB0_7
 .LBB0_3:
 	li	a0, 0
 .LBB0_4:
@@ -31,19 +31,20 @@ my_memcpy:
 	ret
 .LBB0_7:
 	li	a5, 0
-	remu	a6, a7, t0
+	addi	a0, t1, -1
+	and	a6, a7, a0
 	sub	a0, a7, a6
-	add	t1, a2, a4
-	add	a4, a4, a1
+	add	t2, a2, t0
+	add	a4, a1, t0
 .LBB0_8:
 	add	a3, a2, a5
 	vl1r.v	v8, (a3)
-	add	a3, t1, a5
+	add	a3, t2, a5
 	vl1r.v	v9, (a3)
 	add	a3, a1, a5
 	vs1r.v	v8, (a3)
 	add	a3, a4, a5
-	add	a5, a5, t0
+	add	a5, a5, t1
 	vs1r.v	v9, (a3)
 	bne	a5, a0, .LBB0_8
 	bnez	a6, .LBB0_4
@@ -51,6 +52,6 @@ my_memcpy:
 .Lfunc_end0:
 	.size	my_memcpy, .Lfunc_end0-my_memcpy
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git c7fd7512a5c5b133665bfecbe2e9748c0607286e)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git dde2a7fb6da46da2b2f765fa569d8fddb4270eb6)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

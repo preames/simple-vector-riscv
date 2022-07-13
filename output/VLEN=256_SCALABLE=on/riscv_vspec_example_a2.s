@@ -13,27 +13,28 @@ example_a2:
 	li	a5, 0
 	j	.LBB0_7
 .LBB0_3:
-	csrr	t2, vlenb
-	slli	t0, t2, 1
+	csrr	t0, vlenb
+	slli	t1, t0, 1
 	sub	a3, a1, a0
-	sltu	a3, a3, t0
+	sltu	a3, a3, t1
 	sub	a4, a1, a2
-	sltu	a4, a4, t0
+	sltu	a4, a4, t1
 	or	a3, a3, a4
 	li	a5, 0
 	bnez	a3, .LBB0_7
 	li	a4, 0
-	remu	a6, a7, t0
+	addi	a3, t1, -1
+	and	a6, a7, a3
 	sub	a5, a7, a6
-	add	t1, a0, t2
-	add	t3, a2, t2
-	add	t2, t2, a1
+	add	t2, a0, t0
+	add	t3, a2, t0
+	add	t0, t0, a1
 	vsetvli	a3, zero, e8, m1, ta, mu
 	vmv.v.i	v10, 1
 .LBB0_5:
 	add	a3, a0, a4
 	vl1r.v	v8, (a3)
-	add	a3, t1, a4
+	add	a3, t2, a4
 	vl1r.v	v9, (a3)
 	vmsleu.vi	v8, v8, 4
 	vmsleu.vi	v9, v9, 4
@@ -49,8 +50,8 @@ example_a2:
 	vmerge.vvm	v9, v10, v12, v0
 	add	a3, a1, a4
 	vs1r.v	v8, (a3)
-	add	a3, t2, a4
-	add	a4, a4, t0
+	add	a3, t0, a4
+	add	a4, a4, t1
 	vs1r.v	v9, (a3)
 	bne	a4, a5, .LBB0_5
 	beqz	a6, .LBB0_11
@@ -79,6 +80,6 @@ example_a2:
 .Lfunc_end0:
 	.size	example_a2, .Lfunc_end0-example_a2
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git c7fd7512a5c5b133665bfecbe2e9748c0607286e)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git dde2a7fb6da46da2b2f765fa569d8fddb4270eb6)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

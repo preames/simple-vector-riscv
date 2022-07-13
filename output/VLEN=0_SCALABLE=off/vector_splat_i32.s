@@ -18,6 +18,6 @@ vector_splat_i32:
 .Lfunc_end0:
 	.size	vector_splat_i32, .Lfunc_end0-vector_splat_i32
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git c7fd7512a5c5b133665bfecbe2e9748c0607286e)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git dde2a7fb6da46da2b2f765fa569d8fddb4270eb6)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig
