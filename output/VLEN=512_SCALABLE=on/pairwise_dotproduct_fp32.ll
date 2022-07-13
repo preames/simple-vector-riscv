@@ -105,7 +105,7 @@ declare <16 x float> @llvm.masked.gather.v16f32.v16p0(<16 x ptr>, i32 immarg, <1
 ; Function Attrs: nocallback nofree nosync nounwind readnone speculatable willreturn
 declare <16 x float> @llvm.fmuladd.v16f32(<16 x float>, <16 x float>, <16 x float>) #3
 
-attributes #0 = { argmemonly nofree nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,-save-restore" }
+attributes #0 = { argmemonly nofree nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
 attributes #1 = { mustprogress nocallback nofree nosync nounwind readnone speculatable willreturn }
 attributes #2 = { nocallback nofree nosync nounwind readonly willreturn }
 attributes #3 = { nocallback nofree nosync nounwind readnone speculatable willreturn }

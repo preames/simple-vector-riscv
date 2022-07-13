@@ -64,7 +64,7 @@ for.body:                                         ; preds = %for.body.preheader9
 ; Function Attrs: nocallback nofree nosync nounwind readnone willreturn
 declare i32 @llvm.vector.reduce.add.v8i32(<8 x i32>) #1
 
-attributes #0 = { argmemonly nofree norecurse nosync nounwind readonly "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,-save-restore" }
+attributes #0 = { argmemonly nofree norecurse nosync nounwind readonly "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
 attributes #1 = { nocallback nofree nosync nounwind readnone willreturn }
 
 !llvm.module.flags = !{!0, !1, !2}

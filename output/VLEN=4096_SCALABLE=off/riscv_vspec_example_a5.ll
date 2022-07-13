@@ -113,7 +113,7 @@ declare <128 x float> @llvm.fmuladd.v128f32(<128 x float>, <128 x float>, <128 x
 ; Function Attrs: nocallback nofree nosync nounwind readnone speculatable willreturn
 declare <64 x float> @llvm.fmuladd.v64f32(<64 x float>, <64 x float>, <64 x float>) #2
 
-attributes #0 = { argmemonly nofree nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,-save-restore" }
+attributes #0 = { argmemonly nofree nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
 attributes #1 = { mustprogress nocallback nofree nosync nounwind readnone speculatable willreturn }
 attributes #2 = { nocallback nofree nosync nounwind readnone speculatable willreturn }
 

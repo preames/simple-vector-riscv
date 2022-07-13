@@ -105,7 +105,7 @@ declare <8 x float> @llvm.masked.gather.v8f32.v8p0(<8 x ptr>, i32 immarg, <8 x i
 ; Function Attrs: nocallback nofree nosync nounwind readnone speculatable willreturn
 declare <8 x float> @llvm.fmuladd.v8f32(<8 x float>, <8 x float>, <8 x float>) #3
 
-attributes #0 = { argmemonly nofree nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,-save-restore" }
+attributes #0 = { argmemonly nofree nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
 attributes #1 = { mustprogress nocallback nofree nosync nounwind readnone speculatable willreturn }
 attributes #2 = { nocallback nofree nosync nounwind readonly willreturn }
 attributes #3 = { nocallback nofree nosync nounwind readnone speculatable willreturn }

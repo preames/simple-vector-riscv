@@ -105,7 +105,7 @@ declare <32 x float> @llvm.masked.gather.v32f32.v32p0(<32 x ptr>, i32 immarg, <3
 ; Function Attrs: nocallback nofree nosync nounwind readnone speculatable willreturn
 declare <32 x float> @llvm.fmuladd.v32f32(<32 x float>, <32 x float>, <32 x float>) #3
 
-attributes #0 = { argmemonly nofree nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,-save-restore" }
+attributes #0 = { argmemonly nofree nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
 attributes #1 = { mustprogress nocallback nofree nosync nounwind readnone speculatable willreturn }
 attributes #2 = { nocallback nofree nosync nounwind readonly willreturn }
 attributes #3 = { nocallback nofree nosync nounwind readnone speculatable willreturn }

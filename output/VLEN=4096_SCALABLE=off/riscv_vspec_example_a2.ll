@@ -113,7 +113,7 @@ declare <512 x i8> @llvm.masked.load.v512i8.p0(ptr, i32 immarg, <512 x i1>, <512
 ; Function Attrs: argmemonly nocallback nofree nosync nounwind readonly willreturn
 declare <256 x i8> @llvm.masked.load.v256i8.p0(ptr, i32 immarg, <256 x i1>, <256 x i8>) #1
 
-attributes #0 = { argmemonly nofree norecurse nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,-save-restore" }
+attributes #0 = { argmemonly nofree norecurse nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
 attributes #1 = { argmemonly nocallback nofree nosync nounwind readonly willreturn }
 
 !llvm.module.flags = !{!0, !1, !2}

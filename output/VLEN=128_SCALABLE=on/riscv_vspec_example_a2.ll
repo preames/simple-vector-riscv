@@ -112,7 +112,7 @@ declare i32 @llvm.vscale.i32() #1
 ; Function Attrs: argmemonly nocallback nofree nosync nounwind readonly willreturn
 declare <vscale x 8 x i8> @llvm.masked.load.nxv8i8.p0(ptr, i32 immarg, <vscale x 8 x i1>, <vscale x 8 x i8>) #2
 
-attributes #0 = { argmemonly nofree norecurse nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,-save-restore" }
+attributes #0 = { argmemonly nofree norecurse nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
 attributes #1 = { nocallback nofree nosync nounwind readnone willreturn }
 attributes #2 = { argmemonly nocallback nofree nosync nounwind readonly willreturn }
 
