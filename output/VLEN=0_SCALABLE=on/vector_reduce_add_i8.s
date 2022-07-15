@@ -34,7 +34,7 @@ vector_reduce_add_i32:
 	vadd.vv	v8, v8, v12
 	add	a5, a5, a1
 	vadd.vv	v9, v9, v10
-	bne	a5, a3, .LBB0_4
+	bne	a3, a5, .LBB0_4
 	vadd.vv	v8, v9, v8
 	vmv.s.x	v9, zero
 	vredsum.vs	v8, v8, v9
@@ -55,6 +55,6 @@ vector_reduce_add_i32:
 .Lfunc_end0:
 	.size	vector_reduce_add_i32, .Lfunc_end0-vector_reduce_add_i32
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git dde2a7fb6da46da2b2f765fa569d8fddb4270eb6)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 9153515a7bea9fb9dd4c76f70053a170bf825f35)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

@@ -7,40 +7,40 @@
 	.type	vector_reduce_add_i32,@function
 vector_reduce_add_i32:
 	beqz	a1, .LBB0_8
-	zext.w	a7, a1
+	zext.w	t0, a1
 	csrr	t1, vlenb
-	srli	a4, t1, 1
-	bgeu	a7, a4, .LBB0_3
-	li	t0, 0
+	srli	a5, t1, 1
+	bgeu	t0, a5, .LBB0_3
+	li	a7, 0
 	li	a1, 0
 	j	.LBB0_6
 .LBB0_3:
-	li	a5, 0
-	addi	a2, a4, -1
-	and	a6, a7, a2
-	sub	t0, a7, a6
+	addi	a2, a5, -1
+	and	a6, t0, a2
+	sub	a7, t0, a6
 	vsetvli	a2, zero, e32, m1, ta, mu
 	vmv.v.i	v8, 0
-	slli	a2, t1, 1
-	mv	a3, a0
+	slli	a4, t1, 1
+	mv	a3, a7
+	mv	a2, a0
 	vmv.v.i	v9, 0
 .LBB0_4:
-	vl1re32.v	v10, (a3)
-	add	a1, a3, t1
+	vl1re32.v	v10, (a2)
+	add	a1, a2, t1
 	vl1re32.v	v11, (a1)
 	vadd.vv	v8, v10, v8
 	vadd.vv	v9, v11, v9
-	add	a5, a5, a4
-	add	a3, a3, a2
-	bne	a5, t0, .LBB0_4
+	sub	a3, a3, a5
+	add	a2, a2, a4
+	bnez	a3, .LBB0_4
 	vadd.vv	v8, v9, v8
 	vmv.s.x	v9, zero
 	vredsum.vs	v8, v8, v9
 	vmv.x.s	a1, v8
 	beqz	a6, .LBB0_8
 .LBB0_6:
-	sh2add	a0, t0, a0
-	sub	a2, a7, t0
+	sh2add	a0, a7, a0
+	sub	a2, t0, a7
 .LBB0_7:
 	lw	a3, 0(a0)
 	addw	a1, a1, a3
@@ -53,6 +53,6 @@ vector_reduce_add_i32:
 .Lfunc_end0:
 	.size	vector_reduce_add_i32, .Lfunc_end0-vector_reduce_add_i32
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git dde2a7fb6da46da2b2f765fa569d8fddb4270eb6)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 9153515a7bea9fb9dd4c76f70053a170bf825f35)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

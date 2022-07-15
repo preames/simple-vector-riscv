@@ -69,7 +69,7 @@ vector_abs_diff:
 	add	a4, t0, a3
 	add	a3, a3, t1
 	vs1r.v	v9, (a4)
-	bne	a3, a5, .LBB2_5
+	bne	a5, a3, .LBB2_5
 	beqz	a6, .LBB2_9
 .LBB2_7:
 	add	a1, a1, a5
@@ -94,6 +94,6 @@ vector_abs_diff:
 .Lfunc_end2:
 	.size	vector_abs_diff, .Lfunc_end2-vector_abs_diff
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git dde2a7fb6da46da2b2f765fa569d8fddb4270eb6)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 9153515a7bea9fb9dd4c76f70053a170bf825f35)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

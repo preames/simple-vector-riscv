@@ -14,24 +14,24 @@ vector_init_i32:
 	li	a2, 0
 	j	.LBB0_6
 .LBB0_3:
-	li	a5, 0
 	addi	a1, a7, -1
 	and	a6, t1, a1
 	sub	a2, t1, a6
 	vsetvli	a1, zero, e32, m1, ta, mu
 	vid.v	v8
-	srli	a4, t0, 2
+	srli	a5, t0, 2
 	slli	t2, t0, 1
+	mv	a3, a2
 	mv	a1, a0
 .LBB0_4:
-	vadd.vx	v9, v8, a4
+	vadd.vx	v9, v8, a5
 	vs1r.v	v8, (a1)
-	add	a3, a1, t0
-	vs1r.v	v9, (a3)
-	add	a5, a5, a7
-	vadd.vx	v8, v9, a4
+	add	a4, a1, t0
+	vs1r.v	v9, (a4)
+	vadd.vx	v8, v9, a5
+	sub	a3, a3, a7
 	add	a1, a1, t2
-	bne	a5, a2, .LBB0_4
+	bnez	a3, .LBB0_4
 	beqz	a6, .LBB0_8
 .LBB0_6:
 	sh2add	a0, a2, a0
@@ -45,6 +45,6 @@ vector_init_i32:
 .Lfunc_end0:
 	.size	vector_init_i32, .Lfunc_end0-vector_init_i32
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git dde2a7fb6da46da2b2f765fa569d8fddb4270eb6)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 9153515a7bea9fb9dd4c76f70053a170bf825f35)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

@@ -53,7 +53,7 @@ example_a2:
 	add	a3, t0, a4
 	add	a4, a4, t1
 	vs1r.v	v9, (a3)
-	bne	a4, a5, .LBB0_5
+	bne	a5, a4, .LBB0_5
 	beqz	a6, .LBB0_11
 .LBB0_7:
 	add	a0, a0, a5
@@ -80,6 +80,6 @@ example_a2:
 .Lfunc_end0:
 	.size	example_a2, .Lfunc_end0-example_a2
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git dde2a7fb6da46da2b2f765fa569d8fddb4270eb6)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 9153515a7bea9fb9dd4c76f70053a170bf825f35)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

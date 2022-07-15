@@ -8,38 +8,38 @@
 dotproduct_i32:
 	beqz	a0, .LBB0_8
 	zext.w	a7, a0
-	csrr	t3, vlenb
-	srli	t1, t3, 1
+	csrr	a0, vlenb
+	srli	t1, a0, 1
 	bgeu	a7, t1, .LBB0_3
 	li	t0, 0
 	li	a0, 0
 	j	.LBB0_6
 .LBB0_3:
 	li	a5, 0
-	li	a3, 0
-	addi	a0, t1, -1
-	and	a6, a7, a0
+	addi	a3, t1, -1
+	and	a6, a7, a3
 	sub	t0, a7, a6
-	slli	t2, t3, 1
-	add	t4, a1, t3
-	vsetvli	a4, zero, e32, m1, ta, mu
+	slli	t2, a0, 1
+	add	t3, a1, a0
+	vsetvli	a3, zero, e32, m1, ta, mu
 	vmv.v.i	v8, 0
-	add	a4, a2, t3
+	add	a0, a0, a2
+	mv	a3, t0
 	vmv.v.i	v9, 0
 .LBB0_4:
-	add	a0, a1, a5
-	vl1re32.v	v10, (a0)
-	add	a0, t4, a5
-	vl1re32.v	v11, (a0)
-	add	a0, a2, a5
-	vl1re32.v	v12, (a0)
-	add	a0, a4, a5
-	vl1re32.v	v13, (a0)
+	add	a4, a1, a5
+	vl1re32.v	v10, (a4)
+	add	a4, t3, a5
+	vl1re32.v	v11, (a4)
+	add	a4, a2, a5
+	vl1re32.v	v12, (a4)
+	add	a4, a0, a5
+	vl1re32.v	v13, (a4)
 	vmacc.vv	v8, v12, v10
 	vmacc.vv	v9, v13, v11
-	add	a3, a3, t1
+	sub	a3, a3, t1
 	add	a5, a5, t2
-	bne	a3, t0, .LBB0_4
+	bnez	a3, .LBB0_4
 	vadd.vv	v8, v9, v8
 	vmv.s.x	v9, zero
 	vredsum.vs	v8, v8, v9
@@ -63,6 +63,6 @@ dotproduct_i32:
 .Lfunc_end0:
 	.size	dotproduct_i32, .Lfunc_end0-dotproduct_i32
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git dde2a7fb6da46da2b2f765fa569d8fddb4270eb6)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 9153515a7bea9fb9dd4c76f70053a170bf825f35)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

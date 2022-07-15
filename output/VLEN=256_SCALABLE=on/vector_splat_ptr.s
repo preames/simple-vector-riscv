@@ -7,29 +7,29 @@
 	.type	vector_splat_ptr,@function
 vector_splat_ptr:
 	beqz	a2, .LBB0_8
-	zext.w	a7, a2
-	csrr	t0, vlenb
-	srli	a4, t0, 3
-	bgeu	a7, a4, .LBB0_3
-	li	a5, 0
+	zext.w	t0, a2
+	csrr	a4, vlenb
+	srli	a5, a4, 3
+	bgeu	t0, a5, .LBB0_3
+	li	a7, 0
 	j	.LBB0_6
 .LBB0_3:
-	li	a2, 0
-	addi	a3, a4, -1
-	and	a6, a7, a3
-	sub	a5, a7, a6
-	vsetvli	a3, zero, e64, m1, ta, mu
+	addi	a2, a5, -1
+	and	a6, t0, a2
+	sub	a7, t0, a6
+	vsetvli	a2, zero, e64, m1, ta, mu
 	vmv.v.x	v8, a1
-	mv	a3, a0
+	mv	a3, a7
+	mv	a2, a0
 .LBB0_4:
-	vs1r.v	v8, (a3)
+	vs1r.v	v8, (a2)
+	sub	a3, a3, a5
 	add	a2, a2, a4
-	add	a3, a3, t0
-	bne	a2, a5, .LBB0_4
+	bnez	a3, .LBB0_4
 	beqz	a6, .LBB0_8
 .LBB0_6:
-	sh3add	a0, a5, a0
-	sub	a2, a7, a5
+	sh3add	a0, a7, a0
+	sub	a2, t0, a7
 .LBB0_7:
 	sd	a1, 0(a0)
 	addi	a2, a2, -1
@@ -40,6 +40,6 @@ vector_splat_ptr:
 .Lfunc_end0:
 	.size	vector_splat_ptr, .Lfunc_end0-vector_splat_ptr
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git dde2a7fb6da46da2b2f765fa569d8fddb4270eb6)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 9153515a7bea9fb9dd4c76f70053a170bf825f35)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

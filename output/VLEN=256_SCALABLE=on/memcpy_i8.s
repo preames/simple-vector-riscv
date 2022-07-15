@@ -46,12 +46,12 @@ my_memcpy:
 	add	a3, a4, a5
 	add	a5, a5, t1
 	vs1r.v	v9, (a3)
-	bne	a5, a0, .LBB0_8
+	bne	a0, a5, .LBB0_8
 	bnez	a6, .LBB0_4
 	j	.LBB0_6
 .Lfunc_end0:
 	.size	my_memcpy, .Lfunc_end0-my_memcpy
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git dde2a7fb6da46da2b2f765fa569d8fddb4270eb6)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 9153515a7bea9fb9dd4c76f70053a170bf825f35)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig
