@@ -7,10 +7,13 @@
 	.type	saxpy,@function
 saxpy:
 	blez	a0, .LBB0_9
+	csrr	a7, vlenb
+	srli	t1, a7, 1
 	li	a4, 16
+	maxu	a4, t1, a4
 	fmv.w.x	ft0, a1
 	bgeu	a0, a4, .LBB0_3
-	li	a7, 0
+	li	t0, 0
 	j	.LBB0_7
 .LBB0_3:
 	sh2add	a1, a0, a3
@@ -18,55 +21,53 @@ saxpy:
 	sltu	a4, a3, a4
 	sltu	a1, a2, a1
 	and	a1, a1, a4
-	li	a7, 0
+	li	t0, 0
 	bnez	a1, .LBB0_7
 	li	a5, 0
-	csrr	a1, vlenb
-	srli	t0, a1, 1
-	addi	a4, t0, -1
-	and	a6, a0, a4
-	sub	a7, a0, a6
-	vsetvli	a4, zero, e32, m1, ta, mu
+	addi	a1, t1, -1
+	and	a6, a0, a1
+	sub	t0, a0, a6
+	vsetvli	a1, zero, e32, m1, ta, mu
 	vfmv.v.f	v8, ft0
-	slli	t1, a1, 1
-	add	t2, a2, a1
-	add	t3, a3, a1
-	mv	a4, a7
+	slli	t2, a7, 1
+	add	t3, a2, a7
+	add	a7, a7, a3
+	mv	a4, t0
 .LBB0_5:
 	add	a1, a2, a5
 	vl1re32.v	v9, (a1)
-	add	a1, t2, a5
+	add	a1, t3, a5
 	vl1re32.v	v10, (a1)
-	add	a1, a3, a5
-	vl1re32.v	v11, (a1)
-	add	t4, t3, a5
-	vl1re32.v	v12, (t4)
+	add	t4, a3, a5
+	vl1re32.v	v11, (t4)
+	add	a1, a7, a5
+	vl1re32.v	v12, (a1)
 	vfmacc.vv	v11, v8, v9
 	vfmacc.vv	v12, v8, v10
-	vs1r.v	v11, (a1)
-	vs1r.v	v12, (t4)
-	sub	a4, a4, t0
-	add	a5, a5, t1
+	vs1r.v	v11, (t4)
+	vs1r.v	v12, (a1)
+	sub	a4, a4, t1
+	add	a5, a5, t2
 	bnez	a4, .LBB0_5
 	beqz	a6, .LBB0_9
 .LBB0_7:
-	sub	a0, a0, a7
-	sh2add	a3, a7, a3
-	sh2add	a1, a7, a2
+	sub	a0, a0, t0
+	sh2add	a1, t0, a3
+	sh2add	a2, t0, a2
 .LBB0_8:
-	flw	ft1, 0(a1)
-	flw	ft2, 0(a3)
+	flw	ft1, 0(a2)
+	flw	ft2, 0(a1)
 	fmadd.s	ft1, ft0, ft1, ft2
-	fsw	ft1, 0(a3)
+	fsw	ft1, 0(a1)
 	addi	a0, a0, -1
-	addi	a3, a3, 4
 	addi	a1, a1, 4
+	addi	a2, a2, 4
 	bnez	a0, .LBB0_8
 .LBB0_9:
 	ret
 .Lfunc_end0:
 	.size	saxpy, .Lfunc_end0-saxpy
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 9153515a7bea9fb9dd4c76f70053a170bf825f35)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 1e451369d2017830d3dbddec24063170b7aca0de)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

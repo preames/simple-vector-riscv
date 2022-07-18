@@ -7,19 +7,20 @@
 	.type	my_memcpy,@function
 my_memcpy:
 	beqz	a0, .LBB0_6
-	li	a3, 64
 	zext.w	a7, a0
-	bltu	a0, a3, .LBB0_3
 	csrr	t0, vlenb
 	slli	t1, t0, 1
+	li	a0, 64
+	maxu	a0, t1, a0
+	bltu	a7, a0, .LBB0_3
 	sub	a0, a1, a2
 	bgeu	a0, t1, .LBB0_7
 .LBB0_3:
-	li	a0, 0
+	li	a4, 0
 .LBB0_4:
-	add	a2, a2, a0
-	add	a1, a1, a0
-	sub	a0, a7, a0
+	add	a2, a2, a4
+	add	a1, a1, a4
+	sub	a0, a7, a4
 .LBB0_5:
 	lb	a3, 0(a2)
 	sb	a3, 0(a1)
@@ -30,28 +31,28 @@ my_memcpy:
 .LBB0_6:
 	ret
 .LBB0_7:
-	li	a5, 0
-	addi	a0, t1, -1
-	and	a6, a7, a0
-	sub	a0, a7, a6
+	li	a0, 0
+	addi	a3, t1, -1
+	and	a6, a7, a3
+	sub	a4, a7, a6
 	add	t2, a2, t0
-	add	a4, a1, t0
+	add	a3, a1, t0
 .LBB0_8:
-	add	a3, a2, a5
-	vl1r.v	v8, (a3)
-	add	a3, t2, a5
-	vl1r.v	v9, (a3)
-	add	a3, a1, a5
-	vs1r.v	v8, (a3)
-	add	a3, a4, a5
-	add	a5, a5, t1
-	vs1r.v	v9, (a3)
-	bne	a0, a5, .LBB0_8
+	add	a5, a2, a0
+	vl1r.v	v8, (a5)
+	add	a5, t2, a0
+	vl1r.v	v9, (a5)
+	add	a5, a1, a0
+	vs1r.v	v8, (a5)
+	add	a5, a3, a0
+	add	a0, a0, t1
+	vs1r.v	v9, (a5)
+	bne	a4, a0, .LBB0_8
 	bnez	a6, .LBB0_4
 	j	.LBB0_6
 .Lfunc_end0:
 	.size	my_memcpy, .Lfunc_end0-my_memcpy
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 9153515a7bea9fb9dd4c76f70053a170bf825f35)"
+	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 1e451369d2017830d3dbddec24063170b7aca0de)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig
