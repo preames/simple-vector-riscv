@@ -44,8 +44,8 @@ vector.body:                                      ; preds = %vector.body, %vecto
   %wide.load13 = load <16 x float>, ptr %3, align 4, !tbaa !4, !alias.scope !11, !noalias !8
   %4 = getelementptr inbounds float, ptr %3, i64 16
   %wide.load14 = load <16 x float>, ptr %4, align 4, !tbaa !4, !alias.scope !11, !noalias !8
-  %5 = call <16 x float> @llvm.fmuladd.v16f32(<16 x float> %broadcast.splat, <16 x float> %wide.load, <16 x float> %wide.load13)
-  %6 = call <16 x float> @llvm.fmuladd.v16f32(<16 x float> %broadcast.splat16, <16 x float> %wide.load12, <16 x float> %wide.load14)
+  %5 = tail call <16 x float> @llvm.fmuladd.v16f32(<16 x float> %broadcast.splat, <16 x float> %wide.load, <16 x float> %wide.load13)
+  %6 = tail call <16 x float> @llvm.fmuladd.v16f32(<16 x float> %broadcast.splat16, <16 x float> %wide.load12, <16 x float> %wide.load14)
   store <16 x float> %5, ptr %3, align 4, !tbaa !4, !alias.scope !11, !noalias !8
   store <16 x float> %6, ptr %4, align 4, !tbaa !4, !alias.scope !11, !noalias !8
   %index.next = add nuw i64 %index, 32
@@ -74,7 +74,7 @@ vec.epilog.vector.body:                           ; preds = %vec.epilog.vector.b
   %wide.load21 = load <8 x float>, ptr %8, align 4, !tbaa !4, !alias.scope !16
   %9 = getelementptr inbounds float, ptr %y, i64 %offset.idx
   %wide.load22 = load <8 x float>, ptr %9, align 4, !tbaa !4, !alias.scope !19, !noalias !16
-  %10 = call <8 x float> @llvm.fmuladd.v8f32(<8 x float> %broadcast.splat24, <8 x float> %wide.load21, <8 x float> %wide.load22)
+  %10 = tail call <8 x float> @llvm.fmuladd.v8f32(<8 x float> %broadcast.splat24, <8 x float> %wide.load21, <8 x float> %wide.load22)
   store <8 x float> %10, ptr %9, align 4, !tbaa !4, !alias.scope !19, !noalias !16
   %index.next25 = add nuw i64 %offset.idx, 8
   %11 = icmp eq i64 %index.next25, %n.vec18
@@ -123,7 +123,7 @@ attributes #2 = { nocallback nofree nosync nounwind readnone speculatable willre
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 1e451369d2017830d3dbddec24063170b7aca0de)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9452450ee564583afc43611f300d26d8c3edd95b)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"float", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}

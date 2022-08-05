@@ -39,7 +39,7 @@ vector.body:                                      ; preds = %vector.body, %vecto
   %wide.load = load <32 x i8>, ptr %2, align 1, !tbaa !4
   %3 = icmp ult <32 x i8> %wide.load, <i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5>
   %4 = getelementptr i8, ptr %c, i64 %index
-  %wide.masked.load = call <32 x i8> @llvm.masked.load.v32i8.p0(ptr %4, i32 1, <32 x i1> %3, <32 x i8> poison), !tbaa !4
+  %wide.masked.load = tail call <32 x i8> @llvm.masked.load.v32i8.p0(ptr %4, i32 1, <32 x i1> %3, <32 x i8> poison), !tbaa !4
   %predphi = select <32 x i1> %3, <32 x i8> %wide.masked.load, <32 x i8> <i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1>
   %5 = getelementptr inbounds i8, ptr %b, i64 %index
   store <32 x i8> %predphi, ptr %5, align 1, !tbaa !4
@@ -67,7 +67,7 @@ vec.epilog.vector.body:                           ; preds = %vec.epilog.vector.b
   %wide.load24 = load <16 x i8>, ptr %7, align 1, !tbaa !4
   %8 = icmp ult <16 x i8> %wide.load24, <i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5>
   %9 = getelementptr i8, ptr %c, i64 %offset.idx
-  %wide.masked.load25 = call <16 x i8> @llvm.masked.load.v16i8.p0(ptr %9, i32 1, <16 x i1> %8, <16 x i8> poison), !tbaa !4
+  %wide.masked.load25 = tail call <16 x i8> @llvm.masked.load.v16i8.p0(ptr %9, i32 1, <16 x i1> %8, <16 x i8> poison), !tbaa !4
   %predphi26 = select <16 x i1> %8, <16 x i8> %wide.masked.load25, <16 x i8> <i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1>
   %10 = getelementptr inbounds i8, ptr %b, i64 %offset.idx
   store <16 x i8> %predphi26, ptr %10, align 1, !tbaa !4
@@ -122,7 +122,7 @@ attributes #1 = { argmemonly nocallback nofree nosync nounwind readonly willretu
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 1e451369d2017830d3dbddec24063170b7aca0de)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9452450ee564583afc43611f300d26d8c3edd95b)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"omnipotent char", !6, i64 0}
 !6 = !{!"Simple C/C++ TBAA"}

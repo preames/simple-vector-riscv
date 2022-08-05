@@ -11,20 +11,20 @@ entry:
 
 for.body.preheader:                               ; preds = %entry
   %wide.trip.count = zext i32 %a_len to i64
-  %0 = call i64 @llvm.vscale.i64()
+  %0 = tail call i64 @llvm.vscale.i64()
   %1 = shl i64 %0, 2
   %min.iters.check = icmp ugt i64 %1, %wide.trip.count
   br i1 %min.iters.check, label %for.body.preheader15, label %vector.ph
 
 vector.ph:                                        ; preds = %for.body.preheader
-  %2 = call i64 @llvm.vscale.i64()
+  %2 = tail call i64 @llvm.vscale.i64()
   %3 = shl i64 %2, 2
   %n.mod.vf = urem i64 %wide.trip.count, %3
   %n.vec = sub nuw nsw i64 %wide.trip.count, %n.mod.vf
-  %4 = call i32 @llvm.vscale.i32()
+  %4 = tail call i32 @llvm.vscale.i32()
   %5 = shl i32 %4, 1
   %6 = sext i32 %5 to i64
-  %7 = call i64 @llvm.vscale.i64()
+  %7 = tail call i64 @llvm.vscale.i64()
   %8 = shl i64 %7, 2
   br label %vector.body
 
@@ -36,15 +36,15 @@ vector.body:                                      ; preds = %vector.body, %vecto
   %wide.load = load <vscale x 2 x i32>, ptr %9, align 4, !tbaa !4
   %10 = getelementptr inbounds i32, ptr %9, i64 %6
   %wide.load14 = load <vscale x 2 x i32>, ptr %10, align 4, !tbaa !4
-  %11 = call <vscale x 2 x i32> @llvm.smax.nxv2i32(<vscale x 2 x i32> %wide.load, <vscale x 2 x i32> %vec.phi)
-  %12 = call <vscale x 2 x i32> @llvm.smax.nxv2i32(<vscale x 2 x i32> %wide.load14, <vscale x 2 x i32> %vec.phi13)
+  %11 = tail call <vscale x 2 x i32> @llvm.smax.nxv2i32(<vscale x 2 x i32> %wide.load, <vscale x 2 x i32> %vec.phi)
+  %12 = tail call <vscale x 2 x i32> @llvm.smax.nxv2i32(<vscale x 2 x i32> %wide.load14, <vscale x 2 x i32> %vec.phi13)
   %index.next = add nuw i64 %index, %8
   %13 = icmp eq i64 %index.next, %n.vec
   br i1 %13, label %middle.block, label %vector.body, !llvm.loop !8
 
 middle.block:                                     ; preds = %vector.body
-  %14 = call <vscale x 2 x i32> @llvm.smax.nxv2i32(<vscale x 2 x i32> %11, <vscale x 2 x i32> %12)
-  %15 = call i32 @llvm.vector.reduce.smax.nxv2i32(<vscale x 2 x i32> %14)
+  %14 = tail call <vscale x 2 x i32> @llvm.smax.nxv2i32(<vscale x 2 x i32> %11, <vscale x 2 x i32> %12)
+  %15 = tail call i32 @llvm.vector.reduce.smax.nxv2i32(<vscale x 2 x i32> %14)
   %cmp.n = icmp eq i64 %n.mod.vf, 0
   br i1 %cmp.n, label %for.cond.cleanup, label %for.body.preheader15
 
@@ -93,7 +93,7 @@ attributes #2 = { nocallback nofree nosync nounwind readnone willreturn }
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 1e451369d2017830d3dbddec24063170b7aca0de)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9452450ee564583afc43611f300d26d8c3edd95b)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"int", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}

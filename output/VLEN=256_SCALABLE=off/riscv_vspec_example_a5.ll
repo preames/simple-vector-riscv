@@ -40,8 +40,8 @@ vector.body:                                      ; preds = %vector.body, %vecto
   %wide.load12 = load <8 x float>, ptr %3, align 4, !tbaa !4, !alias.scope !11, !noalias !8
   %4 = getelementptr inbounds float, ptr %3, i64 8
   %wide.load13 = load <8 x float>, ptr %4, align 4, !tbaa !4, !alias.scope !11, !noalias !8
-  %5 = call <8 x float> @llvm.fmuladd.v8f32(<8 x float> %broadcast.splat, <8 x float> %wide.load, <8 x float> %wide.load12)
-  %6 = call <8 x float> @llvm.fmuladd.v8f32(<8 x float> %broadcast.splat15, <8 x float> %wide.load11, <8 x float> %wide.load13)
+  %5 = tail call <8 x float> @llvm.fmuladd.v8f32(<8 x float> %broadcast.splat, <8 x float> %wide.load, <8 x float> %wide.load12)
+  %6 = tail call <8 x float> @llvm.fmuladd.v8f32(<8 x float> %broadcast.splat15, <8 x float> %wide.load11, <8 x float> %wide.load13)
   store <8 x float> %5, ptr %3, align 4, !tbaa !4, !alias.scope !11, !noalias !8
   store <8 x float> %6, ptr %4, align 4, !tbaa !4, !alias.scope !11, !noalias !8
   %index.next = add nuw i64 %index, 16
@@ -88,7 +88,7 @@ attributes #2 = { nocallback nofree nosync nounwind readnone speculatable willre
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 1e451369d2017830d3dbddec24063170b7aca0de)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9452450ee564583afc43611f300d26d8c3edd95b)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"float", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}

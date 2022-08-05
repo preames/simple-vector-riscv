@@ -7,18 +7,14 @@
 	.type	my_bzero,@function
 my_bzero:
 	beqz	a1, .LBB0_2
-	addi	sp, sp, -16
-	sd	ra, 8(sp)
 	slli.uw	a2, a1, 2
 	li	a1, 0
-	call	memset@plt
-	ld	ra, 8(sp)
-	addi	sp, sp, 16
+	tail	memset@plt
 .LBB0_2:
 	ret
 .Lfunc_end0:
 	.size	my_bzero, .Lfunc_end0-my_bzero
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 1e451369d2017830d3dbddec24063170b7aca0de)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9452450ee564583afc43611f300d26d8c3edd95b)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

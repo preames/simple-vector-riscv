@@ -14,13 +14,13 @@ entry:
 
 for.body.preheader:                               ; preds = %entry
   %wide.trip.count = zext i32 %n to i64
-  %0 = call i64 @llvm.vscale.i64()
+  %0 = tail call i64 @llvm.vscale.i64()
   %1 = shl i64 %0, 4
   %min.iters.check = icmp ugt i64 %1, %wide.trip.count
   br i1 %min.iters.check, label %for.body.preheader22, label %vector.memcheck
 
 vector.memcheck:                                  ; preds = %for.body.preheader
-  %2 = call i64 @llvm.vscale.i64()
+  %2 = tail call i64 @llvm.vscale.i64()
   %3 = shl i64 %2, 4
   %4 = sub i64 %b15, %a16
   %diff.check = icmp ult i64 %4, %3
@@ -31,20 +31,20 @@ vector.memcheck:                                  ; preds = %for.body.preheader
   br i1 %conflict.rdx, label %for.body.preheader22, label %vector.ph
 
 vector.ph:                                        ; preds = %vector.memcheck
-  %7 = call i64 @llvm.vscale.i64()
+  %7 = tail call i64 @llvm.vscale.i64()
   %8 = shl i64 %7, 4
   %n.mod.vf = urem i64 %wide.trip.count, %8
   %n.vec = sub nuw nsw i64 %wide.trip.count, %n.mod.vf
-  %9 = call i32 @llvm.vscale.i32()
+  %9 = tail call i32 @llvm.vscale.i32()
   %10 = shl i32 %9, 3
   %11 = sext i32 %10 to i64
-  %12 = call i32 @llvm.vscale.i32()
+  %12 = tail call i32 @llvm.vscale.i32()
   %13 = shl i32 %12, 3
   %14 = sext i32 %13 to i64
-  %15 = call i32 @llvm.vscale.i32()
+  %15 = tail call i32 @llvm.vscale.i32()
   %16 = shl i32 %15, 3
   %17 = sext i32 %16 to i64
-  %18 = call i64 @llvm.vscale.i64()
+  %18 = tail call i64 @llvm.vscale.i64()
   %19 = shl i64 %18, 4
   br label %vector.body
 
@@ -57,9 +57,9 @@ vector.body:                                      ; preds = %vector.body, %vecto
   %22 = icmp ult <vscale x 8 x i8> %wide.load, shufflevector (<vscale x 8 x i8> insertelement (<vscale x 8 x i8> poison, i8 5, i32 0), <vscale x 8 x i8> poison, <vscale x 8 x i32> zeroinitializer)
   %23 = icmp ult <vscale x 8 x i8> %wide.load19, shufflevector (<vscale x 8 x i8> insertelement (<vscale x 8 x i8> poison, i8 5, i32 0), <vscale x 8 x i8> poison, <vscale x 8 x i32> zeroinitializer)
   %24 = getelementptr i8, ptr %c, i64 %index
-  %wide.masked.load = call <vscale x 8 x i8> @llvm.masked.load.nxv8i8.p0(ptr %24, i32 1, <vscale x 8 x i1> %22, <vscale x 8 x i8> poison), !tbaa !4
+  %wide.masked.load = tail call <vscale x 8 x i8> @llvm.masked.load.nxv8i8.p0(ptr %24, i32 1, <vscale x 8 x i1> %22, <vscale x 8 x i8> poison), !tbaa !4
   %25 = getelementptr i8, ptr %24, i64 %14
-  %wide.masked.load20 = call <vscale x 8 x i8> @llvm.masked.load.nxv8i8.p0(ptr %25, i32 1, <vscale x 8 x i1> %23, <vscale x 8 x i8> poison), !tbaa !4
+  %wide.masked.load20 = tail call <vscale x 8 x i8> @llvm.masked.load.nxv8i8.p0(ptr %25, i32 1, <vscale x 8 x i1> %23, <vscale x 8 x i8> poison), !tbaa !4
   %predphi = select <vscale x 8 x i1> %22, <vscale x 8 x i8> %wide.masked.load, <vscale x 8 x i8> shufflevector (<vscale x 8 x i8> insertelement (<vscale x 8 x i8> poison, i8 1, i32 0), <vscale x 8 x i8> poison, <vscale x 8 x i32> zeroinitializer)
   %predphi21 = select <vscale x 8 x i1> %23, <vscale x 8 x i8> %wide.masked.load20, <vscale x 8 x i8> shufflevector (<vscale x 8 x i8> insertelement (<vscale x 8 x i8> poison, i8 1, i32 0), <vscale x 8 x i8> poison, <vscale x 8 x i32> zeroinitializer)
   %26 = getelementptr inbounds i8, ptr %b, i64 %index
@@ -121,7 +121,7 @@ attributes #2 = { argmemonly nocallback nofree nosync nounwind readonly willretu
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 1e451369d2017830d3dbddec24063170b7aca0de)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9452450ee564583afc43611f300d26d8c3edd95b)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"omnipotent char", !6, i64 0}
 !6 = !{!"Simple C/C++ TBAA"}

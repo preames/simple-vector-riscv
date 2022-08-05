@@ -30,15 +30,15 @@ vector.body:                                      ; preds = %vector.body, %vecto
   %wide.load = load <32 x i32>, ptr %0, align 4, !tbaa !4
   %1 = getelementptr inbounds i32, ptr %0, i64 32
   %wide.load15 = load <32 x i32>, ptr %1, align 4, !tbaa !4
-  %2 = call <32 x i32> @llvm.smax.v32i32(<32 x i32> %wide.load, <32 x i32> %vec.phi)
-  %3 = call <32 x i32> @llvm.smax.v32i32(<32 x i32> %wide.load15, <32 x i32> %vec.phi14)
+  %2 = tail call <32 x i32> @llvm.smax.v32i32(<32 x i32> %wide.load, <32 x i32> %vec.phi)
+  %3 = tail call <32 x i32> @llvm.smax.v32i32(<32 x i32> %wide.load15, <32 x i32> %vec.phi14)
   %index.next = add nuw i64 %index, 64
   %4 = icmp eq i64 %index.next, %n.vec
   br i1 %4, label %middle.block, label %vector.body, !llvm.loop !8
 
 middle.block:                                     ; preds = %vector.body
-  %5 = call <32 x i32> @llvm.smax.v32i32(<32 x i32> %2, <32 x i32> %3)
-  %6 = call i32 @llvm.vector.reduce.smax.v32i32(<32 x i32> %5)
+  %5 = tail call <32 x i32> @llvm.smax.v32i32(<32 x i32> %2, <32 x i32> %3)
+  %6 = tail call i32 @llvm.vector.reduce.smax.v32i32(<32 x i32> %5)
   %cmp.n = icmp eq i64 %n.vec, %wide.trip.count
   br i1 %cmp.n, label %for.cond.cleanup, label %vec.epilog.iter.check
 
@@ -60,13 +60,13 @@ vec.epilog.vector.body:                           ; preds = %vec.epilog.vector.b
   %vec.phi20 = phi <16 x i32> [ %minmax.ident.splat, %vec.epilog.ph ], [ %8, %vec.epilog.vector.body ]
   %7 = getelementptr inbounds i32, ptr %a, i64 %offset.idx
   %wide.load21 = load <16 x i32>, ptr %7, align 4, !tbaa !4
-  %8 = call <16 x i32> @llvm.smax.v16i32(<16 x i32> %wide.load21, <16 x i32> %vec.phi20)
+  %8 = tail call <16 x i32> @llvm.smax.v16i32(<16 x i32> %wide.load21, <16 x i32> %vec.phi20)
   %index.next22 = add nuw i64 %offset.idx, 16
   %9 = icmp eq i64 %index.next22, %n.vec17
   br i1 %9, label %vec.epilog.middle.block, label %vec.epilog.vector.body, !llvm.loop !11
 
 vec.epilog.middle.block:                          ; preds = %vec.epilog.vector.body
-  %10 = call i32 @llvm.vector.reduce.smax.v16i32(<16 x i32> %8)
+  %10 = tail call i32 @llvm.vector.reduce.smax.v16i32(<16 x i32> %8)
   %cmp.n18 = icmp eq i64 %n.vec17, %wide.trip.count
   br i1 %cmp.n18, label %for.cond.cleanup, label %for.body.preheader
 
@@ -115,7 +115,7 @@ attributes #2 = { nocallback nofree nosync nounwind readnone willreturn }
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 1e451369d2017830d3dbddec24063170b7aca0de)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9452450ee564583afc43611f300d26d8c3edd95b)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"int", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}

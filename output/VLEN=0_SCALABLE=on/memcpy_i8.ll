@@ -13,30 +13,30 @@ entry:
 
 for.body.preheader:                               ; preds = %entry
   %wide.trip.count = zext i32 %len to i64
-  %0 = call i64 @llvm.vscale.i64()
+  %0 = tail call i64 @llvm.vscale.i64()
   %1 = shl i64 %0, 4
   %min.iters.check = icmp ugt i64 %1, %wide.trip.count
   br i1 %min.iters.check, label %for.body.preheader11, label %vector.memcheck
 
 vector.memcheck:                                  ; preds = %for.body.preheader
-  %2 = call i64 @llvm.vscale.i64()
+  %2 = tail call i64 @llvm.vscale.i64()
   %3 = shl i64 %2, 4
   %4 = sub i64 %a8, %b9
   %diff.check = icmp ult i64 %4, %3
   br i1 %diff.check, label %for.body.preheader11, label %vector.ph
 
 vector.ph:                                        ; preds = %vector.memcheck
-  %5 = call i64 @llvm.vscale.i64()
+  %5 = tail call i64 @llvm.vscale.i64()
   %6 = shl i64 %5, 4
   %n.mod.vf = urem i64 %wide.trip.count, %6
   %n.vec = sub nuw nsw i64 %wide.trip.count, %n.mod.vf
-  %7 = call i32 @llvm.vscale.i32()
+  %7 = tail call i32 @llvm.vscale.i32()
   %8 = shl i32 %7, 3
   %9 = sext i32 %8 to i64
-  %10 = call i32 @llvm.vscale.i32()
+  %10 = tail call i32 @llvm.vscale.i32()
   %11 = shl i32 %10, 3
   %12 = sext i32 %11 to i64
-  %13 = call i64 @llvm.vscale.i64()
+  %13 = tail call i64 @llvm.vscale.i64()
   %14 = shl i64 %13, 4
   br label %vector.body
 
@@ -91,7 +91,7 @@ attributes #1 = { nocallback nofree nosync nounwind readnone willreturn }
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 1e451369d2017830d3dbddec24063170b7aca0de)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9452450ee564583afc43611f300d26d8c3edd95b)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"omnipotent char", !6, i64 0}
 !6 = !{!"Simple C/C++ TBAA"}

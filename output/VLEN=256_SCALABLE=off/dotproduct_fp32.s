@@ -26,6 +26,6 @@ dotproduct_fp32:
 .Lfunc_end0:
 	.size	dotproduct_fp32, .Lfunc_end0-dotproduct_fp32
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 1e451369d2017830d3dbddec24063170b7aca0de)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9452450ee564583afc43611f300d26d8c3edd95b)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

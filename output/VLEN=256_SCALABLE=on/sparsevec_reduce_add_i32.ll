@@ -30,8 +30,8 @@ vector.body:                                      ; preds = %vector.body, %vecto
   %3 = sext <8 x i16> %wide.load10 to <8 x i64>
   %4 = getelementptr inbounds i32, ptr %a, <8 x i64> %2
   %5 = getelementptr inbounds i32, ptr %a, <8 x i64> %3
-  %wide.masked.gather = call <8 x i32> @llvm.masked.gather.v8i32.v8p0(<8 x ptr> %4, i32 4, <8 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <8 x i32> undef), !tbaa !8
-  %wide.masked.gather11 = call <8 x i32> @llvm.masked.gather.v8i32.v8p0(<8 x ptr> %5, i32 4, <8 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <8 x i32> undef), !tbaa !8
+  %wide.masked.gather = tail call <8 x i32> @llvm.masked.gather.v8i32.v8p0(<8 x ptr> %4, i32 4, <8 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <8 x i32> undef), !tbaa !8
+  %wide.masked.gather11 = tail call <8 x i32> @llvm.masked.gather.v8i32.v8p0(<8 x ptr> %5, i32 4, <8 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <8 x i32> undef), !tbaa !8
   %6 = add <8 x i32> %wide.masked.gather, %vec.phi
   %7 = add <8 x i32> %wide.masked.gather11, %vec.phi9
   %index.next = add nuw i64 %index, 16
@@ -40,7 +40,7 @@ vector.body:                                      ; preds = %vector.body, %vecto
 
 middle.block:                                     ; preds = %vector.body
   %bin.rdx = add <8 x i32> %7, %6
-  %9 = call i32 @llvm.vector.reduce.add.v8i32(<8 x i32> %bin.rdx)
+  %9 = tail call i32 @llvm.vector.reduce.add.v8i32(<8 x i32> %bin.rdx)
   %cmp.n = icmp eq i64 %n.vec, %wide.trip.count
   br i1 %cmp.n, label %for.cond.cleanup, label %for.body.preheader12
 
@@ -83,7 +83,7 @@ attributes #2 = { nocallback nofree nosync nounwind readnone willreturn }
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 1e451369d2017830d3dbddec24063170b7aca0de)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9452450ee564583afc43611f300d26d8c3edd95b)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"short", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}

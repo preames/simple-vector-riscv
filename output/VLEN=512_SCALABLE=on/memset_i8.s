@@ -7,19 +7,15 @@
 	.type	my_memset,@function
 my_memset:
 	beqz	a1, .LBB0_2
-	addi	sp, sp, -16
-	sd	ra, 8(sp)
 	zext.w	a3, a1
 	mv	a1, a2
 	mv	a2, a3
-	call	memset@plt
-	ld	ra, 8(sp)
-	addi	sp, sp, 16
+	tail	memset@plt
 .LBB0_2:
 	ret
 .Lfunc_end0:
 	.size	my_memset, .Lfunc_end0-my_memset
 
-	.ident	"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 1e451369d2017830d3dbddec24063170b7aca0de)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9452450ee564583afc43611f300d26d8c3edd95b)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

@@ -10,9 +10,9 @@ entry:
   br i1 %cmp8, label %for.body.preheader, label %for.end
 
 for.body.preheader:                               ; preds = %entry
-  %0 = call i64 @llvm.vscale.i64()
+  %0 = tail call i64 @llvm.vscale.i64()
   %1 = shl i64 %0, 2
-  %2 = call i64 @llvm.umax.i64(i64 %1, i64 8)
+  %2 = tail call i64 @llvm.umax.i64(i64 %1, i64 8)
   %min.iters.check = icmp ugt i64 %2, %n
   br i1 %min.iters.check, label %for.body.preheader16, label %vector.memcheck
 
@@ -26,7 +26,7 @@ vector.memcheck:                                  ; preds = %for.body.preheader
   br i1 %found.conflict, label %for.body.preheader16, label %vector.ph
 
 vector.ph:                                        ; preds = %vector.memcheck
-  %4 = call i64 @llvm.vscale.i64()
+  %4 = tail call i64 @llvm.vscale.i64()
   %5 = shl i64 %4, 2
   %n.mod.vf = urem i64 %n, %5
   %n.vec = sub nuw i64 %n, %n.mod.vf
@@ -34,16 +34,16 @@ vector.ph:                                        ; preds = %vector.memcheck
   %broadcast.splat = shufflevector <vscale x 2 x float> %broadcast.splatinsert, <vscale x 2 x float> poison, <vscale x 2 x i32> zeroinitializer
   %broadcast.splatinsert14 = insertelement <vscale x 2 x float> poison, float %a, i64 0
   %broadcast.splat15 = shufflevector <vscale x 2 x float> %broadcast.splatinsert14, <vscale x 2 x float> poison, <vscale x 2 x i32> zeroinitializer
-  %6 = call i32 @llvm.vscale.i32()
+  %6 = tail call i32 @llvm.vscale.i32()
   %7 = shl i32 %6, 1
   %8 = sext i32 %7 to i64
-  %9 = call i32 @llvm.vscale.i32()
+  %9 = tail call i32 @llvm.vscale.i32()
   %10 = shl i32 %9, 1
   %11 = sext i32 %10 to i64
-  %12 = call i32 @llvm.vscale.i32()
+  %12 = tail call i32 @llvm.vscale.i32()
   %13 = shl i32 %12, 1
   %14 = sext i32 %13 to i64
-  %15 = call i64 @llvm.vscale.i64()
+  %15 = tail call i64 @llvm.vscale.i64()
   %16 = shl i64 %15, 2
   br label %vector.body
 
@@ -57,8 +57,8 @@ vector.body:                                      ; preds = %vector.body, %vecto
   %wide.load12 = load <vscale x 2 x float>, ptr %19, align 4, !tbaa !4, !alias.scope !11, !noalias !8
   %20 = getelementptr inbounds float, ptr %19, i64 %11
   %wide.load13 = load <vscale x 2 x float>, ptr %20, align 4, !tbaa !4, !alias.scope !11, !noalias !8
-  %21 = call <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float> %broadcast.splat, <vscale x 2 x float> %wide.load, <vscale x 2 x float> %wide.load12)
-  %22 = call <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float> %broadcast.splat15, <vscale x 2 x float> %wide.load11, <vscale x 2 x float> %wide.load13)
+  %21 = tail call <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float> %broadcast.splat, <vscale x 2 x float> %wide.load, <vscale x 2 x float> %wide.load12)
+  %22 = tail call <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float> %broadcast.splat15, <vscale x 2 x float> %wide.load11, <vscale x 2 x float> %wide.load13)
   store <vscale x 2 x float> %21, ptr %19, align 4, !tbaa !4, !alias.scope !11, !noalias !8
   %23 = getelementptr inbounds float, ptr %19, i64 %14
   store <vscale x 2 x float> %22, ptr %23, align 4, !tbaa !4, !alias.scope !11, !noalias !8
@@ -116,7 +116,7 @@ attributes #3 = { nocallback nofree nosync nounwind readnone speculatable willre
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 1e451369d2017830d3dbddec24063170b7aca0de)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9452450ee564583afc43611f300d26d8c3edd95b)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"float", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}

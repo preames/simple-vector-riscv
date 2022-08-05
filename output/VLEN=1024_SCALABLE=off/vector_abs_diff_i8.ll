@@ -59,8 +59,8 @@ vector.body:                                      ; preds = %vector.body, %vecto
   %wide.load19 = load <128 x i8>, ptr %5, align 1, !tbaa !4
   %6 = sub <128 x i8> %wide.load, %wide.load18
   %7 = sub <128 x i8> %wide.load17, %wide.load19
-  %8 = call <128 x i8> @llvm.abs.v128i8(<128 x i8> %6, i1 false)
-  %9 = call <128 x i8> @llvm.abs.v128i8(<128 x i8> %7, i1 false)
+  %8 = tail call <128 x i8> @llvm.abs.v128i8(<128 x i8> %6, i1 false)
+  %9 = tail call <128 x i8> @llvm.abs.v128i8(<128 x i8> %7, i1 false)
   %10 = getelementptr inbounds i8, ptr %c, i64 %index
   store <128 x i8> %8, ptr %10, align 1, !tbaa !4
   %11 = getelementptr inbounds i8, ptr %10, i64 128
@@ -90,7 +90,7 @@ vec.epilog.vector.body:                           ; preds = %vec.epilog.vector.b
   %14 = getelementptr inbounds i8, ptr %b, i64 %offset.idx
   %wide.load25 = load <64 x i8>, ptr %14, align 1, !tbaa !4
   %15 = sub <64 x i8> %wide.load24, %wide.load25
-  %16 = call <64 x i8> @llvm.abs.v64i8(<64 x i8> %15, i1 false)
+  %16 = tail call <64 x i8> @llvm.abs.v64i8(<64 x i8> %15, i1 false)
   %17 = getelementptr inbounds i8, ptr %c, i64 %offset.idx
   store <64 x i8> %16, ptr %17, align 1, !tbaa !4
   %index.next26 = add nuw i64 %offset.idx, 64
@@ -115,7 +115,7 @@ for.body:                                         ; preds = %for.body.preheader,
   %arrayidx2 = getelementptr inbounds i8, ptr %b, i64 %indvars.iv
   %20 = load i8, ptr %arrayidx2, align 1, !tbaa !4
   %sub.i = sub i8 %19, %20
-  %21 = tail call i8 @llvm.abs.i8(i8 %sub.i, i1 false) #3
+  %21 = tail call i8 @llvm.abs.i8(i8 %sub.i, i1 false)
   %arrayidx5 = getelementptr inbounds i8, ptr %c, i64 %indvars.iv
   store i8 %21, ptr %arrayidx5, align 1, !tbaa !4
   %indvars.iv.next = add nuw nsw i64 %indvars.iv, 1
@@ -135,7 +135,6 @@ declare <64 x i8> @llvm.abs.v64i8(<64 x i8>, i1 immarg) #2
 attributes #0 = { mustprogress nofree norecurse nosync nounwind readnone willreturn "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
 attributes #1 = { argmemonly nofree nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
 attributes #2 = { nocallback nofree nosync nounwind readnone speculatable willreturn }
-attributes #3 = { nounwind }
 
 !llvm.module.flags = !{!0, !1, !2}
 !llvm.ident = !{!3}
@@ -143,7 +142,7 @@ attributes #3 = { nounwind }
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 15.0.0 (https://github.com/llvm/llvm-project.git 1e451369d2017830d3dbddec24063170b7aca0de)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9452450ee564583afc43611f300d26d8c3edd95b)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"omnipotent char", !6, i64 0}
 !6 = !{!"Simple C/C++ TBAA"}
