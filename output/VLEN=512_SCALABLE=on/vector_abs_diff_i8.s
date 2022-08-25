@@ -27,31 +27,50 @@ myabs:
 	.p2align	1
 	.type	vector_abs_diff,@function
 vector_abs_diff:
-	beqz	a3, .LBB2_9
-	zext.w	a6, a3
+	beqz	a3, .LBB2_6
+	zext.w	a7, a3
 	csrr	t0, vlenb
 	slli	t1, t0, 1
 	li	a3, 64
 	maxu	a3, t1, a3
-	bgeu	a6, a3, .LBB2_3
-	li	a5, 0
-	j	.LBB2_7
-.LBB2_3:
+	bltu	a7, a3, .LBB2_3
 	sub	a3, a0, a1
 	sltu	a3, a3, t1
 	sub	a4, a0, a2
 	sltu	a4, a4, t1
 	or	a3, a3, a4
+	beqz	a3, .LBB2_7
+.LBB2_3:
 	li	a5, 0
-	bnez	a3, .LBB2_7
+.LBB2_4:
+	add	a1, a1, a5
+	add	a2, a2, a5
+	add	a0, a0, a5
+	sub	a3, a7, a5
+.LBB2_5:
+	lb	a4, 0(a1)
+	lb	a5, 0(a2)
+	subw	a4, a4, a5
+	sext.b	a4, a4
+	neg	a5, a4
+	max	a4, a4, a5
+	sb	a4, 0(a0)
+	addi	a1, a1, 1
+	addi	a2, a2, 1
+	addi	a3, a3, -1
+	addi	a0, a0, 1
+	bnez	a3, .LBB2_5
+.LBB2_6:
+	ret
+.LBB2_7:
 	addi	a4, t1, -1
-	and	a7, a6, a4
-	sub	a5, a6, a7
+	and	a6, a7, a4
+	sub	a5, a7, a6
 	add	t2, a1, t0
 	add	t3, a2, t0
 	add	t0, t0, a0
 	vsetvli	a4, zero, e8, m1, ta, mu
-.LBB2_5:
+.LBB2_8:
 	add	a4, a1, a3
 	vl1r.v	v8, (a4)
 	add	a4, t2, a3
@@ -71,31 +90,12 @@ vector_abs_diff:
 	add	a4, t0, a3
 	add	a3, a3, t1
 	vs1r.v	v9, (a4)
-	bne	a5, a3, .LBB2_5
-	beqz	a7, .LBB2_9
-.LBB2_7:
-	add	a1, a1, a5
-	add	a2, a2, a5
-	add	a0, a0, a5
-	sub	a3, a6, a5
-.LBB2_8:
-	lb	a4, 0(a1)
-	lb	a5, 0(a2)
-	subw	a4, a4, a5
-	sext.b	a4, a4
-	neg	a5, a4
-	max	a4, a4, a5
-	sb	a4, 0(a0)
-	addi	a1, a1, 1
-	addi	a2, a2, 1
-	addi	a3, a3, -1
-	addi	a0, a0, 1
-	bnez	a3, .LBB2_8
-.LBB2_9:
-	ret
+	bne	a5, a3, .LBB2_8
+	bnez	a6, .LBB2_4
+	j	.LBB2_6
 .Lfunc_end2:
 	.size	vector_abs_diff, .Lfunc_end2-vector_abs_diff
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9452450ee564583afc43611f300d26d8c3edd95b)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 86b67a310dedf4d0c6a5bc012d8bee7dbac1d2ad)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

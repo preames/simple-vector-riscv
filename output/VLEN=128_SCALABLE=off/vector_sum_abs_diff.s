@@ -28,13 +28,10 @@ myabs:
 	.type	vector_sum_abs_diff,@function
 vector_sum_abs_diff:
 	li	a4, 8
-	bltu	a3, a4, .LBB2_9
+	bltu	a3, a4, .LBB2_6
 	li	a4, 32
 	srliw	a6, a3, 3
-	bgeu	a3, a4, .LBB2_3
-	li	a7, 0
-	j	.LBB2_7
-.LBB2_3:
+	bltu	a3, a4, .LBB2_3
 	sh2add	a4, a6, a0
 	sh3add	a5, a6, a1
 	sh3add	a7, a6, a2
@@ -45,8 +42,35 @@ vector_sum_abs_diff:
 	sltu	a4, a2, a4
 	and	a4, a4, a5
 	or	a4, t0, a4
+	beqz	a4, .LBB2_7
+.LBB2_3:
 	li	a7, 0
-	bnez	a4, .LBB2_7
+.LBB2_4:
+	sh3add	a1, a7, a1
+	sh3add	a2, a7, a2
+	sh2add	a0, a7, a0
+	sub	a3, a6, a7
+.LBB2_5:
+	vsetivli	zero, 8, e8, mf2, ta, mu
+	vle8.v	v8, (a1)
+	vle8.v	v9, (a2)
+	vsub.vv	v8, v8, v9
+	vrsub.vi	v9, v8, 0
+	vmax.vv	v8, v8, v9
+	vsetvli	zero, zero, e32, m2, ta, mu
+	vsext.vf4	v10, v8
+	vmv.s.x	v8, zero
+	vredsum.vs	v8, v10, v8
+	vsetivli	zero, 1, e32, m1, ta, mu
+	vse32.v	v8, (a0)
+	addi	a1, a1, 8
+	addi	a2, a2, 8
+	addi	a3, a3, -1
+	addi	a0, a0, 4
+	bnez	a3, .LBB2_5
+.LBB2_6:
+	ret
+.LBB2_7:
 	li	t3, 0
 	andi	a7, a6, -4
 	li	a5, -32
@@ -54,7 +78,7 @@ vector_sum_abs_diff:
 	and	t0, a3, a5
 	li	t2, 8
 	mv	t1, a0
-.LBB2_5:
+.LBB2_8:
 	add	a3, a1, t3
 	vsetivli	zero, 4, e8, mf4, ta, mu
 	vlse8.v	v8, (a3), t2
@@ -143,90 +167,12 @@ vector_sum_abs_diff:
 	vse32.v	v9, (t1)
 	addi	t3, t3, 32
 	addi	t1, t1, 16
-	bne	t0, t3, .LBB2_5
-	beq	a7, a6, .LBB2_9
-.LBB2_7:
-	sub	a6, a6, a7
-	sh2add	t0, a7, a0
-	slli	a4, a7, 3
-	ori	a4, a4, 3
-	add	a2, a2, a4
-	add	a1, a1, a4
-.LBB2_8:
-	lb	a4, -3(a1)
-	lb	a5, -3(a2)
-	subw	a4, a4, a5
-	sext.b	a4, a4
-	lb	a5, -2(a1)
-	lb	a3, -2(a2)
-	neg	a0, a4
-	max	a0, a4, a0
-	sext.b	a7, a0
-	subw	a3, a5, a3
-	sext.b	a3, a3
-	neg	a4, a3
-	lb	a5, -1(a1)
-	lb	a0, -1(a2)
-	max	a3, a3, a4
-	sext.b	a3, a3
-	addw	a7, a7, a3
-	subw	a0, a5, a0
-	sext.b	a0, a0
-	neg	a4, a0
-	lb	a5, 0(a1)
-	lb	a3, 0(a2)
-	max	a0, a0, a4
-	sext.b	a0, a0
-	addw	a7, a7, a0
-	subw	a3, a5, a3
-	sext.b	a3, a3
-	neg	a4, a3
-	lb	a5, 1(a1)
-	lb	a0, 1(a2)
-	max	a3, a3, a4
-	sext.b	a3, a3
-	addw	a7, a7, a3
-	subw	a0, a5, a0
-	sext.b	a0, a0
-	neg	a4, a0
-	lb	a5, 2(a1)
-	lb	a3, 2(a2)
-	max	a0, a0, a4
-	sext.b	a0, a0
-	addw	a7, a7, a0
-	subw	a3, a5, a3
-	sext.b	a3, a3
-	neg	a4, a3
-	lb	a5, 3(a1)
-	lb	a0, 3(a2)
-	max	a3, a3, a4
-	sext.b	a3, a3
-	addw	a7, a7, a3
-	subw	a0, a5, a0
-	sext.b	a0, a0
-	neg	a4, a0
-	lb	a5, 4(a1)
-	lb	a3, 4(a2)
-	max	a0, a0, a4
-	sext.b	a0, a0
-	addw	a0, a7, a0
-	subw	a3, a5, a3
-	sext.b	a3, a3
-	neg	a4, a3
-	max	a3, a3, a4
-	sext.b	a3, a3
-	addw	a0, a0, a3
-	sw	a0, 0(t0)
-	addi	a6, a6, -1
-	addi	t0, t0, 4
-	addi	a2, a2, 8
-	addi	a1, a1, 8
-	bnez	a6, .LBB2_8
-.LBB2_9:
-	ret
+	bne	t0, t3, .LBB2_8
+	beq	a7, a6, .LBB2_6
+	j	.LBB2_4
 .Lfunc_end2:
 	.size	vector_sum_abs_diff, .Lfunc_end2-vector_sum_abs_diff
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9452450ee564583afc43611f300d26d8c3edd95b)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 86b67a310dedf4d0c6a5bc012d8bee7dbac1d2ad)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

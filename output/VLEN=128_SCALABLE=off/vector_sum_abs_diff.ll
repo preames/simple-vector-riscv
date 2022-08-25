@@ -141,77 +141,15 @@ for.cond1.preheader:                              ; preds = %for.cond1.preheader
   %indvars.iv = phi i64 [ %indvars.iv.next, %for.cond1.preheader ], [ %indvars.iv.ph, %for.cond1.preheader.preheader50 ]
   %59 = shl i64 %indvars.iv, 3
   %arrayidx = getelementptr inbounds i8, ptr %a, i64 %59
-  %60 = load i8, ptr %arrayidx, align 1, !tbaa !4
   %arrayidx6 = getelementptr inbounds i8, ptr %b, i64 %59
-  %61 = load i8, ptr %arrayidx6, align 1, !tbaa !4
-  %sub = sub i8 %60, %61
-  %62 = tail call i8 @llvm.abs.i8(i8 %sub, i1 false)
-  %conv9 = sext i8 %62 to i32
-  %63 = or i64 %59, 1
-  %arrayidx.1 = getelementptr inbounds i8, ptr %a, i64 %63
-  %64 = load i8, ptr %arrayidx.1, align 1, !tbaa !4
-  %arrayidx6.1 = getelementptr inbounds i8, ptr %b, i64 %63
-  %65 = load i8, ptr %arrayidx6.1, align 1, !tbaa !4
-  %sub.1 = sub i8 %64, %65
-  %66 = tail call i8 @llvm.abs.i8(i8 %sub.1, i1 false)
-  %conv9.1 = sext i8 %66 to i32
-  %add10.1 = add nsw i32 %conv9, %conv9.1
-  %67 = or i64 %59, 2
-  %arrayidx.2 = getelementptr inbounds i8, ptr %a, i64 %67
-  %68 = load i8, ptr %arrayidx.2, align 1, !tbaa !4
-  %arrayidx6.2 = getelementptr inbounds i8, ptr %b, i64 %67
-  %69 = load i8, ptr %arrayidx6.2, align 1, !tbaa !4
-  %sub.2 = sub i8 %68, %69
-  %70 = tail call i8 @llvm.abs.i8(i8 %sub.2, i1 false)
-  %conv9.2 = sext i8 %70 to i32
-  %add10.2 = add nsw i32 %add10.1, %conv9.2
-  %71 = or i64 %59, 3
-  %arrayidx.3 = getelementptr inbounds i8, ptr %a, i64 %71
-  %72 = load i8, ptr %arrayidx.3, align 1, !tbaa !4
-  %arrayidx6.3 = getelementptr inbounds i8, ptr %b, i64 %71
-  %73 = load i8, ptr %arrayidx6.3, align 1, !tbaa !4
-  %sub.3 = sub i8 %72, %73
-  %74 = tail call i8 @llvm.abs.i8(i8 %sub.3, i1 false)
-  %conv9.3 = sext i8 %74 to i32
-  %add10.3 = add nsw i32 %add10.2, %conv9.3
-  %75 = or i64 %59, 4
-  %arrayidx.4 = getelementptr inbounds i8, ptr %a, i64 %75
-  %76 = load i8, ptr %arrayidx.4, align 1, !tbaa !4
-  %arrayidx6.4 = getelementptr inbounds i8, ptr %b, i64 %75
-  %77 = load i8, ptr %arrayidx6.4, align 1, !tbaa !4
-  %sub.4 = sub i8 %76, %77
-  %78 = tail call i8 @llvm.abs.i8(i8 %sub.4, i1 false)
-  %conv9.4 = sext i8 %78 to i32
-  %add10.4 = add nsw i32 %add10.3, %conv9.4
-  %79 = or i64 %59, 5
-  %arrayidx.5 = getelementptr inbounds i8, ptr %a, i64 %79
-  %80 = load i8, ptr %arrayidx.5, align 1, !tbaa !4
-  %arrayidx6.5 = getelementptr inbounds i8, ptr %b, i64 %79
-  %81 = load i8, ptr %arrayidx6.5, align 1, !tbaa !4
-  %sub.5 = sub i8 %80, %81
-  %82 = tail call i8 @llvm.abs.i8(i8 %sub.5, i1 false)
-  %conv9.5 = sext i8 %82 to i32
-  %add10.5 = add nsw i32 %add10.4, %conv9.5
-  %83 = or i64 %59, 6
-  %arrayidx.6 = getelementptr inbounds i8, ptr %a, i64 %83
-  %84 = load i8, ptr %arrayidx.6, align 1, !tbaa !4
-  %arrayidx6.6 = getelementptr inbounds i8, ptr %b, i64 %83
-  %85 = load i8, ptr %arrayidx6.6, align 1, !tbaa !4
-  %sub.6 = sub i8 %84, %85
-  %86 = tail call i8 @llvm.abs.i8(i8 %sub.6, i1 false)
-  %conv9.6 = sext i8 %86 to i32
-  %add10.6 = add nsw i32 %add10.5, %conv9.6
-  %87 = or i64 %59, 7
-  %arrayidx.7 = getelementptr inbounds i8, ptr %a, i64 %87
-  %88 = load i8, ptr %arrayidx.7, align 1, !tbaa !4
-  %arrayidx6.7 = getelementptr inbounds i8, ptr %b, i64 %87
-  %89 = load i8, ptr %arrayidx6.7, align 1, !tbaa !4
-  %sub.7 = sub i8 %88, %89
-  %90 = tail call i8 @llvm.abs.i8(i8 %sub.7, i1 false)
-  %conv9.7 = sext i8 %90 to i32
-  %add10.7 = add nsw i32 %add10.6, %conv9.7
+  %60 = load <8 x i8>, ptr %arrayidx, align 1, !tbaa !4
+  %61 = load <8 x i8>, ptr %arrayidx6, align 1, !tbaa !4
+  %62 = sub <8 x i8> %60, %61
+  %63 = tail call <8 x i8> @llvm.abs.v8i8(<8 x i8> %62, i1 false)
+  %64 = sext <8 x i8> %63 to <8 x i32>
+  %65 = tail call i32 @llvm.vector.reduce.add.v8i32(<8 x i32> %64)
   %arrayidx12 = getelementptr inbounds i32, ptr %c, i64 %indvars.iv
-  store i32 %add10.7, ptr %arrayidx12, align 4, !tbaa !12
+  store i32 %65, ptr %arrayidx12, align 4, !tbaa !12
   %indvars.iv.next = add nuw nsw i64 %indvars.iv, 1
   %exitcond.not = icmp eq i64 %indvars.iv.next, %wide.trip.count
   br i1 %exitcond.not, label %for.cond.cleanup, label %for.cond1.preheader, !llvm.loop !20
@@ -229,10 +167,17 @@ declare <4 x i8> @llvm.masked.gather.v4i8.v4p0(<4 x ptr>, i32 immarg, <4 x i1>, 
 ; Function Attrs: nocallback nofree nosync nounwind readnone speculatable willreturn
 declare <4 x i8> @llvm.abs.v4i8(<4 x i8>, i1 immarg) #2
 
+; Function Attrs: nocallback nofree nosync nounwind readnone speculatable willreturn
+declare <8 x i8> @llvm.abs.v8i8(<8 x i8>, i1 immarg) #2
+
+; Function Attrs: nocallback nofree nosync nounwind readnone willreturn
+declare i32 @llvm.vector.reduce.add.v8i32(<8 x i32>) #4
+
 attributes #0 = { mustprogress nofree norecurse nosync nounwind readnone willreturn "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
 attributes #1 = { argmemonly nofree nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
 attributes #2 = { nocallback nofree nosync nounwind readnone speculatable willreturn }
 attributes #3 = { nocallback nofree nosync nounwind readonly willreturn }
+attributes #4 = { nocallback nofree nosync nounwind readnone willreturn }
 
 !llvm.module.flags = !{!0, !1, !2}
 !llvm.ident = !{!3}
@@ -240,7 +185,7 @@ attributes #3 = { nocallback nofree nosync nounwind readonly willreturn }
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9452450ee564583afc43611f300d26d8c3edd95b)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 86b67a310dedf4d0c6a5bc012d8bee7dbac1d2ad)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"omnipotent char", !6, i64 0}
 !6 = !{!"Simple C/C++ TBAA"}

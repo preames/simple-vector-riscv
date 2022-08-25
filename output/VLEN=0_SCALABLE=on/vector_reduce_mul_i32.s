@@ -7,23 +7,22 @@
 	.type	vector_reduce_mul_i32,@function
 vector_reduce_mul_i32:
 	beqz	a1, .LBB0_4
-	zext.w	a2, a1
-	li	a1, 1
+	mv	a2, a0
+	zext.w	a1, a1
+	li	a0, 1
 .LBB0_2:
-	lw	a3, 0(a0)
-	mulw	a1, a3, a1
-	addi	a2, a2, -1
-	addi	a0, a0, 4
-	bnez	a2, .LBB0_2
-	mv	a0, a1
+	lw	a3, 0(a2)
+	mulw	a0, a3, a0
+	addi	a1, a1, -1
+	addi	a2, a2, 4
+	bnez	a1, .LBB0_2
 	ret
 .LBB0_4:
-	li	a1, 1
-	mv	a0, a1
+	li	a0, 1
 	ret
 .Lfunc_end0:
 	.size	vector_reduce_mul_i32, .Lfunc_end0-vector_reduce_mul_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9452450ee564583afc43611f300d26d8c3edd95b)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 86b67a310dedf4d0c6a5bc012d8bee7dbac1d2ad)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

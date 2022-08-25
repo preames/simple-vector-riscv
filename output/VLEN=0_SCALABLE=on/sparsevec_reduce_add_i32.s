@@ -6,23 +6,63 @@
 	.p2align	1
 	.type	sparsevec_reduce_add_i32,@function
 sparsevec_reduce_add_i32:
-	beqz	a0, .LBB0_3
-	mv	a3, a0
+	beqz	a0, .LBB0_8
+	zext.w	t0, a0
+	csrr	t1, vlenb
+	srli	a5, t1, 1
+	bgeu	t0, a5, .LBB0_3
+	li	a7, 0
 	li	a0, 0
-	zext.w	a3, a3
-.LBB0_2:
+	j	.LBB0_6
+.LBB0_3:
+	addi	a3, a5, -1
+	and	a6, t0, a3
+	sub	a7, t0, a6
+	vsetvli	a3, zero, e32, m1, ta, mu
+	vmv.v.i	v8, 0
+	mv	a4, a7
+	mv	a3, a2
+	vmv.v.i	v9, 0
+.LBB0_4:
+	vle16.v	v10, (a3)
+	add	a0, a3, a5
+	vle16.v	v11, (a0)
+	vsetvli	zero, zero, e64, m2, ta, mu
+	vsext.vf4	v12, v10
+	vsext.vf4	v14, v11
+	vsll.vi	v10, v12, 2
+	vsetvli	zero, zero, e32, m1, ta, mu
+	vluxei64.v	v12, (a1), v10
+	vsetvli	zero, zero, e64, m2, ta, mu
+	vsll.vi	v10, v14, 2
+	vsetvli	zero, zero, e32, m1, ta, mu
+	vluxei64.v	v13, (a1), v10
+	vadd.vv	v8, v12, v8
+	vadd.vv	v9, v13, v9
+	sub	a4, a4, a5
+	add	a3, a3, t1
+	bnez	a4, .LBB0_4
+	vadd.vv	v8, v9, v8
+	vmv.s.x	v9, zero
+	vredsum.vs	v8, v8, v9
+	vmv.x.s	a0, v8
+	beqz	a6, .LBB0_8
+.LBB0_6:
+	sh1add	a2, a7, a2
+	sub	a3, t0, a7
+.LBB0_7:
 	lh	a4, 0(a2)
 	sh2add	a4, a4, a1
 	lw	a4, 0(a4)
 	addw	a0, a0, a4
 	addi	a3, a3, -1
 	addi	a2, a2, 2
-	bnez	a3, .LBB0_2
-.LBB0_3:
+	bnez	a3, .LBB0_7
+.LBB0_8:
 	ret
 .Lfunc_end0:
 	.size	sparsevec_reduce_add_i32, .Lfunc_end0-sparsevec_reduce_add_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9452450ee564583afc43611f300d26d8c3edd95b)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 86b67a310dedf4d0c6a5bc012d8bee7dbac1d2ad)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

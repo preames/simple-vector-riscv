@@ -6,35 +6,54 @@
 	.p2align	1
 	.type	example_a2,@function
 example_a2:
-	beqz	a3, .LBB0_13
+	beqz	a3, .LBB0_17
 	li	a4, 64
-	zext.w	a7, a3
-	bgeu	a3, a4, .LBB0_3
-	li	t0, 0
-	j	.LBB0_14
-.LBB0_3:
+	zext.w	a6, a3
+	bltu	a3, a4, .LBB0_3
 	sub	a4, a1, a0
 	sltiu	a4, a4, 128
 	sub	a5, a1, a2
 	sltiu	a5, a5, 128
 	or	a4, a4, a5
-	li	t0, 0
-	bnez	a4, .LBB0_14
+	beqz	a4, .LBB0_8
+.LBB0_3:
+	li	a7, 0
+.LBB0_4:
+	add	a0, a0, a7
+	add	a2, a2, a7
+	add	a1, a1, a7
+	sub	a3, a6, a7
+	li	a6, 4
+	j	.LBB0_6
+.LBB0_5:
+	sb	a5, 0(a1)
+	addi	a0, a0, 1
+	addi	a2, a2, 1
+	addi	a3, a3, -1
+	addi	a1, a1, 1
+	beqz	a3, .LBB0_17
+.LBB0_6:
+	lbu	a4, 0(a0)
+	li	a5, 1
+	bltu	a6, a4, .LBB0_5
+	lbu	a5, 0(a2)
+	j	.LBB0_5
+.LBB0_8:
 	li	a5, -128
 	li	a4, 128
-	zext.w	a6, a5
-	bgeu	a3, a4, .LBB0_6
-	li	t0, 0
-	j	.LBB0_10
-.LBB0_6:
-	and	t0, a7, a6
+	zext.w	t0, a5
+	bgeu	a3, a4, .LBB0_10
+	li	a7, 0
+	j	.LBB0_14
+.LBB0_10:
+	and	a7, a6, t0
 	vsetvli	zero, a4, e8, m1, ta, mu
 	vmv.v.i	v8, 1
-	mv	t1, t0
+	mv	t1, a7
 	mv	a4, a1
 	mv	a5, a2
 	mv	a3, a0
-.LBB0_7:
+.LBB0_11:
 	vle8.v	v9, (a3)
 	vmsleu.vi	v0, v9, 4
 	vle8.v	v9, (a5), v0.t
@@ -44,58 +63,38 @@ example_a2:
 	addi	a5, a5, 128
 	addi	t1, t1, -128
 	addi	a4, a4, 128
-	bnez	t1, .LBB0_7
-	beq	t0, a7, .LBB0_13
-	andi	a3, a7, 64
-	beqz	a3, .LBB0_14
-.LBB0_10:
-	mv	a3, t0
-	addi	a4, a6, 64
-	and	t0, a7, a4
-	add	a6, a0, a3
-	add	t1, a2, a3
-	add	a5, a1, a3
-	sub	a3, a3, t0
+	bnez	t1, .LBB0_11
+	beq	a7, a6, .LBB0_17
+	andi	a3, a6, 64
+	beqz	a3, .LBB0_4
+.LBB0_14:
+	mv	a5, a7
+	addi	a3, t0, 64
+	and	a7, a6, a3
+	add	t0, a0, a5
+	add	t1, a2, a5
+	add	a3, a1, a5
+	sub	a5, a5, a7
 	li	a4, 64
 	vsetvli	zero, a4, e8, mf2, ta, mu
 	vmv.v.i	v8, 1
-.LBB0_11:
-	vle8.v	v9, (a6)
+.LBB0_15:
+	vle8.v	v9, (t0)
 	vmsleu.vi	v0, v9, 4
 	vle8.v	v9, (t1), v0.t
 	vmerge.vvm	v9, v8, v9, v0
-	vse8.v	v9, (a5)
-	addi	a6, a6, 64
+	vse8.v	v9, (a3)
+	addi	t0, t0, 64
 	addi	t1, t1, 64
-	addi	a3, a3, 64
 	addi	a5, a5, 64
-	bnez	a3, .LBB0_11
-	bne	t0, a7, .LBB0_14
-.LBB0_13:
+	addi	a3, a3, 64
+	bnez	a5, .LBB0_15
+	bne	a7, a6, .LBB0_4
+.LBB0_17:
 	ret
-.LBB0_14:
-	add	a0, a0, t0
-	add	a2, a2, t0
-	add	a1, a1, t0
-	sub	a3, a7, t0
-	li	a6, 4
-	j	.LBB0_16
-.LBB0_15:
-	sb	a5, 0(a1)
-	addi	a0, a0, 1
-	addi	a2, a2, 1
-	addi	a3, a3, -1
-	addi	a1, a1, 1
-	beqz	a3, .LBB0_13
-.LBB0_16:
-	lbu	a4, 0(a0)
-	li	a5, 1
-	bltu	a6, a4, .LBB0_15
-	lbu	a5, 0(a2)
-	j	.LBB0_15
 .Lfunc_end0:
 	.size	example_a2, .Lfunc_end0-example_a2
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9452450ee564583afc43611f300d26d8c3edd95b)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 86b67a310dedf4d0c6a5bc012d8bee7dbac1d2ad)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

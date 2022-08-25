@@ -15,19 +15,22 @@ for.body.preheader:                               ; preds = %entry
   %1 = add nsw i64 %0, -1
   %2 = lshr i64 %1, 1
   %3 = add nuw i64 %2, 1
-  %min.iters.check = icmp ult i64 %1, 254
+  %4 = tail call i64 @llvm.vscale.i64()
+  %5 = shl i64 %4, 1
+  %6 = tail call i64 @llvm.umax.i64(i64 %5, i64 128)
+  %min.iters.check = icmp ult i64 %3, %6
   br i1 %min.iters.check, label %for.body.preheader36, label %vector.memcheck
 
 vector.memcheck:                                  ; preds = %for.body.preheader
-  %4 = add nsw i64 %0, -1
-  %5 = lshr i64 %4, 1
-  %6 = shl i64 %5, 2
-  %7 = add i64 %6, 4
-  %uglygep = getelementptr i8, ptr %a, i64 %7
-  %8 = shl i64 %5, 3
-  %9 = add i64 %8, 8
-  %uglygep28 = getelementptr i8, ptr %b, i64 %9
-  %uglygep29 = getelementptr i8, ptr %c, i64 %9
+  %7 = add nsw i64 %0, -1
+  %8 = lshr i64 %7, 1
+  %9 = shl i64 %8, 2
+  %10 = add i64 %9, 4
+  %uglygep = getelementptr i8, ptr %a, i64 %10
+  %11 = shl i64 %8, 3
+  %12 = add i64 %11, 8
+  %uglygep28 = getelementptr i8, ptr %b, i64 %12
+  %uglygep29 = getelementptr i8, ptr %c, i64 %12
   %bound0 = icmp ugt ptr %uglygep28, %a
   %bound1 = icmp ugt ptr %uglygep, %b
   %found.conflict = and i1 %bound0, %bound1
@@ -38,34 +41,45 @@ vector.memcheck:                                  ; preds = %for.body.preheader
   br i1 %conflict.rdx, label %for.body.preheader36, label %vector.ph
 
 vector.ph:                                        ; preds = %vector.memcheck
-  %n.vec = and i64 %3, -128
+  %13 = tail call i64 @llvm.vscale.i64()
+  %14 = shl i64 %13, 1
+  %n.mod.vf = urem i64 %3, %14
+  %n.vec = sub i64 %3, %n.mod.vf
   %ind.end = shl i64 %n.vec, 1
+  %15 = tail call <vscale x 2 x i64> @llvm.experimental.stepvector.nxv2i64()
+  %16 = shl <vscale x 2 x i64> %15, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 1, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
+  %17 = tail call i64 @llvm.vscale.i64()
+  %18 = shl i64 %17, 2
+  %.splatinsert = insertelement <vscale x 2 x i64> poison, i64 %18, i64 0
+  %.splat = shufflevector <vscale x 2 x i64> %.splatinsert, <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer
+  %19 = tail call i64 @llvm.vscale.i64()
+  %20 = shl i64 %19, 1
   br label %vector.body
 
 vector.body:                                      ; preds = %vector.body, %vector.ph
   %index = phi i64 [ 0, %vector.ph ], [ %index.next, %vector.body ]
-  %vec.ind = phi <128 x i64> [ <i64 0, i64 2, i64 4, i64 6, i64 8, i64 10, i64 12, i64 14, i64 16, i64 18, i64 20, i64 22, i64 24, i64 26, i64 28, i64 30, i64 32, i64 34, i64 36, i64 38, i64 40, i64 42, i64 44, i64 46, i64 48, i64 50, i64 52, i64 54, i64 56, i64 58, i64 60, i64 62, i64 64, i64 66, i64 68, i64 70, i64 72, i64 74, i64 76, i64 78, i64 80, i64 82, i64 84, i64 86, i64 88, i64 90, i64 92, i64 94, i64 96, i64 98, i64 100, i64 102, i64 104, i64 106, i64 108, i64 110, i64 112, i64 114, i64 116, i64 118, i64 120, i64 122, i64 124, i64 126, i64 128, i64 130, i64 132, i64 134, i64 136, i64 138, i64 140, i64 142, i64 144, i64 146, i64 148, i64 150, i64 152, i64 154, i64 156, i64 158, i64 160, i64 162, i64 164, i64 166, i64 168, i64 170, i64 172, i64 174, i64 176, i64 178, i64 180, i64 182, i64 184, i64 186, i64 188, i64 190, i64 192, i64 194, i64 196, i64 198, i64 200, i64 202, i64 204, i64 206, i64 208, i64 210, i64 212, i64 214, i64 216, i64 218, i64 220, i64 222, i64 224, i64 226, i64 228, i64 230, i64 232, i64 234, i64 236, i64 238, i64 240, i64 242, i64 244, i64 246, i64 248, i64 250, i64 252, i64 254>, %vector.ph ], [ %vec.ind.next, %vector.body ]
-  %offset.idx = and i64 %index, 9223372036854775680
-  %10 = getelementptr inbounds float, ptr %b, <128 x i64> %vec.ind
-  %wide.masked.gather = tail call <128 x float> @llvm.masked.gather.v128f32.v128p0(<128 x ptr> %10, i32 4, <128 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <128 x float> undef), !tbaa !4, !alias.scope !8
-  %11 = getelementptr inbounds float, ptr %c, <128 x i64> %vec.ind
-  %wide.masked.gather33 = tail call <128 x float> @llvm.masked.gather.v128f32.v128p0(<128 x ptr> %11, i32 4, <128 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <128 x float> undef), !tbaa !4, !alias.scope !11
-  %12 = or <128 x i64> %vec.ind, <i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1>
-  %13 = getelementptr inbounds float, ptr %b, <128 x i64> %12
-  %wide.masked.gather34 = tail call <128 x float> @llvm.masked.gather.v128f32.v128p0(<128 x ptr> %13, i32 4, <128 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <128 x float> undef), !tbaa !4, !alias.scope !8
-  %14 = getelementptr inbounds float, ptr %c, <128 x i64> %12
-  %wide.masked.gather35 = tail call <128 x float> @llvm.masked.gather.v128f32.v128p0(<128 x ptr> %14, i32 4, <128 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <128 x float> undef), !tbaa !4, !alias.scope !11
-  %15 = fmul <128 x float> %wide.masked.gather34, %wide.masked.gather35
-  %16 = tail call <128 x float> @llvm.fmuladd.v128f32(<128 x float> %wide.masked.gather, <128 x float> %wide.masked.gather33, <128 x float> %15)
-  %17 = getelementptr inbounds float, ptr %a, i64 %offset.idx
-  store <128 x float> %16, ptr %17, align 4, !tbaa !4, !alias.scope !13, !noalias !15
-  %index.next = add nuw i64 %index, 128
-  %vec.ind.next = add <128 x i64> %vec.ind, <i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256, i64 256>
-  %18 = icmp eq i64 %index.next, %n.vec
-  br i1 %18, label %middle.block, label %vector.body, !llvm.loop !16
+  %vec.ind = phi <vscale x 2 x i64> [ %16, %vector.ph ], [ %vec.ind.next, %vector.body ]
+  %offset.idx = and i64 %index, 9223372036854775806
+  %21 = getelementptr inbounds float, ptr %b, <vscale x 2 x i64> %vec.ind
+  %wide.masked.gather = tail call <vscale x 2 x float> @llvm.masked.gather.nxv2f32.nxv2p0(<vscale x 2 x ptr> %21, i32 4, <vscale x 2 x i1> shufflevector (<vscale x 2 x i1> insertelement (<vscale x 2 x i1> poison, i1 true, i32 0), <vscale x 2 x i1> poison, <vscale x 2 x i32> zeroinitializer), <vscale x 2 x float> undef), !tbaa !4, !alias.scope !8
+  %22 = getelementptr inbounds float, ptr %c, <vscale x 2 x i64> %vec.ind
+  %wide.masked.gather33 = tail call <vscale x 2 x float> @llvm.masked.gather.nxv2f32.nxv2p0(<vscale x 2 x ptr> %22, i32 4, <vscale x 2 x i1> shufflevector (<vscale x 2 x i1> insertelement (<vscale x 2 x i1> poison, i1 true, i32 0), <vscale x 2 x i1> poison, <vscale x 2 x i32> zeroinitializer), <vscale x 2 x float> undef), !tbaa !4, !alias.scope !11
+  %23 = or <vscale x 2 x i64> %vec.ind, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 1, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
+  %24 = getelementptr inbounds float, ptr %b, <vscale x 2 x i64> %23
+  %wide.masked.gather34 = tail call <vscale x 2 x float> @llvm.masked.gather.nxv2f32.nxv2p0(<vscale x 2 x ptr> %24, i32 4, <vscale x 2 x i1> shufflevector (<vscale x 2 x i1> insertelement (<vscale x 2 x i1> poison, i1 true, i32 0), <vscale x 2 x i1> poison, <vscale x 2 x i32> zeroinitializer), <vscale x 2 x float> undef), !tbaa !4, !alias.scope !8
+  %25 = getelementptr inbounds float, ptr %c, <vscale x 2 x i64> %23
+  %wide.masked.gather35 = tail call <vscale x 2 x float> @llvm.masked.gather.nxv2f32.nxv2p0(<vscale x 2 x ptr> %25, i32 4, <vscale x 2 x i1> shufflevector (<vscale x 2 x i1> insertelement (<vscale x 2 x i1> poison, i1 true, i32 0), <vscale x 2 x i1> poison, <vscale x 2 x i32> zeroinitializer), <vscale x 2 x float> undef), !tbaa !4, !alias.scope !11
+  %26 = fmul <vscale x 2 x float> %wide.masked.gather34, %wide.masked.gather35
+  %27 = tail call <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float> %wide.masked.gather, <vscale x 2 x float> %wide.masked.gather33, <vscale x 2 x float> %26)
+  %28 = getelementptr inbounds float, ptr %a, i64 %offset.idx
+  store <vscale x 2 x float> %27, ptr %28, align 4, !tbaa !4, !alias.scope !13, !noalias !15
+  %index.next = add nuw i64 %index, %20
+  %vec.ind.next = add <vscale x 2 x i64> %vec.ind, %.splat
+  %29 = icmp eq i64 %index.next, %n.vec
+  br i1 %29, label %middle.block, label %vector.body, !llvm.loop !16
 
 middle.block:                                     ; preds = %vector.body
-  %cmp.n = icmp eq i64 %3, %n.vec
+  %cmp.n = icmp eq i64 %n.mod.vf, 0
   br i1 %cmp.n, label %for.cond.cleanup, label %for.body.preheader36
 
 for.body.preheader36:                             ; preds = %vector.memcheck, %for.body.preheader, %middle.block
@@ -78,19 +92,19 @@ for.cond.cleanup:                                 ; preds = %for.body, %middle.b
 for.body:                                         ; preds = %for.body.preheader36, %for.body
   %indvars.iv = phi i64 [ %indvars.iv.next, %for.body ], [ %indvars.iv.ph, %for.body.preheader36 ]
   %arrayidx = getelementptr inbounds float, ptr %b, i64 %indvars.iv
-  %19 = load float, ptr %arrayidx, align 4, !tbaa !4
+  %30 = load float, ptr %arrayidx, align 4, !tbaa !4
   %arrayidx2 = getelementptr inbounds float, ptr %c, i64 %indvars.iv
-  %20 = load float, ptr %arrayidx2, align 4, !tbaa !4
-  %21 = or i64 %indvars.iv, 1
-  %arrayidx5 = getelementptr inbounds float, ptr %b, i64 %21
-  %22 = load float, ptr %arrayidx5, align 4, !tbaa !4
-  %arrayidx8 = getelementptr inbounds float, ptr %c, i64 %21
-  %23 = load float, ptr %arrayidx8, align 4, !tbaa !4
-  %mul9 = fmul float %22, %23
-  %24 = tail call float @llvm.fmuladd.f32(float %19, float %20, float %mul9)
-  %25 = lshr exact i64 %indvars.iv, 1
-  %arrayidx12 = getelementptr inbounds float, ptr %a, i64 %25
-  store float %24, ptr %arrayidx12, align 4, !tbaa !4
+  %31 = load float, ptr %arrayidx2, align 4, !tbaa !4
+  %32 = or i64 %indvars.iv, 1
+  %arrayidx5 = getelementptr inbounds float, ptr %b, i64 %32
+  %33 = load float, ptr %arrayidx5, align 4, !tbaa !4
+  %arrayidx8 = getelementptr inbounds float, ptr %c, i64 %32
+  %34 = load float, ptr %arrayidx8, align 4, !tbaa !4
+  %mul9 = fmul float %33, %34
+  %35 = tail call float @llvm.fmuladd.f32(float %30, float %31, float %mul9)
+  %36 = lshr exact i64 %indvars.iv, 1
+  %arrayidx12 = getelementptr inbounds float, ptr %a, i64 %36
+  store float %35, ptr %arrayidx12, align 4, !tbaa !4
   %indvars.iv.next = add nuw nsw i64 %indvars.iv, 2
   %cmp = icmp ult i64 %indvars.iv.next, %0
   br i1 %cmp, label %for.body, label %for.cond.cleanup, !llvm.loop !19
@@ -99,16 +113,26 @@ for.body:                                         ; preds = %for.body.preheader3
 ; Function Attrs: mustprogress nocallback nofree nosync nounwind readnone speculatable willreturn
 declare float @llvm.fmuladd.f32(float, float, float) #1
 
-; Function Attrs: nocallback nofree nosync nounwind readonly willreturn
-declare <128 x float> @llvm.masked.gather.v128f32.v128p0(<128 x ptr>, i32 immarg, <128 x i1>, <128 x float>) #2
+; Function Attrs: nocallback nofree nosync nounwind readnone willreturn
+declare i64 @llvm.vscale.i64() #2
 
 ; Function Attrs: nocallback nofree nosync nounwind readnone speculatable willreturn
-declare <128 x float> @llvm.fmuladd.v128f32(<128 x float>, <128 x float>, <128 x float>) #3
+declare i64 @llvm.umax.i64(i64, i64) #3
+
+; Function Attrs: nocallback nofree nosync nounwind readnone willreturn
+declare <vscale x 2 x i64> @llvm.experimental.stepvector.nxv2i64() #2
+
+; Function Attrs: nocallback nofree nosync nounwind readonly willreturn
+declare <vscale x 2 x float> @llvm.masked.gather.nxv2f32.nxv2p0(<vscale x 2 x ptr>, i32 immarg, <vscale x 2 x i1>, <vscale x 2 x float>) #4
+
+; Function Attrs: nocallback nofree nosync nounwind readnone speculatable willreturn
+declare <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float>, <vscale x 2 x float>, <vscale x 2 x float>) #3
 
 attributes #0 = { argmemonly nofree nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
 attributes #1 = { mustprogress nocallback nofree nosync nounwind readnone speculatable willreturn }
-attributes #2 = { nocallback nofree nosync nounwind readonly willreturn }
+attributes #2 = { nocallback nofree nosync nounwind readnone willreturn }
 attributes #3 = { nocallback nofree nosync nounwind readnone speculatable willreturn }
+attributes #4 = { nocallback nofree nosync nounwind readonly willreturn }
 
 !llvm.module.flags = !{!0, !1, !2}
 !llvm.ident = !{!3}
@@ -116,7 +140,7 @@ attributes #3 = { nocallback nofree nosync nounwind readnone speculatable willre
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9452450ee564583afc43611f300d26d8c3edd95b)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 86b67a310dedf4d0c6a5bc012d8bee7dbac1d2ad)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"float", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}

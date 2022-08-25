@@ -4,7 +4,7 @@ target datalayout = "e-m:e-p:64:64-i64:64-i128:128-n64-S128"
 target triple = "riscv64"
 
 ; Function Attrs: argmemonly nofree norecurse nosync nounwind
-define dso_local void @remove_negatives_scalar(ptr nocapture noundef readonly %input, i64 noundef %count, ptr nocapture noundef writeonly %output) local_unnamed_addr #0 {
+define dso_local void @remove_negatives_scalar(ptr noalias nocapture noundef readonly %input, i64 noundef %count, ptr noalias nocapture noundef writeonly %output) local_unnamed_addr #0 {
 entry:
   %cmp9 = icmp sgt i64 %count, 0
   br i1 %cmp9, label %for.body, label %for.end
@@ -41,7 +41,7 @@ attributes #0 = { argmemonly nofree norecurse nosync nounwind "frame-pointer"="n
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9452450ee564583afc43611f300d26d8c3edd95b)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 86b67a310dedf4d0c6a5bc012d8bee7dbac1d2ad)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"int", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}

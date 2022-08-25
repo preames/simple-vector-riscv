@@ -26,15 +26,18 @@ entry:
 for.cond1.preheader.preheader:                    ; preds = %entry
   %div23 = lshr i32 %N, 3
   %wide.trip.count = zext i32 %div23 to i64
-  %min.iters.check = icmp ult i32 %N, 64
+  %0 = tail call i64 @llvm.vscale.i64()
+  %1 = shl i64 %0, 1
+  %2 = tail call i64 @llvm.umax.i64(i64 %1, i64 8)
+  %min.iters.check = icmp ugt i64 %2, %wide.trip.count
   br i1 %min.iters.check, label %for.cond1.preheader.preheader50, label %vector.memcheck
 
 vector.memcheck:                                  ; preds = %for.cond1.preheader.preheader
-  %0 = shl nuw nsw i64 %wide.trip.count, 2
-  %uglygep = getelementptr i8, ptr %c, i64 %0
-  %1 = shl nuw nsw i64 %wide.trip.count, 3
-  %uglygep30 = getelementptr i8, ptr %a, i64 %1
-  %uglygep31 = getelementptr i8, ptr %b, i64 %1
+  %3 = shl nuw nsw i64 %wide.trip.count, 2
+  %uglygep = getelementptr i8, ptr %c, i64 %3
+  %4 = shl nuw nsw i64 %wide.trip.count, 3
+  %uglygep30 = getelementptr i8, ptr %a, i64 %4
+  %uglygep31 = getelementptr i8, ptr %b, i64 %4
   %bound0 = icmp ugt ptr %uglygep30, %c
   %bound1 = icmp ugt ptr %uglygep, %a
   %found.conflict = and i1 %bound0, %bound1
@@ -45,92 +48,102 @@ vector.memcheck:                                  ; preds = %for.cond1.preheader
   br i1 %conflict.rdx, label %for.cond1.preheader.preheader50, label %vector.ph
 
 vector.ph:                                        ; preds = %vector.memcheck
-  %n.vec = and i64 %wide.trip.count, 536870904
+  %5 = tail call i64 @llvm.vscale.i64()
+  %6 = shl i64 %5, 1
+  %n.mod.vf = urem i64 %wide.trip.count, %6
+  %n.vec = sub nuw nsw i64 %wide.trip.count, %n.mod.vf
+  %7 = tail call <vscale x 2 x i64> @llvm.experimental.stepvector.nxv2i64()
+  %8 = tail call i64 @llvm.vscale.i64()
+  %9 = shl i64 %8, 1
+  %.splatinsert = insertelement <vscale x 2 x i64> poison, i64 %9, i64 0
+  %.splat = shufflevector <vscale x 2 x i64> %.splatinsert, <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer
+  %10 = tail call i64 @llvm.vscale.i64()
+  %11 = shl i64 %10, 1
   br label %vector.body
 
 vector.body:                                      ; preds = %vector.body, %vector.ph
   %index = phi i64 [ 0, %vector.ph ], [ %index.next, %vector.body ]
-  %vec.ind = phi <8 x i64> [ <i64 0, i64 1, i64 2, i64 3, i64 4, i64 5, i64 6, i64 7>, %vector.ph ], [ %vec.ind.next, %vector.body ]
-  %2 = shl <8 x i64> %vec.ind, <i64 3, i64 3, i64 3, i64 3, i64 3, i64 3, i64 3, i64 3>
-  %3 = getelementptr inbounds i8, ptr %a, <8 x i64> %2
-  %wide.masked.gather = tail call <8 x i8> @llvm.masked.gather.v8i8.v8p0(<8 x ptr> %3, i32 1, <8 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <8 x i8> undef), !tbaa !4, !alias.scope !7
-  %4 = getelementptr inbounds i8, ptr %b, <8 x i64> %2
-  %wide.masked.gather35 = tail call <8 x i8> @llvm.masked.gather.v8i8.v8p0(<8 x ptr> %4, i32 1, <8 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <8 x i8> undef), !tbaa !4, !alias.scope !10
-  %5 = sub <8 x i8> %wide.masked.gather, %wide.masked.gather35
-  %6 = tail call <8 x i8> @llvm.abs.v8i8(<8 x i8> %5, i1 false)
-  %7 = sext <8 x i8> %6 to <8 x i32>
-  %8 = or <8 x i64> %2, <i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1, i64 1>
-  %9 = getelementptr inbounds i8, ptr %a, <8 x i64> %8
-  %wide.masked.gather36 = tail call <8 x i8> @llvm.masked.gather.v8i8.v8p0(<8 x ptr> %9, i32 1, <8 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <8 x i8> undef), !tbaa !4, !alias.scope !7
-  %10 = getelementptr inbounds i8, ptr %b, <8 x i64> %8
-  %wide.masked.gather37 = tail call <8 x i8> @llvm.masked.gather.v8i8.v8p0(<8 x ptr> %10, i32 1, <8 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <8 x i8> undef), !tbaa !4, !alias.scope !10
-  %11 = sub <8 x i8> %wide.masked.gather36, %wide.masked.gather37
-  %12 = tail call <8 x i8> @llvm.abs.v8i8(<8 x i8> %11, i1 false)
-  %13 = sext <8 x i8> %12 to <8 x i32>
-  %14 = add nsw <8 x i32> %7, %13
-  %15 = or <8 x i64> %2, <i64 2, i64 2, i64 2, i64 2, i64 2, i64 2, i64 2, i64 2>
-  %16 = getelementptr inbounds i8, ptr %a, <8 x i64> %15
-  %wide.masked.gather38 = tail call <8 x i8> @llvm.masked.gather.v8i8.v8p0(<8 x ptr> %16, i32 1, <8 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <8 x i8> undef), !tbaa !4, !alias.scope !7
-  %17 = getelementptr inbounds i8, ptr %b, <8 x i64> %15
-  %wide.masked.gather39 = tail call <8 x i8> @llvm.masked.gather.v8i8.v8p0(<8 x ptr> %17, i32 1, <8 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <8 x i8> undef), !tbaa !4, !alias.scope !10
-  %18 = sub <8 x i8> %wide.masked.gather38, %wide.masked.gather39
-  %19 = tail call <8 x i8> @llvm.abs.v8i8(<8 x i8> %18, i1 false)
-  %20 = sext <8 x i8> %19 to <8 x i32>
-  %21 = add nsw <8 x i32> %14, %20
-  %22 = or <8 x i64> %2, <i64 3, i64 3, i64 3, i64 3, i64 3, i64 3, i64 3, i64 3>
-  %23 = getelementptr inbounds i8, ptr %a, <8 x i64> %22
-  %wide.masked.gather40 = tail call <8 x i8> @llvm.masked.gather.v8i8.v8p0(<8 x ptr> %23, i32 1, <8 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <8 x i8> undef), !tbaa !4, !alias.scope !7
-  %24 = getelementptr inbounds i8, ptr %b, <8 x i64> %22
-  %wide.masked.gather41 = tail call <8 x i8> @llvm.masked.gather.v8i8.v8p0(<8 x ptr> %24, i32 1, <8 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <8 x i8> undef), !tbaa !4, !alias.scope !10
-  %25 = sub <8 x i8> %wide.masked.gather40, %wide.masked.gather41
-  %26 = tail call <8 x i8> @llvm.abs.v8i8(<8 x i8> %25, i1 false)
-  %27 = sext <8 x i8> %26 to <8 x i32>
-  %28 = add nsw <8 x i32> %21, %27
-  %29 = or <8 x i64> %2, <i64 4, i64 4, i64 4, i64 4, i64 4, i64 4, i64 4, i64 4>
-  %30 = getelementptr inbounds i8, ptr %a, <8 x i64> %29
-  %wide.masked.gather42 = tail call <8 x i8> @llvm.masked.gather.v8i8.v8p0(<8 x ptr> %30, i32 1, <8 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <8 x i8> undef), !tbaa !4, !alias.scope !7
-  %31 = getelementptr inbounds i8, ptr %b, <8 x i64> %29
-  %wide.masked.gather43 = tail call <8 x i8> @llvm.masked.gather.v8i8.v8p0(<8 x ptr> %31, i32 1, <8 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <8 x i8> undef), !tbaa !4, !alias.scope !10
-  %32 = sub <8 x i8> %wide.masked.gather42, %wide.masked.gather43
-  %33 = tail call <8 x i8> @llvm.abs.v8i8(<8 x i8> %32, i1 false)
-  %34 = sext <8 x i8> %33 to <8 x i32>
-  %35 = add nsw <8 x i32> %28, %34
-  %36 = or <8 x i64> %2, <i64 5, i64 5, i64 5, i64 5, i64 5, i64 5, i64 5, i64 5>
-  %37 = getelementptr inbounds i8, ptr %a, <8 x i64> %36
-  %wide.masked.gather44 = tail call <8 x i8> @llvm.masked.gather.v8i8.v8p0(<8 x ptr> %37, i32 1, <8 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <8 x i8> undef), !tbaa !4, !alias.scope !7
-  %38 = getelementptr inbounds i8, ptr %b, <8 x i64> %36
-  %wide.masked.gather45 = tail call <8 x i8> @llvm.masked.gather.v8i8.v8p0(<8 x ptr> %38, i32 1, <8 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <8 x i8> undef), !tbaa !4, !alias.scope !10
-  %39 = sub <8 x i8> %wide.masked.gather44, %wide.masked.gather45
-  %40 = tail call <8 x i8> @llvm.abs.v8i8(<8 x i8> %39, i1 false)
-  %41 = sext <8 x i8> %40 to <8 x i32>
-  %42 = add nsw <8 x i32> %35, %41
-  %43 = or <8 x i64> %2, <i64 6, i64 6, i64 6, i64 6, i64 6, i64 6, i64 6, i64 6>
-  %44 = getelementptr inbounds i8, ptr %a, <8 x i64> %43
-  %wide.masked.gather46 = tail call <8 x i8> @llvm.masked.gather.v8i8.v8p0(<8 x ptr> %44, i32 1, <8 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <8 x i8> undef), !tbaa !4, !alias.scope !7
-  %45 = getelementptr inbounds i8, ptr %b, <8 x i64> %43
-  %wide.masked.gather47 = tail call <8 x i8> @llvm.masked.gather.v8i8.v8p0(<8 x ptr> %45, i32 1, <8 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <8 x i8> undef), !tbaa !4, !alias.scope !10
-  %46 = sub <8 x i8> %wide.masked.gather46, %wide.masked.gather47
-  %47 = tail call <8 x i8> @llvm.abs.v8i8(<8 x i8> %46, i1 false)
-  %48 = sext <8 x i8> %47 to <8 x i32>
-  %49 = add nsw <8 x i32> %42, %48
-  %50 = or <8 x i64> %2, <i64 7, i64 7, i64 7, i64 7, i64 7, i64 7, i64 7, i64 7>
-  %51 = getelementptr inbounds i8, ptr %a, <8 x i64> %50
-  %wide.masked.gather48 = tail call <8 x i8> @llvm.masked.gather.v8i8.v8p0(<8 x ptr> %51, i32 1, <8 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <8 x i8> undef), !tbaa !4, !alias.scope !7
-  %52 = getelementptr inbounds i8, ptr %b, <8 x i64> %50
-  %wide.masked.gather49 = tail call <8 x i8> @llvm.masked.gather.v8i8.v8p0(<8 x ptr> %52, i32 1, <8 x i1> <i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true, i1 true>, <8 x i8> undef), !tbaa !4, !alias.scope !10
-  %53 = sub <8 x i8> %wide.masked.gather48, %wide.masked.gather49
-  %54 = tail call <8 x i8> @llvm.abs.v8i8(<8 x i8> %53, i1 false)
-  %55 = sext <8 x i8> %54 to <8 x i32>
-  %56 = add nsw <8 x i32> %49, %55
-  %57 = getelementptr inbounds i32, ptr %c, i64 %index
-  store <8 x i32> %56, ptr %57, align 4, !tbaa !12, !alias.scope !14, !noalias !16
-  %index.next = add nuw i64 %index, 8
-  %vec.ind.next = add <8 x i64> %vec.ind, <i64 8, i64 8, i64 8, i64 8, i64 8, i64 8, i64 8, i64 8>
-  %58 = icmp eq i64 %index.next, %n.vec
-  br i1 %58, label %middle.block, label %vector.body, !llvm.loop !17
+  %vec.ind = phi <vscale x 2 x i64> [ %7, %vector.ph ], [ %vec.ind.next, %vector.body ]
+  %12 = shl <vscale x 2 x i64> %vec.ind, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 3, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
+  %13 = getelementptr inbounds i8, ptr %a, <vscale x 2 x i64> %12
+  %wide.masked.gather = tail call <vscale x 2 x i8> @llvm.masked.gather.nxv2i8.nxv2p0(<vscale x 2 x ptr> %13, i32 1, <vscale x 2 x i1> shufflevector (<vscale x 2 x i1> insertelement (<vscale x 2 x i1> poison, i1 true, i32 0), <vscale x 2 x i1> poison, <vscale x 2 x i32> zeroinitializer), <vscale x 2 x i8> undef), !tbaa !4, !alias.scope !7
+  %14 = getelementptr inbounds i8, ptr %b, <vscale x 2 x i64> %12
+  %wide.masked.gather35 = tail call <vscale x 2 x i8> @llvm.masked.gather.nxv2i8.nxv2p0(<vscale x 2 x ptr> %14, i32 1, <vscale x 2 x i1> shufflevector (<vscale x 2 x i1> insertelement (<vscale x 2 x i1> poison, i1 true, i32 0), <vscale x 2 x i1> poison, <vscale x 2 x i32> zeroinitializer), <vscale x 2 x i8> undef), !tbaa !4, !alias.scope !10
+  %15 = sub <vscale x 2 x i8> %wide.masked.gather, %wide.masked.gather35
+  %16 = tail call <vscale x 2 x i8> @llvm.abs.nxv2i8(<vscale x 2 x i8> %15, i1 false)
+  %17 = sext <vscale x 2 x i8> %16 to <vscale x 2 x i32>
+  %18 = or <vscale x 2 x i64> %12, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 1, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
+  %19 = getelementptr inbounds i8, ptr %a, <vscale x 2 x i64> %18
+  %wide.masked.gather36 = tail call <vscale x 2 x i8> @llvm.masked.gather.nxv2i8.nxv2p0(<vscale x 2 x ptr> %19, i32 1, <vscale x 2 x i1> shufflevector (<vscale x 2 x i1> insertelement (<vscale x 2 x i1> poison, i1 true, i32 0), <vscale x 2 x i1> poison, <vscale x 2 x i32> zeroinitializer), <vscale x 2 x i8> undef), !tbaa !4, !alias.scope !7
+  %20 = getelementptr inbounds i8, ptr %b, <vscale x 2 x i64> %18
+  %wide.masked.gather37 = tail call <vscale x 2 x i8> @llvm.masked.gather.nxv2i8.nxv2p0(<vscale x 2 x ptr> %20, i32 1, <vscale x 2 x i1> shufflevector (<vscale x 2 x i1> insertelement (<vscale x 2 x i1> poison, i1 true, i32 0), <vscale x 2 x i1> poison, <vscale x 2 x i32> zeroinitializer), <vscale x 2 x i8> undef), !tbaa !4, !alias.scope !10
+  %21 = sub <vscale x 2 x i8> %wide.masked.gather36, %wide.masked.gather37
+  %22 = tail call <vscale x 2 x i8> @llvm.abs.nxv2i8(<vscale x 2 x i8> %21, i1 false)
+  %23 = sext <vscale x 2 x i8> %22 to <vscale x 2 x i32>
+  %24 = add nsw <vscale x 2 x i32> %17, %23
+  %25 = or <vscale x 2 x i64> %12, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 2, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
+  %26 = getelementptr inbounds i8, ptr %a, <vscale x 2 x i64> %25
+  %wide.masked.gather38 = tail call <vscale x 2 x i8> @llvm.masked.gather.nxv2i8.nxv2p0(<vscale x 2 x ptr> %26, i32 1, <vscale x 2 x i1> shufflevector (<vscale x 2 x i1> insertelement (<vscale x 2 x i1> poison, i1 true, i32 0), <vscale x 2 x i1> poison, <vscale x 2 x i32> zeroinitializer), <vscale x 2 x i8> undef), !tbaa !4, !alias.scope !7
+  %27 = getelementptr inbounds i8, ptr %b, <vscale x 2 x i64> %25
+  %wide.masked.gather39 = tail call <vscale x 2 x i8> @llvm.masked.gather.nxv2i8.nxv2p0(<vscale x 2 x ptr> %27, i32 1, <vscale x 2 x i1> shufflevector (<vscale x 2 x i1> insertelement (<vscale x 2 x i1> poison, i1 true, i32 0), <vscale x 2 x i1> poison, <vscale x 2 x i32> zeroinitializer), <vscale x 2 x i8> undef), !tbaa !4, !alias.scope !10
+  %28 = sub <vscale x 2 x i8> %wide.masked.gather38, %wide.masked.gather39
+  %29 = tail call <vscale x 2 x i8> @llvm.abs.nxv2i8(<vscale x 2 x i8> %28, i1 false)
+  %30 = sext <vscale x 2 x i8> %29 to <vscale x 2 x i32>
+  %31 = add nsw <vscale x 2 x i32> %24, %30
+  %32 = or <vscale x 2 x i64> %12, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 3, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
+  %33 = getelementptr inbounds i8, ptr %a, <vscale x 2 x i64> %32
+  %wide.masked.gather40 = tail call <vscale x 2 x i8> @llvm.masked.gather.nxv2i8.nxv2p0(<vscale x 2 x ptr> %33, i32 1, <vscale x 2 x i1> shufflevector (<vscale x 2 x i1> insertelement (<vscale x 2 x i1> poison, i1 true, i32 0), <vscale x 2 x i1> poison, <vscale x 2 x i32> zeroinitializer), <vscale x 2 x i8> undef), !tbaa !4, !alias.scope !7
+  %34 = getelementptr inbounds i8, ptr %b, <vscale x 2 x i64> %32
+  %wide.masked.gather41 = tail call <vscale x 2 x i8> @llvm.masked.gather.nxv2i8.nxv2p0(<vscale x 2 x ptr> %34, i32 1, <vscale x 2 x i1> shufflevector (<vscale x 2 x i1> insertelement (<vscale x 2 x i1> poison, i1 true, i32 0), <vscale x 2 x i1> poison, <vscale x 2 x i32> zeroinitializer), <vscale x 2 x i8> undef), !tbaa !4, !alias.scope !10
+  %35 = sub <vscale x 2 x i8> %wide.masked.gather40, %wide.masked.gather41
+  %36 = tail call <vscale x 2 x i8> @llvm.abs.nxv2i8(<vscale x 2 x i8> %35, i1 false)
+  %37 = sext <vscale x 2 x i8> %36 to <vscale x 2 x i32>
+  %38 = add nsw <vscale x 2 x i32> %31, %37
+  %39 = or <vscale x 2 x i64> %12, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 4, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
+  %40 = getelementptr inbounds i8, ptr %a, <vscale x 2 x i64> %39
+  %wide.masked.gather42 = tail call <vscale x 2 x i8> @llvm.masked.gather.nxv2i8.nxv2p0(<vscale x 2 x ptr> %40, i32 1, <vscale x 2 x i1> shufflevector (<vscale x 2 x i1> insertelement (<vscale x 2 x i1> poison, i1 true, i32 0), <vscale x 2 x i1> poison, <vscale x 2 x i32> zeroinitializer), <vscale x 2 x i8> undef), !tbaa !4, !alias.scope !7
+  %41 = getelementptr inbounds i8, ptr %b, <vscale x 2 x i64> %39
+  %wide.masked.gather43 = tail call <vscale x 2 x i8> @llvm.masked.gather.nxv2i8.nxv2p0(<vscale x 2 x ptr> %41, i32 1, <vscale x 2 x i1> shufflevector (<vscale x 2 x i1> insertelement (<vscale x 2 x i1> poison, i1 true, i32 0), <vscale x 2 x i1> poison, <vscale x 2 x i32> zeroinitializer), <vscale x 2 x i8> undef), !tbaa !4, !alias.scope !10
+  %42 = sub <vscale x 2 x i8> %wide.masked.gather42, %wide.masked.gather43
+  %43 = tail call <vscale x 2 x i8> @llvm.abs.nxv2i8(<vscale x 2 x i8> %42, i1 false)
+  %44 = sext <vscale x 2 x i8> %43 to <vscale x 2 x i32>
+  %45 = add nsw <vscale x 2 x i32> %38, %44
+  %46 = or <vscale x 2 x i64> %12, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 5, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
+  %47 = getelementptr inbounds i8, ptr %a, <vscale x 2 x i64> %46
+  %wide.masked.gather44 = tail call <vscale x 2 x i8> @llvm.masked.gather.nxv2i8.nxv2p0(<vscale x 2 x ptr> %47, i32 1, <vscale x 2 x i1> shufflevector (<vscale x 2 x i1> insertelement (<vscale x 2 x i1> poison, i1 true, i32 0), <vscale x 2 x i1> poison, <vscale x 2 x i32> zeroinitializer), <vscale x 2 x i8> undef), !tbaa !4, !alias.scope !7
+  %48 = getelementptr inbounds i8, ptr %b, <vscale x 2 x i64> %46
+  %wide.masked.gather45 = tail call <vscale x 2 x i8> @llvm.masked.gather.nxv2i8.nxv2p0(<vscale x 2 x ptr> %48, i32 1, <vscale x 2 x i1> shufflevector (<vscale x 2 x i1> insertelement (<vscale x 2 x i1> poison, i1 true, i32 0), <vscale x 2 x i1> poison, <vscale x 2 x i32> zeroinitializer), <vscale x 2 x i8> undef), !tbaa !4, !alias.scope !10
+  %49 = sub <vscale x 2 x i8> %wide.masked.gather44, %wide.masked.gather45
+  %50 = tail call <vscale x 2 x i8> @llvm.abs.nxv2i8(<vscale x 2 x i8> %49, i1 false)
+  %51 = sext <vscale x 2 x i8> %50 to <vscale x 2 x i32>
+  %52 = add nsw <vscale x 2 x i32> %45, %51
+  %53 = or <vscale x 2 x i64> %12, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 6, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
+  %54 = getelementptr inbounds i8, ptr %a, <vscale x 2 x i64> %53
+  %wide.masked.gather46 = tail call <vscale x 2 x i8> @llvm.masked.gather.nxv2i8.nxv2p0(<vscale x 2 x ptr> %54, i32 1, <vscale x 2 x i1> shufflevector (<vscale x 2 x i1> insertelement (<vscale x 2 x i1> poison, i1 true, i32 0), <vscale x 2 x i1> poison, <vscale x 2 x i32> zeroinitializer), <vscale x 2 x i8> undef), !tbaa !4, !alias.scope !7
+  %55 = getelementptr inbounds i8, ptr %b, <vscale x 2 x i64> %53
+  %wide.masked.gather47 = tail call <vscale x 2 x i8> @llvm.masked.gather.nxv2i8.nxv2p0(<vscale x 2 x ptr> %55, i32 1, <vscale x 2 x i1> shufflevector (<vscale x 2 x i1> insertelement (<vscale x 2 x i1> poison, i1 true, i32 0), <vscale x 2 x i1> poison, <vscale x 2 x i32> zeroinitializer), <vscale x 2 x i8> undef), !tbaa !4, !alias.scope !10
+  %56 = sub <vscale x 2 x i8> %wide.masked.gather46, %wide.masked.gather47
+  %57 = tail call <vscale x 2 x i8> @llvm.abs.nxv2i8(<vscale x 2 x i8> %56, i1 false)
+  %58 = sext <vscale x 2 x i8> %57 to <vscale x 2 x i32>
+  %59 = add nsw <vscale x 2 x i32> %52, %58
+  %60 = or <vscale x 2 x i64> %12, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 7, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
+  %61 = getelementptr inbounds i8, ptr %a, <vscale x 2 x i64> %60
+  %wide.masked.gather48 = tail call <vscale x 2 x i8> @llvm.masked.gather.nxv2i8.nxv2p0(<vscale x 2 x ptr> %61, i32 1, <vscale x 2 x i1> shufflevector (<vscale x 2 x i1> insertelement (<vscale x 2 x i1> poison, i1 true, i32 0), <vscale x 2 x i1> poison, <vscale x 2 x i32> zeroinitializer), <vscale x 2 x i8> undef), !tbaa !4, !alias.scope !7
+  %62 = getelementptr inbounds i8, ptr %b, <vscale x 2 x i64> %60
+  %wide.masked.gather49 = tail call <vscale x 2 x i8> @llvm.masked.gather.nxv2i8.nxv2p0(<vscale x 2 x ptr> %62, i32 1, <vscale x 2 x i1> shufflevector (<vscale x 2 x i1> insertelement (<vscale x 2 x i1> poison, i1 true, i32 0), <vscale x 2 x i1> poison, <vscale x 2 x i32> zeroinitializer), <vscale x 2 x i8> undef), !tbaa !4, !alias.scope !10
+  %63 = sub <vscale x 2 x i8> %wide.masked.gather48, %wide.masked.gather49
+  %64 = tail call <vscale x 2 x i8> @llvm.abs.nxv2i8(<vscale x 2 x i8> %63, i1 false)
+  %65 = sext <vscale x 2 x i8> %64 to <vscale x 2 x i32>
+  %66 = add nsw <vscale x 2 x i32> %59, %65
+  %67 = getelementptr inbounds i32, ptr %c, i64 %index
+  store <vscale x 2 x i32> %66, ptr %67, align 4, !tbaa !12, !alias.scope !14, !noalias !16
+  %index.next = add nuw i64 %index, %11
+  %vec.ind.next = add <vscale x 2 x i64> %vec.ind, %.splat
+  %68 = icmp eq i64 %index.next, %n.vec
+  br i1 %68, label %middle.block, label %vector.body, !llvm.loop !17
 
 middle.block:                                     ; preds = %vector.body
-  %cmp.n = icmp eq i64 %n.vec, %wide.trip.count
+  %cmp.n = icmp eq i64 %n.mod.vf, 0
   br i1 %cmp.n, label %for.cond.cleanup, label %for.cond1.preheader.preheader50
 
 for.cond1.preheader.preheader50:                  ; preds = %vector.memcheck, %for.cond1.preheader.preheader, %middle.block
@@ -139,79 +152,17 @@ for.cond1.preheader.preheader50:                  ; preds = %vector.memcheck, %f
 
 for.cond1.preheader:                              ; preds = %for.cond1.preheader.preheader50, %for.cond1.preheader
   %indvars.iv = phi i64 [ %indvars.iv.next, %for.cond1.preheader ], [ %indvars.iv.ph, %for.cond1.preheader.preheader50 ]
-  %59 = shl i64 %indvars.iv, 3
-  %arrayidx = getelementptr inbounds i8, ptr %a, i64 %59
-  %60 = load i8, ptr %arrayidx, align 1, !tbaa !4
-  %arrayidx6 = getelementptr inbounds i8, ptr %b, i64 %59
-  %61 = load i8, ptr %arrayidx6, align 1, !tbaa !4
-  %sub = sub i8 %60, %61
-  %62 = tail call i8 @llvm.abs.i8(i8 %sub, i1 false)
-  %conv9 = sext i8 %62 to i32
-  %63 = or i64 %59, 1
-  %arrayidx.1 = getelementptr inbounds i8, ptr %a, i64 %63
-  %64 = load i8, ptr %arrayidx.1, align 1, !tbaa !4
-  %arrayidx6.1 = getelementptr inbounds i8, ptr %b, i64 %63
-  %65 = load i8, ptr %arrayidx6.1, align 1, !tbaa !4
-  %sub.1 = sub i8 %64, %65
-  %66 = tail call i8 @llvm.abs.i8(i8 %sub.1, i1 false)
-  %conv9.1 = sext i8 %66 to i32
-  %add10.1 = add nsw i32 %conv9, %conv9.1
-  %67 = or i64 %59, 2
-  %arrayidx.2 = getelementptr inbounds i8, ptr %a, i64 %67
-  %68 = load i8, ptr %arrayidx.2, align 1, !tbaa !4
-  %arrayidx6.2 = getelementptr inbounds i8, ptr %b, i64 %67
-  %69 = load i8, ptr %arrayidx6.2, align 1, !tbaa !4
-  %sub.2 = sub i8 %68, %69
-  %70 = tail call i8 @llvm.abs.i8(i8 %sub.2, i1 false)
-  %conv9.2 = sext i8 %70 to i32
-  %add10.2 = add nsw i32 %add10.1, %conv9.2
-  %71 = or i64 %59, 3
-  %arrayidx.3 = getelementptr inbounds i8, ptr %a, i64 %71
-  %72 = load i8, ptr %arrayidx.3, align 1, !tbaa !4
-  %arrayidx6.3 = getelementptr inbounds i8, ptr %b, i64 %71
-  %73 = load i8, ptr %arrayidx6.3, align 1, !tbaa !4
-  %sub.3 = sub i8 %72, %73
-  %74 = tail call i8 @llvm.abs.i8(i8 %sub.3, i1 false)
-  %conv9.3 = sext i8 %74 to i32
-  %add10.3 = add nsw i32 %add10.2, %conv9.3
-  %75 = or i64 %59, 4
-  %arrayidx.4 = getelementptr inbounds i8, ptr %a, i64 %75
-  %76 = load i8, ptr %arrayidx.4, align 1, !tbaa !4
-  %arrayidx6.4 = getelementptr inbounds i8, ptr %b, i64 %75
-  %77 = load i8, ptr %arrayidx6.4, align 1, !tbaa !4
-  %sub.4 = sub i8 %76, %77
-  %78 = tail call i8 @llvm.abs.i8(i8 %sub.4, i1 false)
-  %conv9.4 = sext i8 %78 to i32
-  %add10.4 = add nsw i32 %add10.3, %conv9.4
-  %79 = or i64 %59, 5
-  %arrayidx.5 = getelementptr inbounds i8, ptr %a, i64 %79
-  %80 = load i8, ptr %arrayidx.5, align 1, !tbaa !4
-  %arrayidx6.5 = getelementptr inbounds i8, ptr %b, i64 %79
-  %81 = load i8, ptr %arrayidx6.5, align 1, !tbaa !4
-  %sub.5 = sub i8 %80, %81
-  %82 = tail call i8 @llvm.abs.i8(i8 %sub.5, i1 false)
-  %conv9.5 = sext i8 %82 to i32
-  %add10.5 = add nsw i32 %add10.4, %conv9.5
-  %83 = or i64 %59, 6
-  %arrayidx.6 = getelementptr inbounds i8, ptr %a, i64 %83
-  %84 = load i8, ptr %arrayidx.6, align 1, !tbaa !4
-  %arrayidx6.6 = getelementptr inbounds i8, ptr %b, i64 %83
-  %85 = load i8, ptr %arrayidx6.6, align 1, !tbaa !4
-  %sub.6 = sub i8 %84, %85
-  %86 = tail call i8 @llvm.abs.i8(i8 %sub.6, i1 false)
-  %conv9.6 = sext i8 %86 to i32
-  %add10.6 = add nsw i32 %add10.5, %conv9.6
-  %87 = or i64 %59, 7
-  %arrayidx.7 = getelementptr inbounds i8, ptr %a, i64 %87
-  %88 = load i8, ptr %arrayidx.7, align 1, !tbaa !4
-  %arrayidx6.7 = getelementptr inbounds i8, ptr %b, i64 %87
-  %89 = load i8, ptr %arrayidx6.7, align 1, !tbaa !4
-  %sub.7 = sub i8 %88, %89
-  %90 = tail call i8 @llvm.abs.i8(i8 %sub.7, i1 false)
-  %conv9.7 = sext i8 %90 to i32
-  %add10.7 = add nsw i32 %add10.6, %conv9.7
+  %69 = shl i64 %indvars.iv, 3
+  %arrayidx = getelementptr inbounds i8, ptr %a, i64 %69
+  %arrayidx6 = getelementptr inbounds i8, ptr %b, i64 %69
+  %70 = load <8 x i8>, ptr %arrayidx, align 1, !tbaa !4
+  %71 = load <8 x i8>, ptr %arrayidx6, align 1, !tbaa !4
+  %72 = sub <8 x i8> %70, %71
+  %73 = tail call <8 x i8> @llvm.abs.v8i8(<8 x i8> %72, i1 false)
+  %74 = sext <8 x i8> %73 to <8 x i32>
+  %75 = tail call i32 @llvm.vector.reduce.add.v8i32(<8 x i32> %74)
   %arrayidx12 = getelementptr inbounds i32, ptr %c, i64 %indvars.iv
-  store i32 %add10.7, ptr %arrayidx12, align 4, !tbaa !12
+  store i32 %75, ptr %arrayidx12, align 4, !tbaa !12
   %indvars.iv.next = add nuw nsw i64 %indvars.iv, 1
   %exitcond.not = icmp eq i64 %indvars.iv.next, %wide.trip.count
   br i1 %exitcond.not, label %for.cond.cleanup, label %for.cond1.preheader, !llvm.loop !20
@@ -223,16 +174,32 @@ for.cond.cleanup:                                 ; preds = %for.cond1.preheader
 ; Function Attrs: nocallback nofree nosync nounwind readnone speculatable willreturn
 declare i8 @llvm.abs.i8(i8, i1 immarg) #2
 
+; Function Attrs: nocallback nofree nosync nounwind readnone willreturn
+declare i64 @llvm.vscale.i64() #3
+
+; Function Attrs: nocallback nofree nosync nounwind readnone speculatable willreturn
+declare i64 @llvm.umax.i64(i64, i64) #2
+
+; Function Attrs: nocallback nofree nosync nounwind readnone willreturn
+declare <vscale x 2 x i64> @llvm.experimental.stepvector.nxv2i64() #3
+
 ; Function Attrs: nocallback nofree nosync nounwind readonly willreturn
-declare <8 x i8> @llvm.masked.gather.v8i8.v8p0(<8 x ptr>, i32 immarg, <8 x i1>, <8 x i8>) #3
+declare <vscale x 2 x i8> @llvm.masked.gather.nxv2i8.nxv2p0(<vscale x 2 x ptr>, i32 immarg, <vscale x 2 x i1>, <vscale x 2 x i8>) #4
+
+; Function Attrs: nocallback nofree nosync nounwind readnone speculatable willreturn
+declare <vscale x 2 x i8> @llvm.abs.nxv2i8(<vscale x 2 x i8>, i1 immarg) #2
 
 ; Function Attrs: nocallback nofree nosync nounwind readnone speculatable willreturn
 declare <8 x i8> @llvm.abs.v8i8(<8 x i8>, i1 immarg) #2
 
+; Function Attrs: nocallback nofree nosync nounwind readnone willreturn
+declare i32 @llvm.vector.reduce.add.v8i32(<8 x i32>) #3
+
 attributes #0 = { mustprogress nofree norecurse nosync nounwind readnone willreturn "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
 attributes #1 = { argmemonly nofree nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
 attributes #2 = { nocallback nofree nosync nounwind readnone speculatable willreturn }
-attributes #3 = { nocallback nofree nosync nounwind readonly willreturn }
+attributes #3 = { nocallback nofree nosync nounwind readnone willreturn }
+attributes #4 = { nocallback nofree nosync nounwind readonly willreturn }
 
 !llvm.module.flags = !{!0, !1, !2}
 !llvm.ident = !{!3}
@@ -240,7 +207,7 @@ attributes #3 = { nocallback nofree nosync nounwind readonly willreturn }
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9452450ee564583afc43611f300d26d8c3edd95b)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 86b67a310dedf4d0c6a5bc012d8bee7dbac1d2ad)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"omnipotent char", !6, i64 0}
 !6 = !{!"Simple C/C++ TBAA"}

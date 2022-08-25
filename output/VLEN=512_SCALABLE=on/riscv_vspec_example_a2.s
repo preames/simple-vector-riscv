@@ -12,17 +12,36 @@ example_a2:
 	slli	t1, t0, 1
 	li	a3, 64
 	maxu	a3, t1, a3
-	bgeu	a7, a3, .LBB0_3
-	li	a5, 0
-	j	.LBB0_7
-.LBB0_3:
+	bltu	a7, a3, .LBB0_3
 	sub	a3, a1, a0
 	sltu	a3, a3, t1
 	sub	a4, a1, a2
 	sltu	a4, a4, t1
 	or	a3, a3, a4
+	beqz	a3, .LBB0_8
+.LBB0_3:
 	li	a5, 0
-	bnez	a3, .LBB0_7
+.LBB0_4:
+	add	a0, a0, a5
+	add	a2, a2, a5
+	add	a1, a1, a5
+	sub	a3, a7, a5
+	li	a6, 4
+	j	.LBB0_6
+.LBB0_5:
+	sb	a5, 0(a1)
+	addi	a0, a0, 1
+	addi	a2, a2, 1
+	addi	a3, a3, -1
+	addi	a1, a1, 1
+	beqz	a3, .LBB0_11
+.LBB0_6:
+	lbu	a4, 0(a0)
+	li	a5, 1
+	bltu	a6, a4, .LBB0_5
+	lbu	a5, 0(a2)
+	j	.LBB0_5
+.LBB0_8:
 	addi	a4, t1, -1
 	and	a6, a7, a4
 	sub	a5, a7, a6
@@ -31,7 +50,7 @@ example_a2:
 	add	t0, t0, a1
 	vsetvli	a4, zero, e8, m1, ta, mu
 	vmv.v.i	v10, 1
-.LBB0_5:
+.LBB0_9:
 	add	a4, a0, a3
 	vl1r.v	v8, (a4)
 	add	a4, t2, a3
@@ -53,33 +72,13 @@ example_a2:
 	add	a4, t0, a3
 	add	a3, a3, t1
 	vs1r.v	v9, (a4)
-	bne	a5, a3, .LBB0_5
-	beqz	a6, .LBB0_11
-.LBB0_7:
-	add	a0, a0, a5
-	add	a2, a2, a5
-	add	a1, a1, a5
-	sub	a3, a7, a5
-	li	a6, 4
-	j	.LBB0_9
-.LBB0_8:
-	sb	a5, 0(a1)
-	addi	a0, a0, 1
-	addi	a2, a2, 1
-	addi	a3, a3, -1
-	addi	a1, a1, 1
-	beqz	a3, .LBB0_11
-.LBB0_9:
-	lbu	a4, 0(a0)
-	li	a5, 1
-	bltu	a6, a4, .LBB0_8
-	lbu	a5, 0(a2)
-	j	.LBB0_8
+	bne	a5, a3, .LBB0_9
+	bnez	a6, .LBB0_4
 .LBB0_11:
 	ret
 .Lfunc_end0:
 	.size	example_a2, .Lfunc_end0-example_a2
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9452450ee564583afc43611f300d26d8c3edd95b)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 86b67a310dedf4d0c6a5bc012d8bee7dbac1d2ad)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig
