@@ -95,8 +95,8 @@ for.body:                                         ; preds = %for.body.preheader,
   %15 = load i64, ptr %arrayidx, align 8, !tbaa !4
   %arrayidx2 = getelementptr inbounds i64, ptr %b, i64 %indvars.iv
   %16 = load i64, ptr %arrayidx2, align 8, !tbaa !4
-  %neg = xor i64 %16, -1
-  %and = and i64 %15, %neg
+  %not = xor i64 %16, -1
+  %and = and i64 %15, %not
   store i64 %and, ptr %arrayidx, align 8, !tbaa !4
   %indvars.iv.next = add nuw nsw i64 %indvars.iv, 1
   %exitcond.not = icmp eq i64 %indvars.iv.next, %wide.trip.count
@@ -111,7 +111,7 @@ attributes #0 = { argmemonly nofree norecurse nosync nounwind "frame-pointer"="n
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 86b67a310dedf4d0c6a5bc012d8bee7dbac1d2ad)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 0cf0a120fd4242dfc047116ea6a506874c1ea3d0)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"long", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}

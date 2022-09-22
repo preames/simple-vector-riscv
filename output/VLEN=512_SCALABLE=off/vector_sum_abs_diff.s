@@ -73,9 +73,8 @@ vector_sum_abs_diff:
 .LBB2_7:
 	li	t3, 0
 	andi	a7, a6, -16
-	li	a5, -128
-	zext.w	a5, a5
-	and	t0, a3, a5
+	srliw	a3, a3, 7
+	slli	t0, a3, 7
 	li	t2, 8
 	mv	t1, a0
 .LBB2_8:
@@ -173,6 +172,6 @@ vector_sum_abs_diff:
 .Lfunc_end2:
 	.size	vector_sum_abs_diff, .Lfunc_end2-vector_sum_abs_diff
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 86b67a310dedf4d0c6a5bc012d8bee7dbac1d2ad)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 0cf0a120fd4242dfc047116ea6a506874c1ea3d0)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig
