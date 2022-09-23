@@ -8,24 +8,24 @@
 vector_overlap:
 	li	a3, 2
 	bltu	a2, a3, .LBB0_8
+	lw	t2, 0(a0)
+	lw	a3, 4(a0)
 	zext.w	a6, a2
-	lw	t1, 0(a0)
-	lw	a2, 4(a0)
-	addi	t0, a6, -1
-	li	a4, 8
-	li	a3, 1
-	bltu	t0, a4, .LBB0_6
-	andi	a7, t0, -8
-	ori	a3, a7, 1
+	li	a4, 9
+	li	t1, 1
+	bltu	a2, a4, .LBB0_6
+	addi	a7, a6, -1
+	andi	t0, a7, -8
+	ori	t1, t0, 1
 	vsetivli	zero, 8, e32, m1, ta, mu
-	vmv.v.x	v8, a2
-	vmv.v.x	v9, t1
-	addi	a2, a0, 8
+	vmv.v.x	v8, a3
+	vmv.v.x	v9, t2
+	addi	a3, a0, 8
 	addi	a5, a1, 4
-	mv	a4, a7
+	mv	a2, t0
 .LBB0_3:
 	vmv1r.v	v10, v8
-	vle32.v	v8, (a2)
+	vle32.v	v8, (a3)
 	vsetivli	zero, 1, e32, m1, ta, mu
 	vslidedown.vi	v10, v10, 7
 	vsetivli	zero, 8, e32, m1, tu, mu
@@ -38,38 +38,38 @@ vector_overlap:
 	vadd.vv	v9, v10, v9
 	vadd.vv	v9, v9, v8
 	vse32.v	v9, (a5)
-	addi	a2, a2, 32
-	addi	a4, a4, -8
+	addi	a3, a3, 32
+	addi	a2, a2, -8
 	addi	a5, a5, 32
 	vmv1r.v	v9, v10
-	bnez	a4, .LBB0_3
-	beq	t0, a7, .LBB0_8
+	bnez	a2, .LBB0_3
+	beq	a7, t0, .LBB0_8
 	vsetivli	zero, 1, e32, m1, ta, mu
 	vslidedown.vi	v9, v8, 7
-	vmv.x.s	a2, v9
+	vmv.x.s	a3, v9
 	vslidedown.vi	v8, v8, 6
-	vmv.x.s	t1, v8
+	vmv.x.s	t2, v8
 .LBB0_6:
-	sh2add	a1, a3, a1
-	sub	a4, a6, a3
-	sh2add	a0, a3, a0
+	sh2add	a1, t1, a1
+	sub	a2, a6, t1
+	sh2add	a0, t1, a0
 	addi	a0, a0, 4
 .LBB0_7:
-	mv	a3, a2
-	lw	a2, 0(a0)
-	addw	a5, a3, t1
-	mv	t1, a3
-	addw	a3, a5, a2
-	sw	a3, 0(a1)
+	mv	a4, a3
+	lw	a3, 0(a0)
+	addw	a5, a4, t2
+	mv	t2, a4
+	addw	a4, a5, a3
+	sw	a4, 0(a1)
 	addi	a1, a1, 4
-	addi	a4, a4, -1
+	addi	a2, a2, -1
 	addi	a0, a0, 4
-	bnez	a4, .LBB0_7
+	bnez	a2, .LBB0_7
 .LBB0_8:
 	ret
 .Lfunc_end0:
 	.size	vector_overlap, .Lfunc_end0-vector_overlap
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 0cf0a120fd4242dfc047116ea6a506874c1ea3d0)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

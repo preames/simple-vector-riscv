@@ -15,7 +15,7 @@ for.body.preheader:                               ; preds = %entry
   %arrayidx2.phi.trans.insert = getelementptr inbounds i32, ptr %a, i64 1
   %.pre19 = load i32, ptr %arrayidx2.phi.trans.insert, align 4, !tbaa !4
   %0 = add nsw i64 %wide.trip.count, -1
-  %min.iters.check = icmp ult i64 %0, 8
+  %min.iters.check = icmp ult i32 %N, 9
   br i1 %min.iters.check, label %for.body.preheader26, label %vector.ph
 
 vector.ph:                                        ; preds = %for.body.preheader
@@ -81,7 +81,7 @@ attributes #0 = { argmemonly nofree norecurse nosync nounwind "frame-pointer"="n
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 0cf0a120fd4242dfc047116ea6a506874c1ea3d0)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"int", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}

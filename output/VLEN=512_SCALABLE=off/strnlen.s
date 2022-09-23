@@ -23,6 +23,6 @@ my_strnlne:
 .Lfunc_end0:
 	.size	my_strnlne, .Lfunc_end0-my_strnlne
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 0cf0a120fd4242dfc047116ea6a506874c1ea3d0)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig
