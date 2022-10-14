@@ -23,26 +23,24 @@ vector_reduce_add_i32:
 	j	.LBB0_9
 .LBB0_5:
 	and	a3, a2, a6
-	vsetivli	zero, 16, e32, m1, ta, mu
+	vsetivli	zero, 16, e32, m1, ta, ma
 	vmv.v.i	v8, 0
 	mv	a1, a3
 	mv	a5, a0
 	vmv.v.i	v9, 0
 .LBB0_6:
-	vsetvli	zero, zero, e16, mf2, ta, mu
+	vsetvli	zero, zero, e16, mf2, ta, ma
 	vle8.v	v10, (a5)
 	addi	a4, a5, 16
 	vle8.v	v11, (a4)
-	vmv1r.v	v12, v9
-	vmv1r.v	v9, v8
-	vzext.vf2	v13, v10
-	vwaddu.wv	v8, v9, v13
+	vzext.vf2	v12, v10
+	vwaddu.wv	v8, v8, v12
 	vzext.vf2	v10, v11
-	vwaddu.wv	v9, v12, v10
+	vwaddu.wv	v9, v9, v10
 	addi	a1, a1, -32
 	addi	a5, a5, 32
 	bnez	a1, .LBB0_6
-	vsetvli	zero, zero, e32, m1, ta, mu
+	vsetvli	zero, zero, e32, m1, ta, ma
 	vadd.vv	v8, v9, v8
 	vmv.s.x	v9, zero
 	vredsum.vs	v8, v8, v9
@@ -54,24 +52,23 @@ vector_reduce_add_i32:
 	mv	a4, a3
 	addi	a3, a6, 24
 	and	a3, a3, a2
-	vsetivli	zero, 8, e32, mf2, ta, mu
+	vsetivli	zero, 8, e32, mf2, ta, ma
 	vmv.v.i	v8, 0
-	vsetvli	zero, zero, e32, mf2, tu, mu
+	vsetvli	zero, zero, e32, mf2, tu, ma
 	vmv.s.x	v8, a1
 	add	a1, a0, a4
 	sub	a4, a4, a3
 .LBB0_10:
-	vsetvli	zero, zero, e16, mf4, ta, mu
+	vsetvli	zero, zero, e16, mf4, ta, ma
 	vle8.v	v9, (a1)
-	vmv1r.v	v10, v8
-	vzext.vf2	v11, v9
-	vwaddu.wv	v8, v10, v11
+	vzext.vf2	v10, v9
+	vwaddu.wv	v8, v8, v10
 	addi	a4, a4, 8
 	addi	a1, a1, 8
 	bnez	a4, .LBB0_10
-	vsetivli	zero, 1, e32, m1, ta, mu
+	vsetivli	zero, 1, e32, m1, ta, ma
 	vmv.s.x	v9, zero
-	vsetivli	zero, 8, e32, mf2, ta, mu
+	vsetivli	zero, 8, e32, mf2, ta, ma
 	vredsum.vs	v8, v8, v9
 	vmv.x.s	a1, v8
 	beq	a3, a2, .LBB0_14
@@ -90,6 +87,6 @@ vector_reduce_add_i32:
 .Lfunc_end0:
 	.size	vector_reduce_add_i32, .Lfunc_end0-vector_reduce_add_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

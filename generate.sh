@@ -5,7 +5,7 @@ BASE_TARGET_OPTS="--target=riscv64 -Xclang -target-feature -Xclang +v,+f,+m,+c,+
 echo $TARGET_OPTS
 
 # uncmment if you want command lines
-#set -x
+# set -x
 base_output_dir="./output"
 for VLEN in 128 0 256 512 1024 4096
 do

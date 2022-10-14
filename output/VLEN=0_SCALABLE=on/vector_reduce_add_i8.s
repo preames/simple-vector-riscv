@@ -20,7 +20,7 @@ vector_reduce_add_i32:
 	and	a6, t0, a3
 	sub	a3, t0, a6
 	srli	a7, a4, 2
-	vsetvli	a4, zero, e32, m1, ta, mu
+	vsetvli	a4, zero, e32, m1, ta, ma
 	vmv.v.i	v8, 0
 	add	a4, a0, a7
 	vmv.v.i	v9, 0
@@ -55,6 +55,6 @@ vector_reduce_add_i32:
 .Lfunc_end0:
 	.size	vector_reduce_add_i32, .Lfunc_end0-vector_reduce_add_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

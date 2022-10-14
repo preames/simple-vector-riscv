@@ -40,7 +40,7 @@ vector_andnot_i64:
 	addi	a5, t2, -1
 	and	a6, a7, a5
 	sub	t0, a7, a6
-	vsetvli	a5, zero, e64, m1, ta, mu
+	vsetvli	a5, zero, e64, m1, ta, ma
 	mv	a5, t0
 .LBB0_8:
 	add	a3, a0, a2
@@ -58,6 +58,6 @@ vector_andnot_i64:
 .Lfunc_end0:
 	.size	vector_andnot_i64, .Lfunc_end0-vector_andnot_i64
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

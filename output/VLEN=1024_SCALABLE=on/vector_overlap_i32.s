@@ -23,13 +23,13 @@ vector_overlap:
 	addi	a7, a5, 1
 	srli	t3, t6, 2
 	addi	t2, t3, -1
-	vsetvli	a2, zero, e32, m1, ta, mu
+	vsetvli	a2, zero, e32, m1, ta, ma
 	vmv.s.x	v9, a4
-	vsetvli	zero, t3, e32, m1, tu, mu
+	vsetvli	zero, t3, e32, m1, ta, ma
 	vslideup.vx	v8, v9, t2
-	vsetvli	a2, zero, e32, m1, ta, mu
+	vsetvli	a2, zero, e32, m1, ta, ma
 	vmv.s.x	v10, t4
-	vsetvli	zero, t3, e32, m1, tu, mu
+	vsetvli	zero, t3, e32, m1, ta, ma
 	vslideup.vx	v9, v10, t2
 	addi	t5, a0, 8
 	slli	t3, t6, 1
@@ -43,23 +43,23 @@ vector_overlap:
 	vl1re32.v	v11, (a2)
 	add	a2, t4, a3
 	vl1re32.v	v8, (a2)
-	vsetivli	zero, 1, e32, m1, ta, mu
+	vsetivli	zero, 1, e32, m1, ta, ma
 	vslidedown.vx	v12, v9, t2
-	vsetvli	a2, zero, e32, m1, tu, mu
+	vsetvli	a2, zero, e32, m1, tu, ma
 	vslideup.vi	v12, v11, 1
-	vsetivli	zero, 1, e32, m1, ta, mu
+	vsetivli	zero, 1, e32, m1, ta, ma
 	vslidedown.vx	v9, v11, t2
-	vsetvli	a2, zero, e32, m1, tu, mu
+	vsetvli	a2, zero, e32, m1, tu, ma
 	vslideup.vi	v9, v8, 1
-	vsetivli	zero, 1, e32, m1, ta, mu
+	vsetivli	zero, 1, e32, m1, ta, ma
 	vslidedown.vx	v10, v10, t2
-	vsetvli	a2, zero, e32, m1, tu, mu
+	vsetvli	a2, zero, e32, m1, tu, ma
 	vslideup.vi	v10, v12, 1
-	vsetivli	zero, 1, e32, m1, ta, mu
+	vsetivli	zero, 1, e32, m1, ta, ma
 	vslidedown.vx	v13, v12, t2
-	vsetvli	a2, zero, e32, m1, tu, mu
+	vsetvli	a2, zero, e32, m1, tu, ma
 	vslideup.vi	v13, v9, 1
-	vsetvli	zero, zero, e32, m1, ta, mu
+	vsetvli	zero, zero, e32, m1, ta, ma
 	vadd.vv	v10, v12, v10
 	vadd.vv	v12, v9, v13
 	vadd.vv	v10, v10, v11
@@ -72,7 +72,7 @@ vector_overlap:
 	add	a3, a3, t3
 	bnez	a5, .LBB0_3
 	beqz	t0, .LBB0_8
-	vsetivli	zero, 1, e32, m1, ta, mu
+	vsetivli	zero, 1, e32, m1, ta, ma
 	vslidedown.vx	v8, v8, t2
 	vmv.x.s	a4, v8
 	vslidedown.vx	v8, v9, t2
@@ -98,6 +98,6 @@ vector_overlap:
 .Lfunc_end0:
 	.size	vector_overlap, .Lfunc_end0-vector_overlap
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

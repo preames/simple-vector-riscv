@@ -27,7 +27,7 @@ vector_reduce_mul_i32:
 .LBB0_6:
 	and	a3, a2, a6
 	li	a1, 128
-	vsetvli	zero, a1, e32, m1, ta, mu
+	vsetvli	zero, a1, e32, m1, ta, ma
 	vmv.v.i	v8, 1
 	mv	a1, a3
 	mv	a5, a0
@@ -42,7 +42,7 @@ vector_reduce_mul_i32:
 	addi	a5, a5, 1024
 	bnez	a1, .LBB0_7
 	li	a1, 128
-	vsetvli	zero, a1, e32, m1, ta, mu
+	vsetvli	zero, a1, e32, m1, ta, ma
 	vmul.vv	v8, v9, v8
 	li	a1, 64
 	vslidedown.vx	v9, v8, a1
@@ -69,14 +69,14 @@ vector_reduce_mul_i32:
 	addi	a3, a6, 192
 	and	a3, a3, a2
 	li	a5, 64
-	vsetvli	zero, a5, e32, mf2, ta, mu
+	vsetvli	zero, a5, e32, mf2, ta, ma
 	vmv.v.i	v8, 1
-	vsetvli	zero, zero, e32, mf2, tu, mu
+	vsetvli	zero, zero, e32, mf2, tu, ma
 	vmv.s.x	v8, a1
 	sh2add	a1, a4, a0
 	sub	a4, a4, a3
 .LBB0_11:
-	vsetvli	zero, zero, e32, mf2, ta, mu
+	vsetvli	zero, zero, e32, mf2, ta, ma
 	vle32.v	v9, (a1)
 	vmul.vv	v8, v9, v8
 	addi	a4, a4, 64
@@ -84,7 +84,7 @@ vector_reduce_mul_i32:
 	bnez	a4, .LBB0_11
 	li	a1, 64
 	li	a4, 32
-	vsetvli	zero, a1, e32, mf2, ta, mu
+	vsetvli	zero, a1, e32, mf2, ta, ma
 	vslidedown.vx	v9, v8, a4
 	vmul.vv	v8, v8, v9
 	vslidedown.vi	v9, v8, 16
@@ -114,6 +114,6 @@ vector_reduce_mul_i32:
 .Lfunc_end0:
 	.size	vector_reduce_mul_i32, .Lfunc_end0-vector_reduce_mul_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

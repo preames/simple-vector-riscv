@@ -7,10 +7,10 @@
 	.type	aos_reduce_sum_i64,@function
 aos_reduce_sum_i64:
 	beqz	a0, .LBB0_3
-	zext.w	a0, a0
-	csrr	a2, vlenb
-	srli	a3, a2, 3
-	bgeu	a0, a3, .LBB0_4
+	zext.w	t0, a0
+	csrr	a0, vlenb
+	srli	a3, a0, 3
+	bgeu	t0, a3, .LBB0_4
 	li	a7, 0
 	li	a3, 0
 	j	.LBB0_7
@@ -19,31 +19,31 @@ aos_reduce_sum_i64:
 	j	.LBB0_9
 .LBB0_4:
 	addi	a2, a3, -1
-	and	a6, a0, a2
-	sub	a7, a0, a6
-	vsetvli	a2, zero, e64, m1, ta, mu
-	vid.v	v9
+	and	a6, t0, a2
+	sub	a7, t0, a6
+	addi	a5, a1, 48
+	slli	a2, a0, 3
+	sub	a4, a2, a0
+	vsetvli	a0, zero, e64, m1, ta, ma
 	vmv.v.i	v8, 0
-	li	a5, 56
-	addi	a4, a1, 48
-	mv	a2, a7
+	li	a2, 56
+	mv	a0, a7
 .LBB0_5:
-	vmul.vx	v10, v9, a5
-	vluxei64.v	v10, (a4), v10
-	vadd.vv	v8, v10, v8
-	sub	a2, a2, a3
-	vadd.vx	v9, v9, a3
-	bnez	a2, .LBB0_5
+	vlse64.v	v9, (a5), a2
+	vadd.vv	v8, v9, v8
+	sub	a0, a0, a3
+	add	a5, a5, a4
+	bnez	a0, .LBB0_5
 	vmv.s.x	v9, zero
 	vredsum.vs	v8, v8, v9
 	vmv.x.s	a3, v8
 	beqz	a6, .LBB0_9
 .LBB0_7:
-	li	a2, 56
-	mul	a2, a7, a2
-	add	a1, a1, a2
-	addi	a1, a1, 48
-	sub	a0, a0, a7
+	li	a0, 56
+	mul	a0, a7, a0
+	add	a0, a0, a1
+	addi	a1, a0, 48
+	sub	a0, t0, a7
 .LBB0_8:
 	ld	a2, 0(a1)
 	add	a3, a3, a2
@@ -56,6 +56,6 @@ aos_reduce_sum_i64:
 .Lfunc_end0:
 	.size	aos_reduce_sum_i64, .Lfunc_end0-aos_reduce_sum_i64
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

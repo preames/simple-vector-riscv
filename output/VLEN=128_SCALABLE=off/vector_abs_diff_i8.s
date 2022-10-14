@@ -68,7 +68,7 @@ vector_abs_diff:
 	j	.LBB2_13
 .LBB2_9:
 	and	t0, a7, a6
-	vsetivli	zero, 16, e8, m1, ta, mu
+	vsetivli	zero, 16, e8, m1, ta, ma
 	mv	t1, t0
 	mv	a4, a0
 	mv	a5, a2
@@ -105,7 +105,7 @@ vector_abs_diff:
 	add	a4, a2, a3
 	add	a5, a0, a3
 	sub	a3, a3, t0
-	vsetivli	zero, 8, e8, mf2, ta, mu
+	vsetivli	zero, 8, e8, mf2, ta, ma
 .LBB2_14:
 	vle8.v	v8, (a6)
 	vle8.v	v9, (a4)
@@ -123,6 +123,6 @@ vector_abs_diff:
 .Lfunc_end2:
 	.size	vector_abs_diff, .Lfunc_end2-vector_abs_diff
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

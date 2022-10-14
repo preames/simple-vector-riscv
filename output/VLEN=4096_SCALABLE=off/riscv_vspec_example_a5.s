@@ -41,7 +41,7 @@ saxpy:
 .LBB0_9:
 	andi	a6, a0, -256
 	li	a1, 128
-	vsetvli	zero, a1, e32, m1, ta, mu
+	vsetvli	zero, a1, e32, m1, ta, ma
 	vfmv.v.f	v8, ft0
 	mv	a4, a6
 	mv	a5, a3
@@ -68,7 +68,7 @@ saxpy:
 	mv	a5, a6
 	andi	a6, a0, -64
 	li	a1, 64
-	vsetvli	zero, a1, e32, mf2, ta, mu
+	vsetvli	zero, a1, e32, mf2, ta, ma
 	vfmv.v.f	v8, ft0
 	sh2add	a1, a5, a2
 	sh2add	a4, a5, a3
@@ -87,6 +87,6 @@ saxpy:
 .Lfunc_end0:
 	.size	saxpy, .Lfunc_end0-saxpy
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

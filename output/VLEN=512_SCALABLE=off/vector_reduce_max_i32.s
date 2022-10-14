@@ -29,7 +29,7 @@ vector_reduce_max_i32:
 .LBB0_6:
 	and	a3, a2, a6
 	addiw	a1, a5, 1871
-	vsetivli	zero, 16, e32, m1, ta, mu
+	vsetivli	zero, 16, e32, m1, ta, ma
 	vmv.v.x	v8, a1
 	mv	a1, a3
 	mv	a5, a0
@@ -55,7 +55,7 @@ vector_reduce_max_i32:
 	mv	a4, a3
 	addi	a3, a6, 24
 	and	a3, a3, a2
-	vsetivli	zero, 8, e32, mf2, ta, mu
+	vsetivli	zero, 8, e32, mf2, ta, ma
 	vmv.v.x	v8, a1
 	sh2add	a1, a4, a0
 	sub	a4, a4, a3
@@ -86,6 +86,6 @@ vector_reduce_max_i32:
 .Lfunc_end0:
 	.size	vector_reduce_max_i32, .Lfunc_end0-vector_reduce_max_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

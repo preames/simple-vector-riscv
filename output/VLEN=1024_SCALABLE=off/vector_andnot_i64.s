@@ -42,7 +42,7 @@ vector_andnot_i64:
 	j	.LBB0_13
 .LBB0_9:
 	and	t0, a7, a6
-	vsetivli	zero, 16, e64, m1, ta, mu
+	vsetivli	zero, 16, e64, m1, ta, ma
 	mv	a5, t0
 	mv	a4, a1
 	mv	a3, a0
@@ -73,7 +73,7 @@ vector_andnot_i64:
 	sh3add	a3, a2, a0
 	sh3add	a4, a2, a1
 	sub	a5, a2, t0
-	vsetivli	zero, 8, e64, m1, ta, mu
+	vsetivli	zero, 8, e64, m1, ta, ma
 .LBB0_14:
 	vle64.v	v8, (a4)
 	vle64.v	v9, (a3)
@@ -89,6 +89,6 @@ vector_andnot_i64:
 .Lfunc_end0:
 	.size	vector_andnot_i64, .Lfunc_end0-vector_andnot_i64
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

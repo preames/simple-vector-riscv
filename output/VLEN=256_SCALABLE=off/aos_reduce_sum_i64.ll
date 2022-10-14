@@ -50,19 +50,19 @@ for.body.preheader10:                             ; preds = %for.body.preheader,
 
 for.cond.cleanup.loopexit:                        ; preds = %for.body, %middle.block
   %add.lcssa = phi i64 [ %5, %middle.block ], [ %add, %for.body ]
-  %phi.cast = trunc i64 %add.lcssa to i32
+  %6 = trunc i64 %add.lcssa to i32
   br label %for.cond.cleanup
 
 for.cond.cleanup:                                 ; preds = %for.cond.cleanup.loopexit, %entry
-  %sum.0.lcssa = phi i32 [ 0, %entry ], [ %phi.cast, %for.cond.cleanup.loopexit ]
+  %sum.0.lcssa = phi i32 [ 0, %entry ], [ %6, %for.cond.cleanup.loopexit ]
   ret i32 %sum.0.lcssa
 
 for.body:                                         ; preds = %for.body.preheader10, %for.body
   %indvars.iv = phi i64 [ %indvars.iv.next, %for.body ], [ %indvars.iv.ph, %for.body.preheader10 ]
   %sum.05 = phi i64 [ %add, %for.body ], [ %sum.05.ph, %for.body.preheader10 ]
   %g = getelementptr inbounds %struct.T, ptr %a, i64 %indvars.iv, i32 6
-  %6 = load i64, ptr %g, align 8, !tbaa !4
-  %add = add nsw i64 %6, %sum.05
+  %7 = load i64, ptr %g, align 8, !tbaa !4
+  %add = add nsw i64 %7, %sum.05
   %indvars.iv.next = add nuw nsw i64 %indvars.iv, 1
   %exitcond.not = icmp eq i64 %indvars.iv.next, %wide.trip.count
   br i1 %exitcond.not, label %for.cond.cleanup.loopexit, label %for.body, !llvm.loop !12
@@ -84,7 +84,7 @@ attributes #2 = { nocallback nofree nosync nounwind readnone willreturn }
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"}
 !4 = !{!5, !6, i64 48}
 !5 = !{!"T", !6, i64 0, !6, i64 8, !6, i64 16, !6, i64 24, !6, i64 32, !6, i64 40, !6, i64 48}
 !6 = !{!"long", !7, i64 0}

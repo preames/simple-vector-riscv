@@ -21,7 +21,7 @@ vector_add_i64:
 	j	.LBB0_9
 .LBB0_5:
 	and	a1, a7, a6
-	vsetivli	zero, 16, e64, m1, ta, mu
+	vsetivli	zero, 16, e64, m1, ta, ma
 	mv	a5, a1
 	mv	a4, a0
 .LBB0_6:
@@ -44,7 +44,7 @@ vector_add_i64:
 	and	a1, a7, a1
 	sh3add	a4, a3, a0
 	sub	a5, a3, a1
-	vsetivli	zero, 8, e64, m1, ta, mu
+	vsetivli	zero, 8, e64, m1, ta, ma
 .LBB0_10:
 	vle64.v	v8, (a4)
 	vadd.vx	v8, v8, a2
@@ -68,6 +68,6 @@ vector_add_i64:
 .Lfunc_end0:
 	.size	vector_add_i64, .Lfunc_end0-vector_add_i64
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

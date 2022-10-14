@@ -21,7 +21,7 @@ dotproduct_i32:
 	sub	t0, a7, a6
 	slli	t2, a0, 1
 	add	t3, a1, a0
-	vsetvli	a3, zero, e32, m1, ta, mu
+	vsetvli	a3, zero, e32, m1, ta, ma
 	vmv.v.i	v8, 0
 	add	a0, a0, a2
 	mv	a3, t0
@@ -63,6 +63,6 @@ dotproduct_i32:
 .Lfunc_end0:
 	.size	dotproduct_i32, .Lfunc_end0-dotproduct_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

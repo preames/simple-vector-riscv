@@ -17,7 +17,7 @@ my_memset:
 	addi	a1, t2, -1
 	and	a6, t0, a1
 	sub	a7, t0, a6
-	vsetvli	a1, zero, e32, m1, ta, mu
+	vsetvli	a1, zero, e32, m1, ta, ma
 	vmv.v.x	v8, a2
 	slli	a3, t1, 1
 	mv	a1, a7
@@ -43,6 +43,6 @@ my_memset:
 .Lfunc_end0:
 	.size	my_memset, .Lfunc_end0-my_memset
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

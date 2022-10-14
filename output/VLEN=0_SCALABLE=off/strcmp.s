@@ -13,24 +13,23 @@ my_strcmp:
 	addi	a0, a0, 1
 .LBB0_2:
 	andi	a2, a2, 255
-	beqz	a2, .LBB0_7
+	beqz	a2, .LBB0_5
 	lbu	a2, 0(a0)
 	lbu	a3, 0(a1)
 	addi	a1, a1, 1
 	addi	a0, a0, 1
 	beq	a2, a3, .LBB0_2
 .LBB0_4:
-	li	a0, -1
-	bltu	a2, a3, .LBB0_6
-	li	a0, 1
-.LBB0_6:
+	sltu	a0, a2, a3
+	neg	a0, a0
+	ori	a0, a0, 1
 	ret
-.LBB0_7:
+.LBB0_5:
 	li	a0, 0
 	ret
 .Lfunc_end0:
 	.size	my_strcmp, .Lfunc_end0-my_strcmp
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

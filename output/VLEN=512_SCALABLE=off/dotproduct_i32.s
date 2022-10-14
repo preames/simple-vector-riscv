@@ -23,7 +23,7 @@ dotproduct_i32:
 	j	.LBB0_9
 .LBB0_5:
 	and	t0, a7, a6
-	vsetivli	zero, 16, e32, m1, ta, mu
+	vsetivli	zero, 16, e32, m1, ta, ma
 	vmv.v.i	v8, 0
 	mv	a0, t0
 	mv	a5, a2
@@ -53,15 +53,15 @@ dotproduct_i32:
 	mv	a4, t0
 	addi	a3, a6, 24
 	and	t0, a7, a3
-	vsetivli	zero, 8, e32, mf2, ta, mu
+	vsetivli	zero, 8, e32, mf2, ta, ma
 	vmv.v.i	v8, 0
-	vsetvli	zero, zero, e32, mf2, tu, mu
+	vsetvli	zero, zero, e32, mf2, tu, ma
 	vmv.s.x	v8, a0
 	sh2add	a0, a4, a1
 	sh2add	a3, a4, a2
 	sub	a5, a4, t0
 .LBB0_10:
-	vsetvli	zero, zero, e32, mf2, ta, mu
+	vsetvli	zero, zero, e32, mf2, ta, ma
 	vle32.v	v9, (a0)
 	vle32.v	v10, (a3)
 	vmacc.vv	v8, v10, v9
@@ -91,6 +91,6 @@ dotproduct_i32:
 .Lfunc_end0:
 	.size	dotproduct_i32, .Lfunc_end0-dotproduct_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

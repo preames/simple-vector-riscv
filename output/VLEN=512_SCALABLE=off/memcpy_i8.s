@@ -28,7 +28,7 @@ my_memcpy:
 	mv	a3, a1
 	mv	a4, a2
 .LBB0_6:
-	vsetvli	zero, a5, e8, m2, ta, mu
+	vsetvli	zero, a5, e8, m2, ta, ma
 	vle8.v	v8, (a4)
 	vse8.v	v8, (a3)
 	addi	a4, a4, 128
@@ -47,7 +47,7 @@ my_memcpy:
 	sub	a3, a0, a7
 	li	a0, 32
 .LBB0_10:
-	vsetvli	zero, a0, e8, mf2, ta, mu
+	vsetvli	zero, a0, e8, mf2, ta, ma
 	vle8.v	v8, (a4)
 	vse8.v	v8, (a5)
 	addi	a4, a4, 32
@@ -71,6 +71,6 @@ my_memcpy:
 .Lfunc_end0:
 	.size	my_memcpy, .Lfunc_end0-my_memcpy
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

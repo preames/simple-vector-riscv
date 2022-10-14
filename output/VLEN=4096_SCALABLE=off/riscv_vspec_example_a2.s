@@ -47,7 +47,7 @@ example_a2:
 	j	.LBB0_14
 .LBB0_10:
 	and	a7, a6, t0
-	vsetvli	zero, a4, e8, m1, ta, mu
+	vsetvli	zero, a4, e8, m1, ta, ma
 	vmv.v.i	v8, 1
 	mv	t1, a7
 	mv	a4, a1
@@ -76,7 +76,7 @@ example_a2:
 	add	a3, a1, a5
 	sub	a5, a5, a7
 	li	a4, 256
-	vsetvli	zero, a4, e8, mf2, ta, mu
+	vsetvli	zero, a4, e8, mf2, ta, ma
 	vmv.v.i	v8, 1
 .LBB0_15:
 	vle8.v	v9, (t0)
@@ -95,6 +95,6 @@ example_a2:
 .Lfunc_end0:
 	.size	example_a2, .Lfunc_end0-example_a2
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

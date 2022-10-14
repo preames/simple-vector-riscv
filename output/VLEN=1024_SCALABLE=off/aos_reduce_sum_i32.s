@@ -17,7 +17,7 @@ aos_reduce_sum_i32:
 	andi	a3, a6, -64
 	addi	a0, a1, 1840
 	li	a4, 32
-	vsetvli	zero, a4, e32, m1, ta, mu
+	vsetvli	zero, a4, e32, m1, ta, ma
 	vmv.v.i	v8, 0
 	li	a4, 56
 	mv	a5, a3
@@ -33,11 +33,11 @@ aos_reduce_sum_i32:
 	addi	a0, a0, 1537
 	bnez	a5, .LBB0_4
 	li	a0, 32
-	vsetvli	zero, a0, e32, m1, ta, mu
+	vsetvli	zero, a0, e32, m1, ta, ma
 	vadd.vv	v8, v9, v8
-	vsetivli	zero, 1, e32, m1, ta, mu
+	vsetivli	zero, 1, e32, m1, ta, ma
 	vmv.s.x	v9, zero
-	vsetvli	zero, a0, e32, m1, ta, mu
+	vsetvli	zero, a0, e32, m1, ta, ma
 	vredsum.vs	v8, v8, v9
 	vmv.x.s	a0, v8
 	beq	a3, a6, .LBB0_8
@@ -58,6 +58,6 @@ aos_reduce_sum_i32:
 .Lfunc_end0:
 	.size	aos_reduce_sum_i32, .Lfunc_end0-aos_reduce_sum_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

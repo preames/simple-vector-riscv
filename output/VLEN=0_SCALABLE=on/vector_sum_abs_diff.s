@@ -131,99 +131,99 @@ vector_sum_abs_diff:
 	addi	a3, a5, -1
 	and	a7, t0, a3
 	sub	a6, t0, a7
-	vsetvli	a3, zero, e64, m2, ta, mu
+	vsetvli	a3, zero, e64, m2, ta, ma
 	vid.v	v8
 	mv	a3, a6
 	mv	a4, a0
 .LBB2_8:
 	vsll.vi	v10, v8, 3
-	vsetvli	zero, zero, e8, mf4, ta, mu
+	vsetvli	zero, zero, e8, mf4, ta, ma
 	vluxei64.v	v12, (a1), v10
 	vluxei64.v	v13, (a2), v10
 	vsub.vv	v12, v12, v13
 	vrsub.vi	v13, v12, 0
 	vmax.vv	v12, v12, v13
-	vsetvli	zero, zero, e32, m1, ta, mu
+	vsetvli	zero, zero, e32, m1, ta, ma
 	vsext.vf4	v13, v12
-	vsetvli	zero, zero, e64, m2, ta, mu
+	vsetvli	zero, zero, e64, m2, ta, ma
 	vor.vi	v14, v10, 1
-	vsetvli	zero, zero, e8, mf4, ta, mu
+	vsetvli	zero, zero, e8, mf4, ta, ma
 	vluxei64.v	v12, (a1), v14
 	vluxei64.v	v16, (a2), v14
 	vsub.vv	v12, v12, v16
 	vrsub.vi	v14, v12, 0
 	vmax.vv	v12, v12, v14
-	vsetvli	zero, zero, e32, m1, ta, mu
+	vsetvli	zero, zero, e32, m1, ta, ma
 	vsext.vf4	v14, v12
 	vadd.vv	v12, v13, v14
-	vsetvli	zero, zero, e64, m2, ta, mu
+	vsetvli	zero, zero, e64, m2, ta, ma
 	vor.vi	v14, v10, 2
-	vsetvli	zero, zero, e8, mf4, ta, mu
+	vsetvli	zero, zero, e8, mf4, ta, ma
 	vluxei64.v	v13, (a1), v14
 	vluxei64.v	v16, (a2), v14
 	vsub.vv	v13, v13, v16
 	vrsub.vi	v14, v13, 0
 	vmax.vv	v13, v13, v14
-	vsetvli	zero, zero, e32, m1, ta, mu
+	vsetvli	zero, zero, e32, m1, ta, ma
 	vsext.vf4	v14, v13
 	vadd.vv	v12, v12, v14
-	vsetvli	zero, zero, e64, m2, ta, mu
+	vsetvli	zero, zero, e64, m2, ta, ma
 	vor.vi	v14, v10, 3
-	vsetvli	zero, zero, e8, mf4, ta, mu
+	vsetvli	zero, zero, e8, mf4, ta, ma
 	vluxei64.v	v13, (a1), v14
 	vluxei64.v	v16, (a2), v14
 	vsub.vv	v13, v13, v16
 	vrsub.vi	v14, v13, 0
 	vmax.vv	v13, v13, v14
-	vsetvli	zero, zero, e32, m1, ta, mu
+	vsetvli	zero, zero, e32, m1, ta, ma
 	vsext.vf4	v14, v13
 	vadd.vv	v12, v12, v14
-	vsetvli	zero, zero, e64, m2, ta, mu
+	vsetvli	zero, zero, e64, m2, ta, ma
 	vor.vi	v14, v10, 4
-	vsetvli	zero, zero, e8, mf4, ta, mu
+	vsetvli	zero, zero, e8, mf4, ta, ma
 	vluxei64.v	v13, (a1), v14
 	vluxei64.v	v16, (a2), v14
 	vsub.vv	v13, v13, v16
 	vrsub.vi	v14, v13, 0
 	vmax.vv	v13, v13, v14
-	vsetvli	zero, zero, e32, m1, ta, mu
+	vsetvli	zero, zero, e32, m1, ta, ma
 	vsext.vf4	v14, v13
 	vadd.vv	v12, v12, v14
-	vsetvli	zero, zero, e64, m2, ta, mu
+	vsetvli	zero, zero, e64, m2, ta, ma
 	vor.vi	v14, v10, 5
-	vsetvli	zero, zero, e8, mf4, ta, mu
+	vsetvli	zero, zero, e8, mf4, ta, ma
 	vluxei64.v	v13, (a1), v14
 	vluxei64.v	v16, (a2), v14
 	vsub.vv	v13, v13, v16
 	vrsub.vi	v14, v13, 0
 	vmax.vv	v13, v13, v14
-	vsetvli	zero, zero, e32, m1, ta, mu
+	vsetvli	zero, zero, e32, m1, ta, ma
 	vsext.vf4	v14, v13
 	vadd.vv	v12, v12, v14
-	vsetvli	zero, zero, e64, m2, ta, mu
+	vsetvli	zero, zero, e64, m2, ta, ma
 	vor.vi	v14, v10, 6
-	vsetvli	zero, zero, e8, mf4, ta, mu
+	vsetvli	zero, zero, e8, mf4, ta, ma
 	vluxei64.v	v13, (a1), v14
 	vluxei64.v	v16, (a2), v14
 	vsub.vv	v13, v13, v16
 	vrsub.vi	v14, v13, 0
 	vmax.vv	v13, v13, v14
-	vsetvli	zero, zero, e32, m1, ta, mu
+	vsetvli	zero, zero, e32, m1, ta, ma
 	vsext.vf4	v14, v13
 	vadd.vv	v12, v12, v14
-	vsetvli	zero, zero, e64, m2, ta, mu
+	vsetvli	zero, zero, e64, m2, ta, ma
 	vor.vi	v10, v10, 7
-	vsetvli	zero, zero, e8, mf4, ta, mu
+	vsetvli	zero, zero, e8, mf4, ta, ma
 	vluxei64.v	v13, (a1), v10
 	vluxei64.v	v14, (a2), v10
 	vsub.vv	v10, v13, v14
 	vrsub.vi	v11, v10, 0
 	vmax.vv	v10, v10, v11
-	vsetvli	zero, zero, e32, m1, ta, mu
+	vsetvli	zero, zero, e32, m1, ta, ma
 	vsext.vf4	v11, v10
 	vadd.vv	v10, v12, v11
 	vs1r.v	v10, (a4)
-	vsetvli	zero, zero, e64, m2, ta, mu
+	vsetvli	zero, zero, e64, m2, ta, ma
 	vadd.vx	v8, v8, a5
 	sub	a3, a3, a5
 	add	a4, a4, t1
@@ -233,6 +233,6 @@ vector_sum_abs_diff:
 .Lfunc_end2:
 	.size	vector_sum_abs_diff, .Lfunc_end2-vector_sum_abs_diff
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

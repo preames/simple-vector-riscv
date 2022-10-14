@@ -17,23 +17,23 @@ aos_init_i32:
 	addi	a2, a3, -1
 	and	a6, t0, a2
 	sub	a7, t0, a6
-	vsetvli	a2, zero, e64, m2, ta, mu
+	vsetvli	a2, zero, e64, m2, ta, ma
 	vid.v	v10
 	srli	a5, a0, 2
 	li	a4, 56
-	vsetvli	zero, zero, e32, m1, ta, mu
+	vsetvli	zero, zero, e32, m1, ta, ma
 	vmv.v.i	v8, 0
 	addi	a2, a1, 48
 	mv	a0, a7
 .LBB0_4:
-	vsetvli	zero, zero, e64, m2, ta, mu
+	vsetvli	zero, zero, e64, m2, ta, ma
 	vadd.vx	v12, v10, a5
 	vmul.vx	v10, v10, a4
 	vmul.vx	v14, v12, a4
-	vsetvli	zero, zero, e32, m1, ta, mu
+	vsetvli	zero, zero, e32, m1, ta, ma
 	vsoxei64.v	v8, (a2), v10
 	vsoxei64.v	v8, (a2), v14
-	vsetvli	zero, zero, e64, m2, ta, mu
+	vsetvli	zero, zero, e64, m2, ta, ma
 	sub	a0, a0, a3
 	vadd.vx	v10, v12, a5
 	bnez	a0, .LBB0_4
@@ -54,6 +54,6 @@ aos_init_i32:
 .Lfunc_end0:
 	.size	aos_init_i32, .Lfunc_end0-aos_init_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

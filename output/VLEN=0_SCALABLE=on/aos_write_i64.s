@@ -17,7 +17,7 @@ aos_init_i64:
 	addi	a2, a3, -1
 	and	a6, a0, a2
 	sub	a7, a0, a6
-	vsetvli	a2, zero, e64, m1, ta, mu
+	vsetvli	a2, zero, e64, m1, ta, ma
 	vid.v	v8
 	li	a5, 56
 	addi	a4, a1, 48
@@ -46,6 +46,6 @@ aos_init_i64:
 .Lfunc_end0:
 	.size	aos_init_i64, .Lfunc_end0-aos_init_i64
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

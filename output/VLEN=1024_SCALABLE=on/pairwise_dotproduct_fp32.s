@@ -61,18 +61,18 @@ pairwise_dotproduct_fp32:
 	and	a7, t1, a4
 	sub	t1, t1, a7
 	slli	a4, t1, 1
-	vsetvli	a0, zero, e64, m2, ta, mu
+	vsetvli	a0, zero, e64, m2, ta, ma
 	vid.v	v8
-	vsll.vi	v8, v8, 1
+	vadd.vv	v8, v8, v8
 	srli	a6, a6, 1
 .LBB0_8:
 	vsll.vi	v10, v8, 2
-	vsetvli	zero, zero, e32, m1, ta, mu
+	vsetvli	zero, zero, e32, m1, ta, ma
 	vluxei64.v	v12, (a2), v10
 	vluxei64.v	v13, (a3), v10
-	vsetvli	zero, zero, e64, m2, ta, mu
+	vsetvli	zero, zero, e64, m2, ta, ma
 	vor.vi	v10, v10, 4
-	vsetvli	zero, zero, e32, m1, ta, mu
+	vsetvli	zero, zero, e32, m1, ta, ma
 	vluxei64.v	v14, (a2), v10
 	vluxei64.v	v15, (a3), v10
 	andi	a0, a5, -2
@@ -81,7 +81,7 @@ pairwise_dotproduct_fp32:
 	sh2add	a0, a0, a1
 	vs1r.v	v10, (a0)
 	add	a5, a5, t0
-	vsetvli	zero, zero, e64, m2, ta, mu
+	vsetvli	zero, zero, e64, m2, ta, ma
 	vadd.vx	v8, v8, a6
 	bne	t1, a5, .LBB0_8
 	bnez	a7, .LBB0_4
@@ -89,6 +89,6 @@ pairwise_dotproduct_fp32:
 .Lfunc_end0:
 	.size	pairwise_dotproduct_fp32, .Lfunc_end0-pairwise_dotproduct_fp32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

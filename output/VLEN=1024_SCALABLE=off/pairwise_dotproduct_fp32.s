@@ -61,7 +61,7 @@ pairwise_dotproduct_fp32:
 	mv	t4, a3
 	mv	a5, a2
 .LBB0_8:
-	vsetvli	zero, t0, e32, m1, ta, mu
+	vsetvli	zero, t0, e32, m1, ta, ma
 	vlse32.v	v8, (a5), t2
 	addi	a0, a5, 4
 	vlse32.v	v9, (a0), t2
@@ -82,6 +82,6 @@ pairwise_dotproduct_fp32:
 .Lfunc_end0:
 	.size	pairwise_dotproduct_fp32, .Lfunc_end0-pairwise_dotproduct_fp32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

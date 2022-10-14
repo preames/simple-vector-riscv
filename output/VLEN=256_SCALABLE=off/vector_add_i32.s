@@ -14,7 +14,7 @@ vector_add_i32:
 	j	.LBB0_6
 .LBB0_3:
 	andi	a1, a6, -16
-	vsetivli	zero, 8, e32, m1, ta, mu
+	vsetivli	zero, 8, e32, m1, ta, ma
 	mv	a4, a1
 	mv	a5, a0
 .LBB0_4:
@@ -44,6 +44,6 @@ vector_add_i32:
 .Lfunc_end0:
 	.size	vector_add_i32, .Lfunc_end0-vector_add_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

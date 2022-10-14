@@ -17,7 +17,7 @@ sparsevec_init_i32:
 	addi	a0, t0, -1
 	and	a6, t2, a0
 	sub	a3, t2, a6
-	vsetvli	a0, zero, e32, m1, ta, mu
+	vsetvli	a0, zero, e32, m1, ta, ma
 	vid.v	v8
 	srli	t3, a7, 2
 	slli	t1, t3, 1
@@ -28,12 +28,12 @@ sparsevec_init_i32:
 	add	a4, a0, t1
 	vle16.v	v10, (a4)
 	vadd.vx	v11, v8, t3
-	vsetvli	zero, zero, e64, m2, ta, mu
+	vsetvli	zero, zero, e64, m2, ta, ma
 	vsext.vf4	v12, v9
 	vsext.vf4	v14, v10
 	vsll.vi	v12, v12, 2
 	vsll.vi	v14, v14, 2
-	vsetvli	zero, zero, e32, m1, ta, mu
+	vsetvli	zero, zero, e32, m1, ta, ma
 	vsoxei64.v	v8, (a1), v12
 	vsoxei64.v	v11, (a1), v14
 	vadd.vx	v8, v11, t3
@@ -55,6 +55,6 @@ sparsevec_init_i32:
 .Lfunc_end0:
 	.size	sparsevec_init_i32, .Lfunc_end0-sparsevec_init_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 954c1ed009d423ca9593ee63479a9394a23864fd)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig
