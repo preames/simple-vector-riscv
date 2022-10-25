@@ -1,11 +1,11 @@
 ; ModuleID = 'aos_write_i32.c'
 source_filename = "aos_write_i32.c"
 target datalayout = "e-m:e-p:64:64-i64:64-i128:128-n64-S128"
-target triple = "riscv64"
+target triple = "riscv64-unknown-unknown"
 
 %struct.T = type { i64, i64, i64, i64, i64, i64, i32, i32 }
 
-; Function Attrs: argmemonly nofree norecurse nosync nounwind writeonly
+; Function Attrs: argmemonly nofree norecurse nosync nounwind writeonly vscale_range(8,1024)
 define dso_local void @aos_init_i32(i32 noundef signext %len, ptr nocapture noundef writeonly %a) local_unnamed_addr #0 {
 entry:
   %cmp3.not = icmp eq i32 %len, 0
@@ -14,22 +14,22 @@ entry:
 for.body.preheader:                               ; preds = %entry
   %wide.trip.count = zext i32 %len to i64
   %0 = tail call i64 @llvm.vscale.i64()
-  %1 = shl i64 %0, 1
+  %1 = shl nuw nsw i64 %0, 1
   %min.iters.check = icmp ugt i64 %1, %wide.trip.count
   br i1 %min.iters.check, label %for.body.preheader5, label %vector.ph
 
 vector.ph:                                        ; preds = %for.body.preheader
   %2 = tail call i64 @llvm.vscale.i64()
-  %3 = shl i64 %2, 1
+  %3 = shl nuw nsw i64 %2, 1
   %n.mod.vf = urem i64 %wide.trip.count, %3
   %n.vec = sub nuw nsw i64 %wide.trip.count, %n.mod.vf
   %4 = tail call <vscale x 2 x i64> @llvm.experimental.stepvector.nxv2i64()
   %5 = tail call i64 @llvm.vscale.i64()
-  %6 = shl i64 %5, 1
+  %6 = shl nuw nsw i64 %5, 1
   %.splatinsert = insertelement <vscale x 2 x i64> poison, i64 %6, i64 0
   %.splat = shufflevector <vscale x 2 x i64> %.splatinsert, <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer
   %7 = tail call i64 @llvm.vscale.i64()
-  %8 = shl i64 %7, 1
+  %8 = shl nuw nsw i64 %7, 1
   br label %vector.body
 
 vector.body:                                      ; preds = %vector.body, %vector.ph
@@ -71,7 +71,7 @@ declare <vscale x 2 x i64> @llvm.experimental.stepvector.nxv2i64() #1
 ; Function Attrs: nocallback nofree nosync nounwind willreturn writeonly
 declare void @llvm.masked.scatter.nxv2i32.nxv2p0(<vscale x 2 x i32>, <vscale x 2 x ptr>, i32 immarg, <vscale x 2 x i1>) #2
 
-attributes #0 = { argmemonly nofree norecurse nosync nounwind writeonly "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
+attributes #0 = { argmemonly nofree norecurse nosync nounwind writeonly vscale_range(8,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
 attributes #1 = { nocallback nofree nosync nounwind readnone willreturn }
 attributes #2 = { nocallback nofree nosync nounwind willreturn writeonly }
 
@@ -79,7 +79,7 @@ attributes #2 = { nocallback nofree nosync nounwind willreturn writeonly }
 !llvm.ident = !{!3}
 
 !0 = !{i32 1, !"wchar_size", i32 4}
-!1 = !{i32 1, !"target-abi", !"lp64"}
+!1 = !{i32 1, !"target-abi", !"lp64d"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
 !3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6d859266803e2a9060c4e8770f92cc2c7bd05a3b)"}
 !4 = !{!5, !9, i64 48}

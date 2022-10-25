@@ -1,9 +1,9 @@
 ; ModuleID = 'vector_overlap_i32.c'
 source_filename = "vector_overlap_i32.c"
 target datalayout = "e-m:e-p:64:64-i64:64-i128:128-n64-S128"
-target triple = "riscv64"
+target triple = "riscv64-unknown-unknown"
 
-; Function Attrs: argmemonly nofree norecurse nosync nounwind
+; Function Attrs: argmemonly nofree norecurse nosync nounwind vscale_range(16,1024)
 define dso_local void @vector_overlap(ptr noalias nocapture noundef readonly %a, ptr noalias nocapture noundef writeonly %b, i32 noundef signext %N) local_unnamed_addr #0 {
 entry:
   %cmp16 = icmp ugt i32 %N, 1
@@ -16,32 +16,32 @@ for.body.preheader:                               ; preds = %entry
   %.pre19 = load i32, ptr %arrayidx2.phi.trans.insert, align 4, !tbaa !4
   %0 = add nsw i64 %wide.trip.count, -1
   %1 = tail call i64 @llvm.vscale.i64()
-  %2 = shl i64 %1, 2
+  %2 = shl nuw nsw i64 %1, 2
   %min.iters.check = icmp ult i64 %0, %2
   br i1 %min.iters.check, label %for.body.preheader27, label %vector.ph
 
 vector.ph:                                        ; preds = %for.body.preheader
   %3 = tail call i64 @llvm.vscale.i64()
-  %4 = shl i64 %3, 2
+  %4 = shl nuw nsw i64 %3, 2
   %n.mod.vf = urem i64 %0, %4
-  %n.vec = sub i64 %0, %n.mod.vf
-  %ind.end = add i64 %n.vec, 1
+  %n.vec = sub nsw i64 %0, %n.mod.vf
+  %ind.end = add nsw i64 %n.vec, 1
   %5 = tail call i32 @llvm.vscale.i32()
-  %6 = shl i32 %5, 1
-  %7 = add i32 %6, -1
+  %6 = shl nuw nsw i32 %5, 1
+  %7 = add nsw i32 %6, -1
   %vector.recur.init = insertelement <vscale x 2 x i32> poison, i32 %.pre19, i32 %7
   %8 = tail call i32 @llvm.vscale.i32()
-  %9 = shl i32 %8, 1
-  %10 = add i32 %9, -1
+  %9 = shl nuw nsw i32 %8, 1
+  %10 = add nsw i32 %9, -1
   %vector.recur.init20 = insertelement <vscale x 2 x i32> poison, i32 %.pre, i32 %10
   %11 = tail call i32 @llvm.vscale.i32()
-  %12 = shl i32 %11, 1
-  %13 = sext i32 %12 to i64
+  %12 = shl nuw nsw i32 %11, 1
+  %13 = zext i32 %12 to i64
   %14 = tail call i32 @llvm.vscale.i32()
-  %15 = shl i32 %14, 1
-  %16 = sext i32 %15 to i64
+  %15 = shl nuw nsw i32 %14, 1
+  %16 = zext i32 %15 to i64
   %17 = tail call i64 @llvm.vscale.i64()
-  %18 = shl i64 %17, 2
+  %18 = shl nuw nsw i64 %17, 2
   br label %vector.body
 
 vector.body:                                      ; preds = %vector.body, %vector.ph
@@ -73,12 +73,12 @@ vector.body:                                      ; preds = %vector.body, %vecto
 middle.block:                                     ; preds = %vector.body
   %cmp.n = icmp eq i64 %n.mod.vf, 0
   %33 = tail call i32 @llvm.vscale.i32()
-  %34 = shl i32 %33, 1
-  %35 = add i32 %34, -1
+  %34 = shl nuw nsw i32 %33, 1
+  %35 = add nsw i32 %34, -1
   %vector.recur.extract = extractelement <vscale x 2 x i32> %wide.load22, i32 %35
   %36 = tail call i32 @llvm.vscale.i32()
-  %37 = shl i32 %36, 1
-  %38 = add i32 %37, -1
+  %37 = shl nuw nsw i32 %36, 1
+  %38 = add nsw i32 %37, -1
   %vector.recur.extract23 = extractelement <vscale x 2 x i32> %23, i32 %38
   br i1 %cmp.n, label %for.cond.cleanup, label %for.body.preheader27
 
@@ -115,14 +115,14 @@ declare i32 @llvm.vscale.i32() #1
 ; Function Attrs: nocallback nofree nosync nounwind readnone willreturn
 declare <vscale x 2 x i32> @llvm.experimental.vector.splice.nxv2i32(<vscale x 2 x i32>, <vscale x 2 x i32>, i32 immarg) #1
 
-attributes #0 = { argmemonly nofree norecurse nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
+attributes #0 = { argmemonly nofree norecurse nosync nounwind vscale_range(16,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl1024b,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
 attributes #1 = { nocallback nofree nosync nounwind readnone willreturn }
 
 !llvm.module.flags = !{!0, !1, !2}
 !llvm.ident = !{!3}
 
 !0 = !{i32 1, !"wchar_size", i32 4}
-!1 = !{i32 1, !"target-abi", !"lp64"}
+!1 = !{i32 1, !"target-abi", !"lp64d"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
 !3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6d859266803e2a9060c4e8770f92cc2c7bd05a3b)"}
 !4 = !{!5, !5, i64 0}

@@ -1,9 +1,9 @@
 ; ModuleID = 'vector_andnot_i64.c'
 source_filename = "vector_andnot_i64.c"
 target datalayout = "e-m:e-p:64:64-i64:64-i128:128-n64-S128"
-target triple = "riscv64"
+target triple = "riscv64-unknown-unknown"
 
-; Function Attrs: argmemonly nofree norecurse nosync nounwind
+; Function Attrs: argmemonly nofree norecurse nosync nounwind vscale_range(64,1024)
 define dso_local void @vector_andnot_i64(ptr nocapture noundef %a, ptr nocapture noundef readonly %b, i32 noundef signext %a_len) local_unnamed_addr #0 {
 entry:
   %cmp10.not = icmp eq i32 %a_len, 0
@@ -76,7 +76,7 @@ declare i64 @llvm.vscale.i64() #1
 ; Function Attrs: nocallback nofree nosync nounwind readnone speculatable willreturn
 declare i64 @llvm.umax.i64(i64, i64) #2
 
-attributes #0 = { argmemonly nofree norecurse nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
+attributes #0 = { argmemonly nofree norecurse nosync nounwind vscale_range(64,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl1024b,+zvl128b,+zvl2048b,+zvl256b,+zvl32b,+zvl4096b,+zvl512b,+zvl64b,-save-restore" }
 attributes #1 = { nocallback nofree nosync nounwind readnone willreturn }
 attributes #2 = { nocallback nofree nosync nounwind readnone speculatable willreturn }
 
@@ -84,7 +84,7 @@ attributes #2 = { nocallback nofree nosync nounwind readnone speculatable willre
 !llvm.ident = !{!3}
 
 !0 = !{i32 1, !"wchar_size", i32 4}
-!1 = !{i32 1, !"target-abi", !"lp64"}
+!1 = !{i32 1, !"target-abi", !"lp64d"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
 !3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6d859266803e2a9060c4e8770f92cc2c7bd05a3b)"}
 !4 = !{!5, !5, i64 0}

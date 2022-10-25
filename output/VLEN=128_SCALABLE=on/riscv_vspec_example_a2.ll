@@ -1,9 +1,9 @@
 ; ModuleID = 'riscv_vspec_example_a2.c'
 source_filename = "riscv_vspec_example_a2.c"
 target datalayout = "e-m:e-p:64:64-i64:64-i128:128-n64-S128"
-target triple = "riscv64"
+target triple = "riscv64-unknown-unknown"
 
-; Function Attrs: argmemonly nofree norecurse nosync nounwind
+; Function Attrs: argmemonly nofree norecurse nosync nounwind vscale_range(2,1024)
 define dso_local void @example_a2(ptr nocapture noundef readonly %a, ptr nocapture noundef writeonly %b, ptr nocapture noundef readonly %c, i32 noundef signext %n) local_unnamed_addr #0 {
 entry:
   %c17 = ptrtoint ptr %c to i64
@@ -15,16 +15,16 @@ entry:
 for.body.preheader:                               ; preds = %entry
   %wide.trip.count = zext i32 %n to i64
   %0 = tail call i64 @llvm.vscale.i64()
-  %1 = shl i64 %0, 4
+  %1 = shl nuw nsw i64 %0, 4
   %min.iters.check = icmp ugt i64 %1, %wide.trip.count
   br i1 %min.iters.check, label %for.body.preheader22, label %vector.memcheck
 
 vector.memcheck:                                  ; preds = %for.body.preheader
   %2 = tail call i64 @llvm.vscale.i64()
-  %3 = shl i64 %2, 4
+  %3 = shl nuw nsw i64 %2, 4
   %4 = sub i64 %b15, %a16
   %diff.check = icmp ult i64 %4, %3
-  %5 = shl i64 %2, 4
+  %5 = shl nuw nsw i64 %2, 4
   %6 = sub i64 %b15, %c17
   %diff.check18 = icmp ult i64 %6, %5
   %conflict.rdx = or i1 %diff.check, %diff.check18
@@ -32,20 +32,20 @@ vector.memcheck:                                  ; preds = %for.body.preheader
 
 vector.ph:                                        ; preds = %vector.memcheck
   %7 = tail call i64 @llvm.vscale.i64()
-  %8 = shl i64 %7, 4
+  %8 = shl nuw nsw i64 %7, 4
   %n.mod.vf = urem i64 %wide.trip.count, %8
   %n.vec = sub nuw nsw i64 %wide.trip.count, %n.mod.vf
   %9 = tail call i32 @llvm.vscale.i32()
-  %10 = shl i32 %9, 3
-  %11 = sext i32 %10 to i64
+  %10 = shl nuw nsw i32 %9, 3
+  %11 = zext i32 %10 to i64
   %12 = tail call i32 @llvm.vscale.i32()
-  %13 = shl i32 %12, 3
-  %14 = sext i32 %13 to i64
+  %13 = shl nuw nsw i32 %12, 3
+  %14 = zext i32 %13 to i64
   %15 = tail call i32 @llvm.vscale.i32()
-  %16 = shl i32 %15, 3
-  %17 = sext i32 %16 to i64
+  %16 = shl nuw nsw i32 %15, 3
+  %17 = zext i32 %16 to i64
   %18 = tail call i64 @llvm.vscale.i64()
-  %19 = shl i64 %18, 4
+  %19 = shl nuw nsw i64 %18, 4
   br label %vector.body
 
 vector.body:                                      ; preds = %vector.body, %vector.ph
@@ -111,7 +111,7 @@ declare i32 @llvm.vscale.i32() #1
 ; Function Attrs: argmemonly nocallback nofree nosync nounwind readonly willreturn
 declare <vscale x 8 x i8> @llvm.masked.load.nxv8i8.p0(ptr nocapture, i32 immarg, <vscale x 8 x i1>, <vscale x 8 x i8>) #2
 
-attributes #0 = { argmemonly nofree norecurse nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
+attributes #0 = { argmemonly nofree norecurse nosync nounwind vscale_range(2,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl32b,+zvl64b,-save-restore" }
 attributes #1 = { nocallback nofree nosync nounwind readnone willreturn }
 attributes #2 = { argmemonly nocallback nofree nosync nounwind readonly willreturn }
 
@@ -119,7 +119,7 @@ attributes #2 = { argmemonly nocallback nofree nosync nounwind readonly willretu
 !llvm.ident = !{!3}
 
 !0 = !{i32 1, !"wchar_size", i32 4}
-!1 = !{i32 1, !"target-abi", !"lp64"}
+!1 = !{i32 1, !"target-abi", !"lp64d"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
 !3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6d859266803e2a9060c4e8770f92cc2c7bd05a3b)"}
 !4 = !{!5, !5, i64 0}

@@ -1,9 +1,9 @@
 ; ModuleID = 'memcpy_i8.c'
 source_filename = "memcpy_i8.c"
 target datalayout = "e-m:e-p:64:64-i64:64-i128:128-n64-S128"
-target triple = "riscv64"
+target triple = "riscv64-unknown-unknown"
 
-; Function Attrs: argmemonly nofree norecurse nosync nounwind
+; Function Attrs: argmemonly nofree norecurse nosync nounwind vscale_range(64,1024)
 define dso_local void @my_memcpy(i32 noundef signext %len, ptr nocapture noundef writeonly %a, ptr nocapture noundef readonly %b) local_unnamed_addr #0 {
 entry:
   %b9 = ptrtoint ptr %b to i64
@@ -14,31 +14,31 @@ entry:
 for.body.preheader:                               ; preds = %entry
   %wide.trip.count = zext i32 %len to i64
   %0 = tail call i64 @llvm.vscale.i64()
-  %1 = shl i64 %0, 4
+  %1 = shl nuw nsw i64 %0, 4
   %2 = tail call i64 @llvm.umax.i64(i64 %1, i64 512)
   %min.iters.check = icmp ugt i64 %2, %wide.trip.count
   br i1 %min.iters.check, label %for.body.preheader11, label %vector.memcheck
 
 vector.memcheck:                                  ; preds = %for.body.preheader
   %3 = tail call i64 @llvm.vscale.i64()
-  %4 = shl i64 %3, 4
+  %4 = shl nuw nsw i64 %3, 4
   %5 = sub i64 %a8, %b9
   %diff.check = icmp ult i64 %5, %4
   br i1 %diff.check, label %for.body.preheader11, label %vector.ph
 
 vector.ph:                                        ; preds = %vector.memcheck
   %6 = tail call i64 @llvm.vscale.i64()
-  %7 = shl i64 %6, 4
+  %7 = shl nuw nsw i64 %6, 4
   %n.mod.vf = urem i64 %wide.trip.count, %7
   %n.vec = sub nuw nsw i64 %wide.trip.count, %n.mod.vf
   %8 = tail call i32 @llvm.vscale.i32()
-  %9 = shl i32 %8, 3
-  %10 = sext i32 %9 to i64
+  %9 = shl nuw nsw i32 %8, 3
+  %10 = zext i32 %9 to i64
   %11 = tail call i32 @llvm.vscale.i32()
-  %12 = shl i32 %11, 3
-  %13 = sext i32 %12 to i64
+  %12 = shl nuw nsw i32 %11, 3
+  %13 = zext i32 %12 to i64
   %14 = tail call i64 @llvm.vscale.i64()
-  %15 = shl i64 %14, 4
+  %15 = shl nuw nsw i64 %14, 4
   br label %vector.body
 
 vector.body:                                      ; preds = %vector.body, %vector.ph
@@ -86,7 +86,7 @@ declare i64 @llvm.umax.i64(i64, i64) #2
 ; Function Attrs: nocallback nofree nosync nounwind readnone willreturn
 declare i32 @llvm.vscale.i32() #1
 
-attributes #0 = { argmemonly nofree norecurse nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
+attributes #0 = { argmemonly nofree norecurse nosync nounwind vscale_range(64,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl1024b,+zvl128b,+zvl2048b,+zvl256b,+zvl32b,+zvl4096b,+zvl512b,+zvl64b,-save-restore" }
 attributes #1 = { nocallback nofree nosync nounwind readnone willreturn }
 attributes #2 = { nocallback nofree nosync nounwind readnone speculatable willreturn }
 
@@ -94,7 +94,7 @@ attributes #2 = { nocallback nofree nosync nounwind readnone speculatable willre
 !llvm.ident = !{!3}
 
 !0 = !{i32 1, !"wchar_size", i32 4}
-!1 = !{i32 1, !"target-abi", !"lp64"}
+!1 = !{i32 1, !"target-abi", !"lp64d"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
 !3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6d859266803e2a9060c4e8770f92cc2c7bd05a3b)"}
 !4 = !{!5, !5, i64 0}

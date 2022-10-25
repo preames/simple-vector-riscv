@@ -1,11 +1,11 @@
 ; ModuleID = 'aos_write_i64.c'
 source_filename = "aos_write_i64.c"
 target datalayout = "e-m:e-p:64:64-i64:64-i128:128-n64-S128"
-target triple = "riscv64"
+target triple = "riscv64-unknown-unknown"
 
 %struct.T = type { i64, i64, i64, i64, i64, i64, i64 }
 
-; Function Attrs: argmemonly nofree norecurse nosync nounwind writeonly
+; Function Attrs: argmemonly nofree norecurse nosync nounwind writeonly vscale_range(4,1024)
 define dso_local void @aos_init_i64(i32 noundef signext %len, ptr nocapture noundef writeonly %a) local_unnamed_addr #0 {
 entry:
   %cmp3.not = icmp eq i32 %len, 0
@@ -67,7 +67,7 @@ declare <vscale x 1 x i64> @llvm.experimental.stepvector.nxv1i64() #1
 ; Function Attrs: nocallback nofree nosync nounwind willreturn writeonly
 declare void @llvm.masked.scatter.nxv1i64.nxv1p0(<vscale x 1 x i64>, <vscale x 1 x ptr>, i32 immarg, <vscale x 1 x i1>) #2
 
-attributes #0 = { argmemonly nofree norecurse nosync nounwind writeonly "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
+attributes #0 = { argmemonly nofree norecurse nosync nounwind writeonly vscale_range(4,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl256b,+zvl32b,+zvl64b,-save-restore" }
 attributes #1 = { nocallback nofree nosync nounwind readnone willreturn }
 attributes #2 = { nocallback nofree nosync nounwind willreturn writeonly }
 
@@ -75,7 +75,7 @@ attributes #2 = { nocallback nofree nosync nounwind willreturn writeonly }
 !llvm.ident = !{!3}
 
 !0 = !{i32 1, !"wchar_size", i32 4}
-!1 = !{i32 1, !"target-abi", !"lp64"}
+!1 = !{i32 1, !"target-abi", !"lp64d"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
 !3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6d859266803e2a9060c4e8770f92cc2c7bd05a3b)"}
 !4 = !{!5, !6, i64 48}

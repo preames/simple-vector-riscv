@@ -1,9 +1,9 @@
 ; ModuleID = 'pairwise_dotproduct_fp32.c'
 source_filename = "pairwise_dotproduct_fp32.c"
 target datalayout = "e-m:e-p:64:64-i64:64-i128:128-n64-S128"
-target triple = "riscv64"
+target triple = "riscv64-unknown-unknown"
 
-; Function Attrs: argmemonly nofree nosync nounwind
+; Function Attrs: argmemonly nofree nosync nounwind vscale_range(8,1024)
 define dso_local void @pairwise_dotproduct_fp32(i32 noundef signext %len, ptr nocapture noundef writeonly %a, ptr nocapture noundef readonly %b, ptr nocapture noundef readonly %c) local_unnamed_addr #0 {
 entry:
   %div22 = and i32 %len, -2
@@ -16,7 +16,7 @@ for.body.preheader:                               ; preds = %entry
   %2 = lshr i64 %1, 1
   %3 = add nuw i64 %2, 1
   %4 = tail call i64 @llvm.vscale.i64()
-  %5 = shl i64 %4, 1
+  %5 = shl nuw nsw i64 %4, 1
   %6 = tail call i64 @llvm.umax.i64(i64 %5, i64 16)
   %min.iters.check = icmp ult i64 %3, %6
   br i1 %min.iters.check, label %for.body.preheader36, label %vector.memcheck
@@ -42,18 +42,18 @@ vector.memcheck:                                  ; preds = %for.body.preheader
 
 vector.ph:                                        ; preds = %vector.memcheck
   %13 = tail call i64 @llvm.vscale.i64()
-  %14 = shl i64 %13, 1
+  %14 = shl nuw nsw i64 %13, 1
   %n.mod.vf = urem i64 %3, %14
   %n.vec = sub i64 %3, %n.mod.vf
   %ind.end = shl i64 %n.vec, 1
   %15 = tail call <vscale x 2 x i64> @llvm.experimental.stepvector.nxv2i64()
   %16 = shl <vscale x 2 x i64> %15, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 1, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
   %17 = tail call i64 @llvm.vscale.i64()
-  %18 = shl i64 %17, 2
+  %18 = shl nuw nsw i64 %17, 2
   %.splatinsert = insertelement <vscale x 2 x i64> poison, i64 %18, i64 0
   %.splat = shufflevector <vscale x 2 x i64> %.splatinsert, <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer
   %19 = tail call i64 @llvm.vscale.i64()
-  %20 = shl i64 %19, 1
+  %20 = shl nuw nsw i64 %19, 1
   br label %vector.body
 
 vector.body:                                      ; preds = %vector.body, %vector.ph
@@ -128,7 +128,7 @@ declare <vscale x 2 x float> @llvm.masked.gather.nxv2f32.nxv2p0(<vscale x 2 x pt
 ; Function Attrs: nocallback nofree nosync nounwind readnone speculatable willreturn
 declare <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float>, <vscale x 2 x float>, <vscale x 2 x float>) #3
 
-attributes #0 = { argmemonly nofree nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
+attributes #0 = { argmemonly nofree nosync nounwind vscale_range(8,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
 attributes #1 = { mustprogress nocallback nofree nosync nounwind readnone speculatable willreturn }
 attributes #2 = { nocallback nofree nosync nounwind readnone willreturn }
 attributes #3 = { nocallback nofree nosync nounwind readnone speculatable willreturn }
@@ -138,7 +138,7 @@ attributes #4 = { nocallback nofree nosync nounwind readonly willreturn }
 !llvm.ident = !{!3}
 
 !0 = !{i32 1, !"wchar_size", i32 4}
-!1 = !{i32 1, !"target-abi", !"lp64"}
+!1 = !{i32 1, !"target-abi", !"lp64d"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
 !3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6d859266803e2a9060c4e8770f92cc2c7bd05a3b)"}
 !4 = !{!5, !5, i64 0}

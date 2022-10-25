@@ -7,43 +7,42 @@
 	.type	saxpy,@function
 saxpy:
 	blez	a0, .LBB0_6
-	li	a4, 8
-	fmv.w.x	ft0, a1
-	bltu	a0, a4, .LBB0_3
-	sh2add	a1, a0, a3
-	sh2add	a4, a0, a2
-	sltu	a4, a3, a4
-	sltu	a1, a2, a1
-	and	a1, a1, a4
-	beqz	a1, .LBB0_7
+	li	a3, 8
+	bltu	a0, a3, .LBB0_3
+	sh2add	a3, a0, a2
+	sh2add	a4, a0, a1
+	sltu	a4, a2, a4
+	sltu	a3, a1, a3
+	and	a3, a3, a4
+	beqz	a3, .LBB0_7
 .LBB0_3:
 	li	a6, 0
 .LBB0_4:
 	sub	a0, a0, a6
-	sh2add	a1, a6, a3
 	sh2add	a2, a6, a2
+	sh2add	a1, a6, a1
 .LBB0_5:
+	flw	ft0, 0(a1)
 	flw	ft1, 0(a2)
-	flw	ft2, 0(a1)
-	fmadd.s	ft1, ft0, ft1, ft2
-	fsw	ft1, 0(a1)
+	fmadd.s	ft0, fa0, ft0, ft1
+	fsw	ft0, 0(a2)
 	addi	a0, a0, -1
-	addi	a1, a1, 4
 	addi	a2, a2, 4
+	addi	a1, a1, 4
 	bnez	a0, .LBB0_5
 .LBB0_6:
 	ret
 .LBB0_7:
 	andi	a6, a0, -8
 	vsetivli	zero, 4, e32, m1, ta, ma
-	vfmv.v.f	v8, ft0
+	vfmv.v.f	v8, fa0
 	mv	a4, a6
-	mv	a5, a3
-	mv	a1, a2
+	mv	a5, a2
+	mv	a3, a1
 .LBB0_8:
 	addi	a7, a5, 16
-	addi	t0, a1, 16
-	vle32.v	v9, (a1)
+	addi	t0, a3, 16
+	vle32.v	v9, (a3)
 	vle32.v	v10, (t0)
 	vle32.v	v11, (a5)
 	vle32.v	v12, (a7)
@@ -51,7 +50,7 @@ saxpy:
 	vfmacc.vv	v12, v8, v10
 	vse32.v	v11, (a5)
 	vse32.v	v12, (a7)
-	addi	a1, a1, 32
+	addi	a3, a3, 32
 	addi	a4, a4, -8
 	addi	a5, a5, 32
 	bnez	a4, .LBB0_8

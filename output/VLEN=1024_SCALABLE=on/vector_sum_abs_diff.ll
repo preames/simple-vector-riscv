@@ -1,23 +1,23 @@
 ; ModuleID = 'vector_sum_abs_diff.c'
 source_filename = "vector_sum_abs_diff.c"
 target datalayout = "e-m:e-p:64:64-i64:64-i128:128-n64-S128"
-target triple = "riscv64"
+target triple = "riscv64-unknown-unknown"
 
-; Function Attrs: mustprogress nofree norecurse nosync nounwind readnone willreturn
+; Function Attrs: mustprogress nofree norecurse nosync nounwind readnone willreturn vscale_range(16,1024)
 define dso_local signext i8 @sub(i8 noundef signext %a, i8 noundef signext %b) local_unnamed_addr #0 {
 entry:
   %sub = sub i8 %a, %b
   ret i8 %sub
 }
 
-; Function Attrs: mustprogress nofree norecurse nosync nounwind readnone willreturn
+; Function Attrs: mustprogress nofree norecurse nosync nounwind readnone willreturn vscale_range(16,1024)
 define dso_local signext i8 @myabs(i8 noundef signext %c) local_unnamed_addr #0 {
 entry:
   %0 = tail call i8 @llvm.abs.i8(i8 %c, i1 false)
   ret i8 %0
 }
 
-; Function Attrs: argmemonly nofree nosync nounwind
+; Function Attrs: argmemonly nofree nosync nounwind vscale_range(16,1024)
 define dso_local void @vector_sum_abs_diff(ptr nocapture noundef writeonly %c, ptr nocapture noundef readonly %a, ptr nocapture noundef readonly %b, i32 noundef signext %N) local_unnamed_addr #1 {
 entry:
   %cmp26.not = icmp ult i32 %N, 8
@@ -27,7 +27,7 @@ for.cond1.preheader.preheader:                    ; preds = %entry
   %div23 = lshr i32 %N, 3
   %wide.trip.count = zext i32 %div23 to i64
   %0 = tail call i64 @llvm.vscale.i64()
-  %1 = shl i64 %0, 1
+  %1 = shl nuw nsw i64 %0, 1
   %2 = tail call i64 @llvm.umax.i64(i64 %1, i64 32)
   %min.iters.check = icmp ugt i64 %2, %wide.trip.count
   br i1 %min.iters.check, label %for.cond1.preheader.preheader50, label %vector.memcheck
@@ -49,16 +49,16 @@ vector.memcheck:                                  ; preds = %for.cond1.preheader
 
 vector.ph:                                        ; preds = %vector.memcheck
   %5 = tail call i64 @llvm.vscale.i64()
-  %6 = shl i64 %5, 1
+  %6 = shl nuw nsw i64 %5, 1
   %n.mod.vf = urem i64 %wide.trip.count, %6
   %n.vec = sub nuw nsw i64 %wide.trip.count, %n.mod.vf
   %7 = tail call <vscale x 2 x i64> @llvm.experimental.stepvector.nxv2i64()
   %8 = tail call i64 @llvm.vscale.i64()
-  %9 = shl i64 %8, 1
+  %9 = shl nuw nsw i64 %8, 1
   %.splatinsert = insertelement <vscale x 2 x i64> poison, i64 %9, i64 0
   %.splat = shufflevector <vscale x 2 x i64> %.splatinsert, <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer
   %10 = tail call i64 @llvm.vscale.i64()
-  %11 = shl i64 %10, 1
+  %11 = shl nuw nsw i64 %10, 1
   br label %vector.body
 
 vector.body:                                      ; preds = %vector.body, %vector.ph
@@ -195,8 +195,8 @@ declare <8 x i8> @llvm.abs.v8i8(<8 x i8>, i1 immarg) #2
 ; Function Attrs: nocallback nofree nosync nounwind readnone willreturn
 declare i32 @llvm.vector.reduce.add.v8i32(<8 x i32>) #3
 
-attributes #0 = { mustprogress nofree norecurse nosync nounwind readnone willreturn "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
-attributes #1 = { argmemonly nofree nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
+attributes #0 = { mustprogress nofree norecurse nosync nounwind readnone willreturn vscale_range(16,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl1024b,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
+attributes #1 = { argmemonly nofree nosync nounwind vscale_range(16,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl1024b,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
 attributes #2 = { nocallback nofree nosync nounwind readnone speculatable willreturn }
 attributes #3 = { nocallback nofree nosync nounwind readnone willreturn }
 attributes #4 = { nocallback nofree nosync nounwind readonly willreturn }
@@ -205,7 +205,7 @@ attributes #4 = { nocallback nofree nosync nounwind readonly willreturn }
 !llvm.ident = !{!3}
 
 !0 = !{i32 1, !"wchar_size", i32 4}
-!1 = !{i32 1, !"target-abi", !"lp64"}
+!1 = !{i32 1, !"target-abi", !"lp64d"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
 !3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6d859266803e2a9060c4e8770f92cc2c7bd05a3b)"}
 !4 = !{!5, !5, i64 0}
