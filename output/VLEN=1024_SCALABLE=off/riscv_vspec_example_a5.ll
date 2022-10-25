@@ -7,31 +7,27 @@ target triple = "riscv64-unknown-unknown"
 define dso_local void @saxpy(i64 noundef %n, float noundef %a, ptr nocapture noundef readonly %x, ptr nocapture noundef %y) local_unnamed_addr #0 {
 entry:
   %cmp8 = icmp sgt i64 %n, 0
-  br i1 %cmp8, label %iter.check, label %for.end
+  br i1 %cmp8, label %for.body.preheader, label %for.end
 
-iter.check:                                       ; preds = %entry
-  %min.iters.check = icmp ult i64 %n, 16
-  br i1 %min.iters.check, label %for.body.preheader, label %vector.memcheck
+for.body.preheader:                               ; preds = %entry
+  %min.iters.check = icmp ult i64 %n, 64
+  br i1 %min.iters.check, label %for.body.preheader16, label %vector.memcheck
 
-vector.memcheck:                                  ; preds = %iter.check
+vector.memcheck:                                  ; preds = %for.body.preheader
   %0 = shl i64 %n, 2
   %uglygep = getelementptr i8, ptr %y, i64 %0
   %uglygep10 = getelementptr i8, ptr %x, i64 %0
   %bound0 = icmp ugt ptr %uglygep10, %y
   %bound1 = icmp ugt ptr %uglygep, %x
   %found.conflict = and i1 %bound0, %bound1
-  br i1 %found.conflict, label %for.body.preheader, label %vector.main.loop.iter.check
+  br i1 %found.conflict, label %for.body.preheader16, label %vector.ph
 
-vector.main.loop.iter.check:                      ; preds = %vector.memcheck
-  %min.iters.check11 = icmp ult i64 %n, 64
-  br i1 %min.iters.check11, label %vec.epilog.ph, label %vector.ph
-
-vector.ph:                                        ; preds = %vector.main.loop.iter.check
+vector.ph:                                        ; preds = %vector.memcheck
   %n.vec = and i64 %n, -64
   %broadcast.splatinsert = insertelement <32 x float> poison, float %a, i64 0
   %broadcast.splat = shufflevector <32 x float> %broadcast.splatinsert, <32 x float> poison, <32 x i32> zeroinitializer
-  %broadcast.splatinsert15 = insertelement <32 x float> poison, float %a, i64 0
-  %broadcast.splat16 = shufflevector <32 x float> %broadcast.splatinsert15, <32 x float> poison, <32 x i32> zeroinitializer
+  %broadcast.splatinsert14 = insertelement <32 x float> poison, float %a, i64 0
+  %broadcast.splat15 = shufflevector <32 x float> %broadcast.splatinsert14, <32 x float> poison, <32 x i32> zeroinitializer
   br label %vector.body
 
 vector.body:                                      ; preds = %vector.body, %vector.ph
@@ -39,13 +35,13 @@ vector.body:                                      ; preds = %vector.body, %vecto
   %1 = getelementptr inbounds float, ptr %x, i64 %index
   %wide.load = load <32 x float>, ptr %1, align 4, !tbaa !4, !alias.scope !8
   %2 = getelementptr inbounds float, ptr %1, i64 32
-  %wide.load12 = load <32 x float>, ptr %2, align 4, !tbaa !4, !alias.scope !8
+  %wide.load11 = load <32 x float>, ptr %2, align 4, !tbaa !4, !alias.scope !8
   %3 = getelementptr inbounds float, ptr %y, i64 %index
-  %wide.load13 = load <32 x float>, ptr %3, align 4, !tbaa !4, !alias.scope !11, !noalias !8
+  %wide.load12 = load <32 x float>, ptr %3, align 4, !tbaa !4, !alias.scope !11, !noalias !8
   %4 = getelementptr inbounds float, ptr %3, i64 32
-  %wide.load14 = load <32 x float>, ptr %4, align 4, !tbaa !4, !alias.scope !11, !noalias !8
-  %5 = tail call <32 x float> @llvm.fmuladd.v32f32(<32 x float> %broadcast.splat, <32 x float> %wide.load, <32 x float> %wide.load13)
-  %6 = tail call <32 x float> @llvm.fmuladd.v32f32(<32 x float> %broadcast.splat16, <32 x float> %wide.load12, <32 x float> %wide.load14)
+  %wide.load13 = load <32 x float>, ptr %4, align 4, !tbaa !4, !alias.scope !11, !noalias !8
+  %5 = tail call <32 x float> @llvm.fmuladd.v32f32(<32 x float> %broadcast.splat, <32 x float> %wide.load, <32 x float> %wide.load12)
+  %6 = tail call <32 x float> @llvm.fmuladd.v32f32(<32 x float> %broadcast.splat15, <32 x float> %wide.load11, <32 x float> %wide.load13)
   store <32 x float> %5, ptr %3, align 4, !tbaa !4, !alias.scope !11, !noalias !8
   store <32 x float> %6, ptr %4, align 4, !tbaa !4, !alias.scope !11, !noalias !8
   %index.next = add nuw i64 %index, 64
@@ -54,53 +50,25 @@ vector.body:                                      ; preds = %vector.body, %vecto
 
 middle.block:                                     ; preds = %vector.body
   %cmp.n = icmp eq i64 %n.vec, %n
-  br i1 %cmp.n, label %for.end, label %vec.epilog.iter.check
+  br i1 %cmp.n, label %for.end, label %for.body.preheader16
 
-vec.epilog.iter.check:                            ; preds = %middle.block
-  %n.vec.remaining = and i64 %n, 48
-  %min.epilog.iters.check = icmp eq i64 %n.vec.remaining, 0
-  br i1 %min.epilog.iters.check, label %for.body.preheader, label %vec.epilog.ph
-
-vec.epilog.ph:                                    ; preds = %vector.main.loop.iter.check, %vec.epilog.iter.check
-  %vec.epilog.resume.val = phi i64 [ %n.vec, %vec.epilog.iter.check ], [ 0, %vector.main.loop.iter.check ]
-  %n.vec18 = and i64 %n, -16
-  %broadcast.splatinsert23 = insertelement <16 x float> poison, float %a, i64 0
-  %broadcast.splat24 = shufflevector <16 x float> %broadcast.splatinsert23, <16 x float> poison, <16 x i32> zeroinitializer
-  br label %vec.epilog.vector.body
-
-vec.epilog.vector.body:                           ; preds = %vec.epilog.vector.body, %vec.epilog.ph
-  %offset.idx = phi i64 [ %vec.epilog.resume.val, %vec.epilog.ph ], [ %index.next25, %vec.epilog.vector.body ]
-  %8 = getelementptr inbounds float, ptr %x, i64 %offset.idx
-  %wide.load21 = load <16 x float>, ptr %8, align 4, !tbaa !4, !alias.scope !16
-  %9 = getelementptr inbounds float, ptr %y, i64 %offset.idx
-  %wide.load22 = load <16 x float>, ptr %9, align 4, !tbaa !4, !alias.scope !19, !noalias !16
-  %10 = tail call <16 x float> @llvm.fmuladd.v16f32(<16 x float> %broadcast.splat24, <16 x float> %wide.load21, <16 x float> %wide.load22)
-  store <16 x float> %10, ptr %9, align 4, !tbaa !4, !alias.scope !19, !noalias !16
-  %index.next25 = add nuw i64 %offset.idx, 16
-  %11 = icmp eq i64 %index.next25, %n.vec18
-  br i1 %11, label %vec.epilog.middle.block, label %vec.epilog.vector.body, !llvm.loop !21
-
-vec.epilog.middle.block:                          ; preds = %vec.epilog.vector.body
-  %cmp.n19 = icmp eq i64 %n.vec18, %n
-  br i1 %cmp.n19, label %for.end, label %for.body.preheader
-
-for.body.preheader:                               ; preds = %vector.memcheck, %iter.check, %vec.epilog.iter.check, %vec.epilog.middle.block
-  %i.09.ph = phi i64 [ 0, %iter.check ], [ 0, %vector.memcheck ], [ %n.vec, %vec.epilog.iter.check ], [ %n.vec18, %vec.epilog.middle.block ]
+for.body.preheader16:                             ; preds = %vector.memcheck, %for.body.preheader, %middle.block
+  %i.09.ph = phi i64 [ 0, %vector.memcheck ], [ 0, %for.body.preheader ], [ %n.vec, %middle.block ]
   br label %for.body
 
-for.body:                                         ; preds = %for.body.preheader, %for.body
-  %i.09 = phi i64 [ %inc, %for.body ], [ %i.09.ph, %for.body.preheader ]
+for.body:                                         ; preds = %for.body.preheader16, %for.body
+  %i.09 = phi i64 [ %inc, %for.body ], [ %i.09.ph, %for.body.preheader16 ]
   %arrayidx = getelementptr inbounds float, ptr %x, i64 %i.09
-  %12 = load float, ptr %arrayidx, align 4, !tbaa !4
+  %8 = load float, ptr %arrayidx, align 4, !tbaa !4
   %arrayidx1 = getelementptr inbounds float, ptr %y, i64 %i.09
-  %13 = load float, ptr %arrayidx1, align 4, !tbaa !4
-  %14 = tail call float @llvm.fmuladd.f32(float %a, float %12, float %13)
-  store float %14, ptr %arrayidx1, align 4, !tbaa !4
+  %9 = load float, ptr %arrayidx1, align 4, !tbaa !4
+  %10 = tail call float @llvm.fmuladd.f32(float %a, float %8, float %9)
+  store float %10, ptr %arrayidx1, align 4, !tbaa !4
   %inc = add nuw nsw i64 %i.09, 1
   %exitcond.not = icmp eq i64 %inc, %n
-  br i1 %exitcond.not, label %for.end, label %for.body, !llvm.loop !23
+  br i1 %exitcond.not, label %for.end, label %for.body, !llvm.loop !16
 
-for.end:                                          ; preds = %for.body, %middle.block, %vec.epilog.middle.block, %entry
+for.end:                                          ; preds = %for.body, %middle.block, %entry
   ret void
 }
 
@@ -109,9 +77,6 @@ declare float @llvm.fmuladd.f32(float, float, float) #1
 
 ; Function Attrs: nocallback nofree nosync nounwind readnone speculatable willreturn
 declare <32 x float> @llvm.fmuladd.v32f32(<32 x float>, <32 x float>, <32 x float>) #2
-
-; Function Attrs: nocallback nofree nosync nounwind readnone speculatable willreturn
-declare <16 x float> @llvm.fmuladd.v16f32(<16 x float>, <16 x float>, <16 x float>) #2
 
 attributes #0 = { argmemonly nofree nosync nounwind vscale_range(16,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl1024b,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
 attributes #1 = { mustprogress nocallback nofree nosync nounwind readnone speculatable willreturn }
@@ -123,7 +88,7 @@ attributes #2 = { nocallback nofree nosync nounwind readnone speculatable willre
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64d"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6d859266803e2a9060c4e8770f92cc2c7bd05a3b)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 269bc684e7a0c3f727ea5e74270112585acaf55d)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"float", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}
@@ -136,11 +101,4 @@ attributes #2 = { nocallback nofree nosync nounwind readnone speculatable willre
 !13 = distinct !{!13, !14, !15}
 !14 = !{!"llvm.loop.mustprogress"}
 !15 = !{!"llvm.loop.isvectorized", i32 1}
-!16 = !{!17}
-!17 = distinct !{!17, !18}
-!18 = distinct !{!18, !"LVerDomain"}
-!19 = !{!20}
-!20 = distinct !{!20, !18}
-!21 = distinct !{!21, !14, !15, !22}
-!22 = !{!"llvm.loop.unroll.runtime.disable"}
-!23 = distinct !{!23, !14, !15}
+!16 = distinct !{!16, !14, !15}

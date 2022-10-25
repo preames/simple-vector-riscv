@@ -7,21 +7,21 @@
 	.type	vector_andnot_i64,@function
 vector_andnot_i64:
 	beqz	a2, .LBB0_6
-	li	a3, 8
-	zext.w	a7, a2
+	li	a3, 32
+	zext.w	a6, a2
 	bltu	a2, a3, .LBB0_3
-	sh3add	a3, a7, a0
-	sh3add	a4, a7, a1
-	sltu	a4, a0, a4
-	sltu	a3, a1, a3
-	and	a3, a3, a4
-	beqz	a3, .LBB0_7
+	sh3add	a2, a6, a0
+	sh3add	a3, a6, a1
+	sltu	a3, a0, a3
+	sltu	a2, a1, a2
+	and	a2, a2, a3
+	beqz	a2, .LBB0_7
 .LBB0_3:
-	li	t0, 0
+	li	a7, 0
 .LBB0_4:
-	sh3add	a0, t0, a0
-	sh3add	a1, t0, a1
-	sub	a2, a7, t0
+	sh3add	a0, a7, a0
+	sh3add	a1, a7, a1
+	sub	a2, a6, a7
 .LBB0_5:
 	ld	a3, 0(a0)
 	ld	a4, 0(a1)
@@ -34,23 +34,16 @@ vector_andnot_i64:
 .LBB0_6:
 	ret
 .LBB0_7:
-	li	a3, -32
-	li	a4, 32
-	zext.w	a6, a3
-	bgeu	a2, a4, .LBB0_9
-	li	t0, 0
-	j	.LBB0_13
-.LBB0_9:
-	and	t0, a7, a6
+	andi	a7, a6, -32
 	vsetivli	zero, 16, e64, m1, ta, ma
-	mv	a5, t0
-	mv	a4, a1
+	mv	a4, a7
+	mv	a5, a1
 	mv	a3, a0
-.LBB0_10:
-	addi	t1, a4, 128
+.LBB0_8:
+	addi	t0, a5, 128
 	addi	a2, a3, 128
-	vle64.v	v8, (a4)
-	vle64.v	v9, (t1)
+	vle64.v	v8, (a5)
+	vle64.v	v9, (t0)
 	vle64.v	v10, (a3)
 	vle64.v	v11, (a2)
 	vnot.v	v8, v8
@@ -60,35 +53,14 @@ vector_andnot_i64:
 	vse64.v	v8, (a3)
 	vse64.v	v9, (a2)
 	addi	a3, a3, 256
-	addi	a5, a5, -32
-	addi	a4, a4, 256
-	bnez	a5, .LBB0_10
-	beq	t0, a7, .LBB0_6
-	andi	a2, a7, 24
-	beqz	a2, .LBB0_4
-.LBB0_13:
-	mv	a2, t0
-	addi	a3, a6, 24
-	and	t0, a7, a3
-	sh3add	a3, a2, a0
-	sh3add	a4, a2, a1
-	sub	a5, a2, t0
-	vsetivli	zero, 8, e64, m1, ta, ma
-.LBB0_14:
-	vle64.v	v8, (a4)
-	vle64.v	v9, (a3)
-	vnot.v	v8, v8
-	vand.vv	v8, v9, v8
-	vse64.v	v8, (a3)
-	addi	a3, a3, 64
-	addi	a5, a5, 8
-	addi	a4, a4, 64
-	bnez	a5, .LBB0_14
-	beq	t0, a7, .LBB0_6
+	addi	a4, a4, -32
+	addi	a5, a5, 256
+	bnez	a4, .LBB0_8
+	beq	a7, a6, .LBB0_6
 	j	.LBB0_4
 .Lfunc_end0:
 	.size	vector_andnot_i64, .Lfunc_end0-vector_andnot_i64
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6d859266803e2a9060c4e8770f92cc2c7bd05a3b)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 269bc684e7a0c3f727ea5e74270112585acaf55d)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

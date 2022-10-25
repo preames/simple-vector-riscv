@@ -6,16 +6,16 @@
 	.p2align	1
 	.type	example_a2,@function
 example_a2:
-	beqz	a3, .LBB0_17
-	li	a4, 64
+	beqz	a3, .LBB0_11
+	li	a4, 128
 	zext.w	a6, a3
 	bltu	a3, a4, .LBB0_3
-	sub	a4, a1, a0
+	sub	a3, a1, a0
+	sltiu	a3, a3, 128
+	sub	a4, a1, a2
 	sltiu	a4, a4, 128
-	sub	a5, a1, a2
-	sltiu	a5, a5, 128
-	or	a4, a4, a5
-	beqz	a4, .LBB0_8
+	or	a3, a3, a4
+	beqz	a3, .LBB0_8
 .LBB0_3:
 	li	a7, 0
 .LBB0_4:
@@ -31,7 +31,7 @@ example_a2:
 	addi	a2, a2, 1
 	addi	a3, a3, -1
 	addi	a1, a1, 1
-	beqz	a3, .LBB0_17
+	beqz	a3, .LBB0_11
 .LBB0_6:
 	lbu	a4, 0(a0)
 	li	a5, 1
@@ -39,62 +39,31 @@ example_a2:
 	lbu	a5, 0(a2)
 	j	.LBB0_5
 .LBB0_8:
-	li	a5, -128
-	li	a4, 128
-	zext.w	t0, a5
-	bgeu	a3, a4, .LBB0_10
-	li	a7, 0
-	j	.LBB0_14
-.LBB0_10:
-	and	a7, a6, t0
-	vsetvli	zero, a4, e8, m1, ta, ma
+	andi	a7, a6, -128
+	li	a3, 128
+	vsetvli	zero, a3, e8, m1, ta, ma
 	vmv.v.i	v8, 1
-	mv	t1, a7
+	mv	t0, a7
 	mv	a4, a1
-	mv	a5, a2
-	mv	a3, a0
-.LBB0_11:
-	vle8.v	v9, (a3)
+	mv	a3, a2
+	mv	a5, a0
+.LBB0_9:
+	vle8.v	v9, (a5)
 	vmsleu.vi	v0, v9, 4
-	vle8.v	v9, (a5), v0.t
+	vle8.v	v9, (a3), v0.t
 	vmerge.vvm	v9, v8, v9, v0
 	vse8.v	v9, (a4)
-	addi	a3, a3, 128
 	addi	a5, a5, 128
-	addi	t1, t1, -128
+	addi	a3, a3, 128
+	addi	t0, t0, -128
 	addi	a4, a4, 128
-	bnez	t1, .LBB0_11
-	beq	a7, a6, .LBB0_17
-	andi	a3, a6, 64
-	beqz	a3, .LBB0_4
-.LBB0_14:
-	mv	a5, a7
-	addi	a3, t0, 64
-	and	a7, a6, a3
-	add	t0, a0, a5
-	add	t1, a2, a5
-	add	a3, a1, a5
-	sub	a5, a5, a7
-	li	a4, 64
-	vsetvli	zero, a4, e8, mf2, ta, ma
-	vmv.v.i	v8, 1
-.LBB0_15:
-	vle8.v	v9, (t0)
-	vmsleu.vi	v0, v9, 4
-	vle8.v	v9, (t1), v0.t
-	vmerge.vvm	v9, v8, v9, v0
-	vse8.v	v9, (a3)
-	addi	t0, t0, 64
-	addi	t1, t1, 64
-	addi	a5, a5, 64
-	addi	a3, a3, 64
-	bnez	a5, .LBB0_15
+	bnez	t0, .LBB0_9
 	bne	a7, a6, .LBB0_4
-.LBB0_17:
+.LBB0_11:
 	ret
 .Lfunc_end0:
 	.size	example_a2, .Lfunc_end0-example_a2
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6d859266803e2a9060c4e8770f92cc2c7bd05a3b)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 269bc684e7a0c3f727ea5e74270112585acaf55d)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

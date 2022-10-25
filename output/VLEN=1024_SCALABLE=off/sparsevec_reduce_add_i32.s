@@ -6,30 +6,22 @@
 	.p2align	1
 	.type	sparsevec_reduce_add_i32,@function
 sparsevec_reduce_add_i32:
-	beqz	a0, .LBB0_14
-	li	a4, 16
-	zext.w	a7, a0
+	beqz	a0, .LBB0_8
+	li	a4, 64
+	zext.w	a6, a0
 	bgeu	a0, a4, .LBB0_3
 	li	a4, 0
 	li	a0, 0
-	j	.LBB0_12
+	j	.LBB0_6
 .LBB0_3:
-	li	a4, -64
-	li	a5, 64
-	zext.w	a6, a4
-	bgeu	a0, a5, .LBB0_5
-	li	a0, 0
-	li	a4, 0
-	j	.LBB0_9
-.LBB0_5:
-	and	a4, a7, a6
+	andi	a4, a6, -64
 	li	a0, 32
 	vsetvli	zero, a0, e32, m1, ta, ma
 	vmv.v.i	v8, 0
 	mv	a0, a4
 	mv	a5, a2
 	vmv.v.i	v9, 0
-.LBB0_6:
+.LBB0_4:
 	addi	a3, a5, 64
 	vle16.v	v10, (a5)
 	vle16.v	v11, (a3)
@@ -45,7 +37,7 @@ sparsevec_reduce_add_i32:
 	vadd.vv	v9, v10, v9
 	addi	a0, a0, -64
 	addi	a5, a5, 128
-	bnez	a0, .LBB0_6
+	bnez	a0, .LBB0_4
 	li	a0, 32
 	vsetvli	zero, a0, e32, m1, ta, ma
 	vadd.vv	v8, v9, v8
@@ -54,50 +46,23 @@ sparsevec_reduce_add_i32:
 	vsetvli	zero, a0, e32, m1, ta, ma
 	vredsum.vs	v8, v8, v9
 	vmv.x.s	a0, v8
-	beq	a4, a7, .LBB0_14
-	andi	a3, a7, 48
-	beqz	a3, .LBB0_12
-.LBB0_9:
-	mv	a3, a4
-	addi	a4, a6, 48
-	and	a4, a7, a4
-	vsetivli	zero, 16, e32, mf2, ta, ma
-	vmv.v.i	v8, 0
-	vsetvli	zero, zero, e32, mf2, tu, ma
-	vmv.s.x	v8, a0
-	sh1add	a0, a3, a2
-	sub	a5, a3, a4
-.LBB0_10:
-	vsetvli	zero, zero, e64, m1, ta, ma
-	vle16.v	v9, (a0)
-	vsext.vf4	v10, v9
-	vsll.vi	v9, v10, 2
-	vsetvli	zero, zero, e32, mf2, ta, ma
-	vluxei64.v	v10, (a1), v9
-	vadd.vv	v8, v10, v8
-	addi	a5, a5, 16
-	addi	a0, a0, 32
-	bnez	a5, .LBB0_10
-	vmv.s.x	v9, zero
-	vredsum.vs	v8, v8, v9
-	vmv.x.s	a0, v8
-	beq	a4, a7, .LBB0_14
-.LBB0_12:
+	beq	a4, a6, .LBB0_8
+.LBB0_6:
 	sh1add	a2, a4, a2
-	sub	a3, a7, a4
-.LBB0_13:
+	sub	a3, a6, a4
+.LBB0_7:
 	lh	a4, 0(a2)
 	sh2add	a4, a4, a1
 	lw	a4, 0(a4)
 	addw	a0, a0, a4
 	addi	a3, a3, -1
 	addi	a2, a2, 2
-	bnez	a3, .LBB0_13
-.LBB0_14:
+	bnez	a3, .LBB0_7
+.LBB0_8:
 	ret
 .Lfunc_end0:
 	.size	sparsevec_reduce_add_i32, .Lfunc_end0-sparsevec_reduce_add_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6d859266803e2a9060c4e8770f92cc2c7bd05a3b)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 269bc684e7a0c3f727ea5e74270112585acaf55d)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

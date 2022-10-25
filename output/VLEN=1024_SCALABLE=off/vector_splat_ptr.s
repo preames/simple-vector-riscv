@@ -6,62 +6,39 @@
 	.p2align	1
 	.type	vector_splat_ptr,@function
 vector_splat_ptr:
-	beqz	a2, .LBB0_14
-	li	a4, 8
-	zext.w	a7, a2
+	beqz	a2, .LBB0_8
+	li	a4, 32
+	zext.w	a6, a2
 	bgeu	a2, a4, .LBB0_3
 	li	a2, 0
-	j	.LBB0_12
+	j	.LBB0_6
 .LBB0_3:
-	li	a4, -32
-	li	a5, 32
-	zext.w	a6, a4
-	bgeu	a2, a5, .LBB0_5
-	li	a2, 0
-	j	.LBB0_9
-.LBB0_5:
-	and	a2, a7, a6
+	andi	a2, a6, -32
 	vsetivli	zero, 16, e64, m1, ta, ma
 	vmv.v.x	v8, a1
-	mv	a5, a2
-	mv	a4, a0
-.LBB0_6:
-	addi	a3, a4, 128
-	vse64.v	v8, (a4)
+	mv	a4, a2
+	mv	a5, a0
+.LBB0_4:
+	addi	a3, a5, 128
+	vse64.v	v8, (a5)
 	vse64.v	v8, (a3)
-	addi	a5, a5, -32
-	addi	a4, a4, 256
-	bnez	a5, .LBB0_6
-	beq	a2, a7, .LBB0_14
-	andi	a3, a7, 24
-	beqz	a3, .LBB0_12
-.LBB0_9:
-	mv	a3, a2
-	addi	a2, a6, 24
-	and	a2, a7, a2
-	vsetivli	zero, 8, e64, m1, ta, ma
-	vmv.v.x	v8, a1
-	sh3add	a4, a3, a0
-	sub	a5, a3, a2
-.LBB0_10:
-	vse64.v	v8, (a4)
-	addi	a5, a5, 8
-	addi	a4, a4, 64
-	bnez	a5, .LBB0_10
-	beq	a2, a7, .LBB0_14
-.LBB0_12:
+	addi	a4, a4, -32
+	addi	a5, a5, 256
+	bnez	a4, .LBB0_4
+	beq	a2, a6, .LBB0_8
+.LBB0_6:
 	sh3add	a0, a2, a0
-	sub	a2, a7, a2
-.LBB0_13:
+	sub	a2, a6, a2
+.LBB0_7:
 	sd	a1, 0(a0)
 	addi	a2, a2, -1
 	addi	a0, a0, 8
-	bnez	a2, .LBB0_13
-.LBB0_14:
+	bnez	a2, .LBB0_7
+.LBB0_8:
 	ret
 .Lfunc_end0:
 	.size	vector_splat_ptr, .Lfunc_end0-vector_splat_ptr
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6d859266803e2a9060c4e8770f92cc2c7bd05a3b)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 269bc684e7a0c3f727ea5e74270112585acaf55d)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

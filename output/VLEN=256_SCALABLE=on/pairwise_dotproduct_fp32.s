@@ -89,6 +89,6 @@ pairwise_dotproduct_fp32:
 .Lfunc_end0:
 	.size	pairwise_dotproduct_fp32, .Lfunc_end0-pairwise_dotproduct_fp32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6d859266803e2a9060c4e8770f92cc2c7bd05a3b)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 269bc684e7a0c3f727ea5e74270112585acaf55d)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

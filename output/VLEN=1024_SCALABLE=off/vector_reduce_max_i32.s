@@ -8,42 +8,34 @@
 vector_reduce_max_i32:
 	lui	a4, 807449
 	beqz	a1, .LBB0_3
-	li	a3, 16
+	li	a3, 64
 	zext.w	a2, a1
 	bgeu	a1, a3, .LBB0_4
 	li	a3, 0
 	addiw	a1, a4, 1871
-	j	.LBB0_13
+	j	.LBB0_7
 .LBB0_3:
 	addiw	a0, a4, 1871
 	ret
 .LBB0_4:
-	li	a3, -64
-	zext.w	a6, a3
-	li	a3, 64
-	lui	a5, 807449
-	bgeu	a1, a3, .LBB0_6
-	li	a3, 0
-	addiw	a1, a5, 1871
-	j	.LBB0_10
-.LBB0_6:
-	and	a3, a2, a6
-	addiw	a1, a5, 1871
-	li	a5, 32
-	vsetvli	zero, a5, e32, m1, ta, ma
+	lui	a1, 807449
+	addiw	a1, a1, 1871
+	li	a3, 32
+	vsetvli	zero, a3, e32, m1, ta, ma
 	vmv.v.x	v8, a1
+	andi	a3, a2, -64
 	mv	a1, a3
-	mv	a5, a0
+	mv	a4, a0
 	vmv.v.v	v9, v8
-.LBB0_7:
-	addi	a4, a5, 128
-	vle32.v	v10, (a5)
-	vle32.v	v11, (a4)
+.LBB0_5:
+	addi	a5, a4, 128
+	vle32.v	v10, (a4)
+	vle32.v	v11, (a5)
 	vmax.vv	v8, v10, v8
 	vmax.vv	v9, v11, v9
 	addi	a1, a1, -64
-	addi	a5, a5, 256
-	bnez	a1, .LBB0_7
+	addi	a4, a4, 256
+	bnez	a1, .LBB0_5
 	li	a1, 32
 	vsetvli	zero, a1, e32, m1, ta, ma
 	vmax.vv	v8, v8, v9
@@ -53,44 +45,23 @@ vector_reduce_max_i32:
 	vsetvli	zero, a1, e32, m1, ta, ma
 	vredmax.vs	v8, v8, v9
 	vmv.x.s	a1, v8
-	beq	a3, a2, .LBB0_15
-	andi	a4, a2, 48
-	beqz	a4, .LBB0_13
-.LBB0_10:
-	mv	a4, a3
-	addi	a3, a6, 48
-	and	a3, a3, a2
-	vsetivli	zero, 16, e32, mf2, ta, ma
-	vmv.v.x	v8, a1
-	sh2add	a1, a4, a0
-	sub	a4, a4, a3
-.LBB0_11:
-	vle32.v	v9, (a1)
-	vmax.vv	v8, v9, v8
-	addi	a4, a4, 16
-	addi	a1, a1, 64
-	bnez	a4, .LBB0_11
-	lui	a1, 524288
-	vmv.s.x	v9, a1
-	vredmax.vs	v8, v8, v9
-	vmv.x.s	a1, v8
-	beq	a3, a2, .LBB0_15
-.LBB0_13:
+	beq	a3, a2, .LBB0_9
+.LBB0_7:
 	sh2add	a0, a3, a0
 	sub	a2, a2, a3
-.LBB0_14:
+.LBB0_8:
 	lw	a3, 0(a0)
 	sext.w	a1, a1
 	max	a1, a3, a1
 	addi	a2, a2, -1
 	addi	a0, a0, 4
-	bnez	a2, .LBB0_14
-.LBB0_15:
+	bnez	a2, .LBB0_8
+.LBB0_9:
 	mv	a0, a1
 	ret
 .Lfunc_end0:
 	.size	vector_reduce_max_i32, .Lfunc_end0-vector_reduce_max_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6d859266803e2a9060c4e8770f92cc2c7bd05a3b)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 269bc684e7a0c3f727ea5e74270112585acaf55d)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig
