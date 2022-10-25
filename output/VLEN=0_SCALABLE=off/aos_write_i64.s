@@ -19,6 +19,6 @@ aos_init_i64:
 .Lfunc_end0:
 	.size	aos_init_i64, .Lfunc_end0-aos_init_i64
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6d859266803e2a9060c4e8770f92cc2c7bd05a3b)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

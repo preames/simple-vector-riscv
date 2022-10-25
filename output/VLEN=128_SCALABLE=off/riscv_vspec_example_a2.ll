@@ -108,10 +108,10 @@ cond.end:                                         ; preds = %for.body, %cond.tru
 }
 
 ; Function Attrs: argmemonly nocallback nofree nosync nounwind readonly willreturn
-declare <16 x i8> @llvm.masked.load.v16i8.p0(ptr, i32 immarg, <16 x i1>, <16 x i8>) #1
+declare <16 x i8> @llvm.masked.load.v16i8.p0(ptr nocapture, i32 immarg, <16 x i1>, <16 x i8>) #1
 
 ; Function Attrs: argmemonly nocallback nofree nosync nounwind readonly willreturn
-declare <8 x i8> @llvm.masked.load.v8i8.p0(ptr, i32 immarg, <8 x i1>, <8 x i8>) #1
+declare <8 x i8> @llvm.masked.load.v8i8.p0(ptr nocapture, i32 immarg, <8 x i1>, <8 x i8>) #1
 
 attributes #0 = { argmemonly nofree norecurse nosync nounwind "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+m,+relax,+v,+f,+m,+c,+d,+zba,+zbb,+zbc,+zbs,-save-restore" }
 attributes #1 = { argmemonly nocallback nofree nosync nounwind readonly willreturn }
@@ -122,7 +122,7 @@ attributes #1 = { argmemonly nocallback nofree nosync nounwind readonly willretu
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6d859266803e2a9060c4e8770f92cc2c7bd05a3b)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"omnipotent char", !6, i64 0}
 !6 = !{!"Simple C/C++ TBAA"}

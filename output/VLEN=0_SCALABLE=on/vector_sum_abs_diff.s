@@ -27,113 +27,127 @@ myabs:
 	.p2align	1
 	.type	vector_sum_abs_diff,@function
 vector_sum_abs_diff:
+	addi	sp, sp, -64
+	sd	s0, 56(sp)
+	sd	s1, 48(sp)
+	sd	s2, 40(sp)
+	sd	s3, 32(sp)
+	sd	s4, 24(sp)
+	sd	s5, 16(sp)
+	sd	s6, 8(sp)
 	li	a4, 8
 	bltu	a3, a4, .LBB2_6
-	srliw	t0, a3, 3
+	srliw	a6, a3, 3
 	csrr	t1, vlenb
 	srli	a5, t1, 2
 	li	a3, 4
 	maxu	a3, a5, a3
-	bltu	t0, a3, .LBB2_3
-	sh2add	a3, t0, a0
-	sh3add	a4, t0, a1
-	sh3add	a6, t0, a2
-	sltu	a7, a0, a4
+	bltu	a6, a3, .LBB2_3
+	sh2add	a3, a6, a0
+	sh3add	a4, a6, a1
+	sh3add	a7, a6, a2
+	sltu	t0, a0, a4
 	sltu	a4, a1, a3
-	and	a7, a7, a4
-	sltu	a4, a0, a6
+	and	t0, t0, a4
+	sltu	a4, a0, a7
 	sltu	a3, a2, a3
 	and	a3, a3, a4
-	or	a3, a7, a3
+	or	a3, t0, a3
 	beqz	a3, .LBB2_7
 .LBB2_3:
-	li	a6, 0
+	li	t0, 0
 .LBB2_4:
-	sub	a7, t0, a6
-	sh2add	t0, a6, a0
-	slli	a4, a6, 3
-	ori	a4, a4, 3
-	add	a2, a2, a4
-	add	a1, a1, a4
+	sh3add	a1, t0, a1
+	sh3add	a2, t0, a2
+	sh2add	s5, t0, a0
+	sub	s6, a6, t0
 .LBB2_5:
-	lb	a4, -3(a1)
-	lb	a5, -3(a2)
-	subw	a4, a4, a5
+	lb	a6, 3(a1)
+	lb	a7, 7(a1)
+	lb	t0, 1(a1)
+	lb	t1, 5(a1)
+	lb	t2, 2(a1)
+	lb	t3, 6(a1)
+	lb	s3, 0(a1)
+	lb	s4, 4(a1)
+	lb	t4, 3(a2)
+	lb	t5, 7(a2)
+	lb	t6, 1(a2)
+	lb	s2, 5(a2)
+	lb	s1, 4(a2)
+	lb	s0, 2(a2)
+	lb	a4, 0(a2)
+	lb	a5, 6(a2)
+	subw	s1, s4, s1
+	sext.b	s4, s1
+	subw	a4, s3, a4
+	sext.b	s3, a4
+	subw	a5, t3, a5
+	sext.b	t3, a5
+	subw	s0, t2, s0
+	sext.b	s0, s0
+	subw	s1, t1, s2
+	sext.b	s1, s1
+	subw	a4, t0, t6
 	sext.b	a4, a4
-	lb	a5, -2(a1)
-	lb	a3, -2(a2)
-	neg	a0, a4
-	max	a0, a4, a0
-	sext.b	a6, a0
-	subw	a3, a5, a3
-	sext.b	a3, a3
-	neg	a4, a3
-	lb	a5, -1(a1)
-	lb	a0, -1(a2)
-	max	a3, a3, a4
-	sext.b	a3, a3
-	addw	a6, a6, a3
-	subw	a0, a5, a0
+	subw	a5, a7, t5
+	sext.b	a5, a5
+	subw	a0, a6, t4
 	sext.b	a0, a0
-	neg	a4, a0
-	lb	a5, 0(a1)
-	lb	a3, 0(a2)
-	max	a0, a0, a4
-	sext.b	a0, a0
-	addw	a6, a6, a0
-	subw	a3, a5, a3
-	sext.b	a3, a3
-	neg	a4, a3
-	lb	a5, 1(a1)
-	lb	a0, 1(a2)
-	max	a3, a3, a4
-	sext.b	a3, a3
-	addw	a6, a6, a3
-	subw	a0, a5, a0
-	sext.b	a0, a0
-	neg	a4, a0
-	lb	a5, 2(a1)
-	lb	a3, 2(a2)
-	max	a0, a0, a4
-	sext.b	a0, a0
-	addw	a6, a6, a0
-	subw	a3, a5, a3
-	sext.b	a3, a3
-	neg	a4, a3
-	lb	a5, 3(a1)
-	lb	a0, 3(a2)
-	max	a3, a3, a4
-	sext.b	a3, a3
-	addw	a6, a6, a3
-	subw	a0, a5, a0
-	sext.b	a0, a0
-	neg	a4, a0
-	lb	a5, 4(a1)
-	lb	a3, 4(a2)
-	max	a0, a0, a4
-	sext.b	a0, a0
-	addw	a0, a6, a0
-	subw	a3, a5, a3
-	sext.b	a3, a3
-	neg	a4, a3
-	max	a3, a3, a4
-	sext.b	a3, a3
+	neg	a3, a0
+	max	a6, a0, a3
+	neg	a3, a5
+	max	a7, a5, a3
+	neg	a5, a4
+	max	a4, a4, a5
+	neg	a5, s1
+	max	a5, s1, a5
+	neg	s1, s0
+	max	s1, s0, s1
+	neg	s0, t3
+	max	s0, t3, s0
+	neg	a0, s3
+	max	a0, s3, a0
+	neg	a3, s4
+	max	a3, s4, a3
+	sext.b	t0, a3
+	sext.b	t1, a0
+	sext.b	s0, s0
+	sext.b	s1, s1
+	sext.b	a5, a5
+	sext.b	a4, a4
+	sext.b	a3, a7
+	sext.b	a0, a6
 	addw	a0, a0, a3
-	sw	a0, 0(t0)
-	addi	a7, a7, -1
-	addi	t0, t0, 4
-	addi	a2, a2, 8
+	addw	a3, a4, a5
+	addw	a0, a0, a3
+	addw	a3, s1, s0
+	addw	a4, t1, t0
+	addw	a3, a3, a4
+	addw	a0, a0, a3
+	sw	a0, 0(s5)
 	addi	a1, a1, 8
-	bnez	a7, .LBB2_5
+	addi	a2, a2, 8
+	addi	s6, s6, -1
+	addi	s5, s5, 4
+	bnez	s6, .LBB2_5
 .LBB2_6:
+	ld	s0, 56(sp)
+	ld	s1, 48(sp)
+	ld	s2, 40(sp)
+	ld	s3, 32(sp)
+	ld	s4, 24(sp)
+	ld	s5, 16(sp)
+	ld	s6, 8(sp)
+	addi	sp, sp, 64
 	ret
 .LBB2_7:
 	addi	a3, a5, -1
-	and	a7, t0, a3
-	sub	a6, t0, a7
+	and	a7, a6, a3
+	sub	t0, a6, a7
 	vsetvli	a3, zero, e64, m2, ta, ma
 	vid.v	v8
-	mv	a3, a6
+	mv	a3, t0
 	mv	a4, a0
 .LBB2_8:
 	vsll.vi	v10, v8, 3
@@ -233,6 +247,6 @@ vector_sum_abs_diff:
 .Lfunc_end2:
 	.size	vector_sum_abs_diff, .Lfunc_end2-vector_sum_abs_diff
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6e4f504575fce7ce9a29c00697acb4043b19badf)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 6d859266803e2a9060c4e8770f92cc2c7bd05a3b)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig
