@@ -1,9 +1,9 @@
-; ModuleID = 'segment_unroll.c'
-source_filename = "segment_unroll.c"
+; ModuleID = 'openblas_gepb_16x4.c'
+source_filename = "openblas_gepb_16x4.c"
 target datalayout = "e-m:e-p:64:64-i64:64-i128:128-n64-S128"
 target triple = "riscv64-unknown-unknown"
 
-; Function Attrs: argmemonly nofree nosync nounwind vscale_range(16,1024)
+; Function Attrs: argmemonly nofree nosync nounwind vscale_range(4,1024)
 define dso_local void @test(ptr noalias nocapture noundef readonly %A, ptr noalias nocapture noundef readonly %B, ptr noalias nocapture noundef %C) local_unnamed_addr #0 {
 entry:
   %arrayidx.2 = getelementptr inbounds float, ptr %A, i64 2
@@ -201,7 +201,7 @@ declare <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float>, <vscale
 ; Function Attrs: nocallback nofree nosync nounwind willreturn writeonly
 declare void @llvm.masked.scatter.nxv2f32.nxv2p0(<vscale x 2 x float>, <vscale x 2 x ptr>, i32 immarg, <vscale x 2 x i1>) #5
 
-attributes #0 = { argmemonly nofree nosync nounwind vscale_range(16,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl1024b,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
+attributes #0 = { argmemonly nofree nosync nounwind vscale_range(4,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl256b,+zvl32b,+zvl64b,-save-restore" }
 attributes #1 = { nocallback nofree nosync nounwind readnone willreturn }
 attributes #2 = { argmemonly nocallback nofree nosync nounwind readonly willreturn }
 attributes #3 = { nocallback nofree nosync nounwind readonly willreturn }

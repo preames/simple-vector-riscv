@@ -1,7 +1,7 @@
 	.text
 	.attribute	4, 16
-	.attribute	5, "rv64i2p0_m2p0_a2p0_f2p0_d2p0_c2p0_v1p0_zba1p0_zbb1p0_zbc1p0_zbs1p0_zve32f1p0_zve32x1p0_zve64d1p0_zve64f1p0_zve64x1p0_zvl128b1p0_zvl32b1p0_zvl64b1p0"
-	.file	"segment_unroll.c"
+	.attribute	5, "rv64i2p0_m2p0_a2p0_f2p0_d2p0_c2p0_v1p0_zba1p0_zbb1p0_zbc1p0_zbs1p0_zve32f1p0_zve32x1p0_zve64d1p0_zve64f1p0_zve64x1p0_zvl128b1p0_zvl256b1p0_zvl32b1p0_zvl64b1p0"
+	.file	"openblas_gepb_16x4.c"
 	.globl	test
 	.p2align	1
 	.type	test,@function
@@ -22,7 +22,7 @@ test:
 	flw	fa5, 20(a0)
 	flw	fa6, 16(a0)
 	flw	fa7, 12(a0)
-	vsetivli	zero, 4, e32, m1, ta, ma
+	vsetivli	zero, 4, e32, mf2, ta, ma
 	vle32.v	v8, (a1)
 	li	a0, 64
 	vlse32.v	v9, (a2), a0
