@@ -6,17 +6,17 @@
 	.p2align	1
 	.type	my_strlne,@function
 my_strlne:
-	li	a1, 0
+	mv	a1, a0
+	li	a0, -1
 .LBB0_1:
-	add	a2, a0, a1
-	lbu	a2, 0(a2)
+	lbu	a2, 0(a1)
 	addi	a1, a1, 1
+	addiw	a0, a0, 1
 	bnez	a2, .LBB0_1
-	addiw	a0, a1, -1
 	ret
 .Lfunc_end0:
 	.size	my_strlne, .Lfunc_end0-my_strlne
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 269bc684e7a0c3f727ea5e74270112585acaf55d)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git a819f6c8d1f4909a1ac3a2eff390236e4e31dba3)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

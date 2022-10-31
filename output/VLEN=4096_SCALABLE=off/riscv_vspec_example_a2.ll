@@ -1,6 +1,6 @@
 ; ModuleID = 'riscv_vspec_example_a2.c'
 source_filename = "riscv_vspec_example_a2.c"
-target datalayout = "e-m:e-p:64:64-i64:64-i128:128-n64-S128"
+target datalayout = "e-m:e-p:64:64-i64:64-i128:128-n32:64-S128"
 target triple = "riscv64-unknown-unknown"
 
 ; Function Attrs: argmemonly nofree norecurse nosync nounwind vscale_range(64,1024)
@@ -67,9 +67,9 @@ cond.true:                                        ; preds = %for.body
   br label %cond.end
 
 cond.end:                                         ; preds = %for.body, %cond.true
-  %cond.off0 = phi i8 [ %8, %cond.true ], [ 1, %for.body ]
+  %cond = phi i8 [ %8, %cond.true ], [ 1, %for.body ]
   %arrayidx8 = getelementptr inbounds i8, ptr %b, i64 %indvars.iv
-  store i8 %cond.off0, ptr %arrayidx8, align 1, !tbaa !4
+  store i8 %cond, ptr %arrayidx8, align 1, !tbaa !4
   %indvars.iv.next = add nuw nsw i64 %indvars.iv, 1
   %exitcond.not = icmp eq i64 %indvars.iv.next, %wide.trip.count
   br i1 %exitcond.not, label %for.cond.cleanup, label %for.body, !llvm.loop !10
@@ -87,7 +87,7 @@ attributes #1 = { argmemonly nocallback nofree nosync nounwind readonly willretu
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64d"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 269bc684e7a0c3f727ea5e74270112585acaf55d)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git a819f6c8d1f4909a1ac3a2eff390236e4e31dba3)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"omnipotent char", !6, i64 0}
 !6 = !{!"Simple C/C++ TBAA"}

@@ -7,39 +7,41 @@
 	.type	vector_init_i32,@function
 vector_init_i32:
 	beqz	a1, .LBB0_8
-	li	a6, 16
-	zext.w	a2, a1
-	bgeu	a1, a6, .LBB0_3
+	li	a3, 16
+	zext.w	a6, a1
+	bgeu	a1, a3, .LBB0_3
 	li	a1, 0
 	j	.LBB0_6
 .LBB0_3:
 	vsetivli	zero, 8, e32, m1, ta, ma
-	andi	a1, a2, -16
+	andi	a1, a6, -16
 	vid.v	v8
 	mv	a4, a1
 	mv	a5, a0
 .LBB0_4:
-	addi	a3, a5, 32
+	addi	a2, a5, 32
 	vadd.vi	v9, v8, 8
 	vse32.v	v8, (a5)
-	vse32.v	v9, (a3)
-	vadd.vx	v8, v8, a6
+	vse32.v	v9, (a2)
+	vadd.vx	v8, v8, a3
 	addi	a4, a4, -16
 	addi	a5, a5, 64
 	bnez	a4, .LBB0_4
-	beq	a1, a2, .LBB0_8
+	beq	a1, a6, .LBB0_8
 .LBB0_6:
 	sh2add	a0, a1, a0
+	sub	a2, a6, a1
 .LBB0_7:
 	sw	a1, 0(a0)
-	addi	a1, a1, 1
+	addiw	a1, a1, 1
+	addi	a2, a2, -1
 	addi	a0, a0, 4
-	bne	a2, a1, .LBB0_7
+	bnez	a2, .LBB0_7
 .LBB0_8:
 	ret
 .Lfunc_end0:
 	.size	vector_init_i32, .Lfunc_end0-vector_init_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 269bc684e7a0c3f727ea5e74270112585acaf55d)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git a819f6c8d1f4909a1ac3a2eff390236e4e31dba3)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

@@ -7,21 +7,21 @@
 	.type	sparsevec_init_i32,@function
 sparsevec_init_i32:
 	beqz	a0, .LBB0_8
-	li	a6, 16
-	zext.w	a7, a0
-	bgeu	a0, a6, .LBB0_3
+	li	a7, 16
+	zext.w	a6, a0
+	bgeu	a0, a7, .LBB0_3
 	li	a0, 0
 	j	.LBB0_6
 .LBB0_3:
 	vsetivli	zero, 8, e32, m1, ta, ma
-	andi	a0, a7, -16
+	andi	a0, a6, -16
 	vid.v	v8
 	mv	a5, a0
-	mv	a4, a2
+	mv	a3, a2
 .LBB0_4:
-	addi	a3, a4, 16
-	vle16.v	v9, (a4)
-	vle16.v	v10, (a3)
+	addi	a4, a3, 16
+	vle16.v	v9, (a3)
+	vle16.v	v10, (a4)
 	vadd.vi	v11, v8, 8
 	vsetvli	zero, zero, e64, m2, ta, ma
 	vsext.vf4	v12, v9
@@ -31,25 +31,27 @@ sparsevec_init_i32:
 	vsetvli	zero, zero, e32, m1, ta, ma
 	vsoxei64.v	v8, (a1), v12
 	vsoxei64.v	v11, (a1), v14
-	vadd.vx	v8, v8, a6
+	vadd.vx	v8, v8, a7
 	addi	a5, a5, -16
-	addi	a4, a4, 32
+	addi	a3, a3, 32
 	bnez	a5, .LBB0_4
-	beq	a0, a7, .LBB0_8
+	beq	a0, a6, .LBB0_8
 .LBB0_6:
 	sh1add	a2, a0, a2
+	sub	a3, a6, a0
 .LBB0_7:
-	lh	a3, 0(a2)
-	sh2add	a3, a3, a1
-	sw	a0, 0(a3)
-	addi	a0, a0, 1
+	lh	a4, 0(a2)
+	sh2add	a4, a4, a1
+	sw	a0, 0(a4)
+	addiw	a0, a0, 1
+	addi	a3, a3, -1
 	addi	a2, a2, 2
-	bne	a7, a0, .LBB0_7
+	bnez	a3, .LBB0_7
 .LBB0_8:
 	ret
 .Lfunc_end0:
 	.size	sparsevec_init_i32, .Lfunc_end0-sparsevec_init_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 269bc684e7a0c3f727ea5e74270112585acaf55d)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git a819f6c8d1f4909a1ac3a2eff390236e4e31dba3)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

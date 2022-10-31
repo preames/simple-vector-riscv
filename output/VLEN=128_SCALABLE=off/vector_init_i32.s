@@ -30,16 +30,18 @@ vector_init_i32:
 	beq	a1, a2, .LBB0_8
 .LBB0_6:
 	sh2add	a0, a1, a0
+	sub	a2, a2, a1
 .LBB0_7:
 	sw	a1, 0(a0)
-	addi	a1, a1, 1
+	addiw	a1, a1, 1
+	addi	a2, a2, -1
 	addi	a0, a0, 4
-	bne	a2, a1, .LBB0_7
+	bnez	a2, .LBB0_7
 .LBB0_8:
 	ret
 .Lfunc_end0:
 	.size	vector_init_i32, .Lfunc_end0-vector_init_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 269bc684e7a0c3f727ea5e74270112585acaf55d)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git a819f6c8d1f4909a1ac3a2eff390236e4e31dba3)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

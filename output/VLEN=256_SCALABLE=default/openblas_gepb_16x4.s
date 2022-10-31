@@ -16,163 +16,117 @@ test:
 	sd	s6, 8(sp)
 	sd	s7, 0(sp)
 	li	a3, 0
-	addi	t5, a0, 8
-	addi	s2, a0, 4
-	addi	a7, a0, 60
-	addi	t0, a0, 56
-	addi	t1, a0, 52
-	addi	t2, a0, 48
-	addi	t3, a0, 44
-	addi	t4, a0, 40
-	addi	t6, a0, 36
-	addi	s3, a0, 32
-	addi	s4, a0, 28
-	addi	s5, a0, 24
-	addi	s6, a0, 20
-	addi	s7, a0, 16
-	addi	s0, a0, 12
-	csrr	a4, vlenb
-	srli	a5, a4, 2
+	addi	t0, a0, 8
+	addi	s3, a0, 4
+	addi	t1, a0, 60
+	addi	t2, a0, 56
+	addi	t3, a0, 52
+	addi	t4, a0, 48
+	addi	t5, a0, 44
+	addi	t6, a0, 40
+	addi	s2, a0, 36
+	addi	s4, a0, 32
+	addi	s5, a0, 28
+	addi	s6, a0, 24
+	addi	s7, a0, 20
+	addi	s0, a0, 16
+	addi	a4, a0, 12
+	csrr	a7, vlenb
+	srli	a5, a7, 2
 	neg	s1, a5
 	and	a6, a5, s1
 	vsetvli	s1, zero, e64, m2, ta, ma
-	vid.v	v8
-	vlse32.v	v10, (a0), zero
-	vlse32.v	v11, (s2), zero
-	vlse32.v	v12, (t5), zero
-	vlse32.v	v13, (s0), zero
-	vlse32.v	v14, (s7), zero
-	vlse32.v	v15, (s6), zero
-	vlse32.v	v16, (s5), zero
-	vlse32.v	v17, (s4), zero
-	vlse32.v	v18, (s3), zero
-	vlse32.v	v19, (t6), zero
+	vlse32.v	v8, (a0), zero
+	vlse32.v	v9, (s3), zero
+	vlse32.v	v10, (t0), zero
+	vlse32.v	v11, (a4), zero
+	vlse32.v	v12, (s0), zero
+	vlse32.v	v13, (s7), zero
+	vlse32.v	v14, (s6), zero
+	vlse32.v	v15, (s5), zero
+	vlse32.v	v16, (s4), zero
+	vlse32.v	v17, (s2), zero
+	vlse32.v	v18, (t6), zero
+	vlse32.v	v19, (t5), zero
 	vlse32.v	v20, (t4), zero
 	vlse32.v	v21, (t3), zero
 	vlse32.v	v22, (t2), zero
 	vlse32.v	v23, (t1), zero
-	vlse32.v	v24, (t0), zero
-	vlse32.v	v25, (a7), zero
-	slli	a0, a4, 4
-	li	a7, 64
-	li	t0, 16
-	li	t1, 20
-	li	t2, 24
-	li	t3, 28
-	li	t4, 32
-	li	t5, 36
-	li	t6, 40
-	li	s2, 44
-	li	s3, 48
-	li	s4, 52
-	li	s5, 56
-	li	s0, 60
-	mv	s1, a2
-	vmv.v.v	v26, v8
+	slli	a0, a7, 4
+	vid.v	v24
+	li	a4, 64
 .LBB0_1:
-	vsaddu.vx	v28, v8, a3
-	vmsleu.vi	v0, v28, 3
-	vle32.v	v28, (a1), v0.t
-	vlse32.v	v29, (s1), a7, v0.t
-	vsetvli	zero, zero, e32, m1, ta, ma
-	vfmacc.vv	v29, v10, v28
-	vsse32.v	v29, (s1), a7, v0.t
 	vsetvli	zero, zero, e64, m2, ta, ma
-	vsll.vi	v30, v26, 6
-	vor.vi	v2, v30, 4
+	vsaddu.vx	v26, v24, a3
+	vmsleu.vi	v0, v26, 3
+	vle32.v	v26, (a1), v0.t
+	vlse32.v	v27, (a2), a4, v0.t
 	vsetvli	zero, zero, e32, m1, ta, ma
-	vluxei64.v	v29, (a2), v2, v0.t
-	vfmacc.vv	v29, v11, v28
-	vsoxei64.v	v29, (a2), v2, v0.t
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vor.vi	v2, v30, 8
-	vsetvli	zero, zero, e32, m1, ta, ma
-	vluxei64.v	v29, (a2), v2, v0.t
-	vfmacc.vv	v29, v12, v28
-	vsoxei64.v	v29, (a2), v2, v0.t
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vor.vi	v2, v30, 12
-	vsetvli	zero, zero, e32, m1, ta, ma
-	vluxei64.v	v29, (a2), v2, v0.t
-	vfmacc.vv	v29, v13, v28
-	vsoxei64.v	v29, (a2), v2, v0.t
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vor.vx	v2, v30, t0
-	vsetvli	zero, zero, e32, m1, ta, ma
-	vluxei64.v	v29, (a2), v2, v0.t
-	vfmacc.vv	v29, v14, v28
-	vsoxei64.v	v29, (a2), v2, v0.t
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vor.vx	v2, v30, t1
-	vsetvli	zero, zero, e32, m1, ta, ma
-	vluxei64.v	v29, (a2), v2, v0.t
-	vfmacc.vv	v29, v15, v28
-	vsoxei64.v	v29, (a2), v2, v0.t
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vor.vx	v2, v30, t2
-	vsetvli	zero, zero, e32, m1, ta, ma
-	vluxei64.v	v29, (a2), v2, v0.t
-	vfmacc.vv	v29, v16, v28
-	vsoxei64.v	v29, (a2), v2, v0.t
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vor.vx	v2, v30, t3
-	vsetvli	zero, zero, e32, m1, ta, ma
-	vluxei64.v	v29, (a2), v2, v0.t
-	vfmacc.vv	v29, v17, v28
-	vsoxei64.v	v29, (a2), v2, v0.t
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vor.vx	v2, v30, t4
-	vsetvli	zero, zero, e32, m1, ta, ma
-	vluxei64.v	v29, (a2), v2, v0.t
-	vfmacc.vv	v29, v18, v28
-	vsoxei64.v	v29, (a2), v2, v0.t
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vor.vx	v2, v30, t5
-	vsetvli	zero, zero, e32, m1, ta, ma
-	vluxei64.v	v29, (a2), v2, v0.t
-	vfmacc.vv	v29, v19, v28
-	vsoxei64.v	v29, (a2), v2, v0.t
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vor.vx	v2, v30, t6
-	vsetvli	zero, zero, e32, m1, ta, ma
-	vluxei64.v	v29, (a2), v2, v0.t
-	vfmacc.vv	v29, v20, v28
-	vsoxei64.v	v29, (a2), v2, v0.t
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vor.vx	v2, v30, s2
-	vsetvli	zero, zero, e32, m1, ta, ma
-	vluxei64.v	v29, (a2), v2, v0.t
-	vfmacc.vv	v29, v21, v28
-	vsoxei64.v	v29, (a2), v2, v0.t
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vor.vx	v2, v30, s3
-	vsetvli	zero, zero, e32, m1, ta, ma
-	vluxei64.v	v29, (a2), v2, v0.t
-	vfmacc.vv	v29, v22, v28
-	vsoxei64.v	v29, (a2), v2, v0.t
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vor.vx	v2, v30, s4
-	vsetvli	zero, zero, e32, m1, ta, ma
-	vluxei64.v	v29, (a2), v2, v0.t
-	vfmacc.vv	v29, v23, v28
-	vsoxei64.v	v29, (a2), v2, v0.t
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vor.vx	v2, v30, s5
-	vsetvli	zero, zero, e32, m1, ta, ma
-	vluxei64.v	v29, (a2), v2, v0.t
-	vfmacc.vv	v29, v24, v28
-	vsoxei64.v	v29, (a2), v2, v0.t
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vor.vx	v30, v30, s0
-	vsetvli	zero, zero, e32, m1, ta, ma
-	vluxei64.v	v29, (a2), v30, v0.t
-	vfmacc.vv	v29, v25, v28
-	vsoxei64.v	v29, (a2), v30, v0.t
+	vfmacc.vv	v27, v8, v26
+	vsse32.v	v27, (a2), a4, v0.t
+	addi	s1, a2, 4
+	vlse32.v	v27, (s1), a4, v0.t
+	vfmacc.vv	v27, v9, v26
+	vsse32.v	v27, (s1), a4, v0.t
+	addi	s1, a2, 8
+	vlse32.v	v27, (s1), a4, v0.t
+	vfmacc.vv	v27, v10, v26
+	vsse32.v	v27, (s1), a4, v0.t
+	addi	s1, a2, 12
+	vlse32.v	v27, (s1), a4, v0.t
+	vfmacc.vv	v27, v11, v26
+	vsse32.v	v27, (s1), a4, v0.t
+	addi	s1, a2, 16
+	vlse32.v	v27, (s1), a4, v0.t
+	vfmacc.vv	v27, v12, v26
+	vsse32.v	v27, (s1), a4, v0.t
+	addi	s1, a2, 20
+	vlse32.v	v27, (s1), a4, v0.t
+	vfmacc.vv	v27, v13, v26
+	vsse32.v	v27, (s1), a4, v0.t
+	addi	s1, a2, 24
+	vlse32.v	v27, (s1), a4, v0.t
+	vfmacc.vv	v27, v14, v26
+	vsse32.v	v27, (s1), a4, v0.t
+	addi	s1, a2, 28
+	vlse32.v	v27, (s1), a4, v0.t
+	vfmacc.vv	v27, v15, v26
+	vsse32.v	v27, (s1), a4, v0.t
+	addi	s1, a2, 32
+	vlse32.v	v27, (s1), a4, v0.t
+	vfmacc.vv	v27, v16, v26
+	vsse32.v	v27, (s1), a4, v0.t
+	addi	s1, a2, 36
+	vlse32.v	v27, (s1), a4, v0.t
+	vfmacc.vv	v27, v17, v26
+	vsse32.v	v27, (s1), a4, v0.t
+	addi	s1, a2, 40
+	vlse32.v	v27, (s1), a4, v0.t
+	vfmacc.vv	v27, v18, v26
+	vsse32.v	v27, (s1), a4, v0.t
+	addi	s1, a2, 44
+	vlse32.v	v27, (s1), a4, v0.t
+	vfmacc.vv	v27, v19, v26
+	vsse32.v	v27, (s1), a4, v0.t
+	addi	s1, a2, 48
+	vlse32.v	v27, (s1), a4, v0.t
+	vfmacc.vv	v27, v20, v26
+	vsse32.v	v27, (s1), a4, v0.t
+	addi	s1, a2, 52
+	vlse32.v	v27, (s1), a4, v0.t
+	vfmacc.vv	v27, v21, v26
+	vsse32.v	v27, (s1), a4, v0.t
+	addi	s1, a2, 56
+	vlse32.v	v27, (s1), a4, v0.t
+	vfmacc.vv	v27, v22, v26
+	vsse32.v	v27, (s1), a4, v0.t
+	addi	s1, a2, 60
+	vlse32.v	v27, (s1), a4, v0.t
+	vfmacc.vv	v27, v23, v26
+	vsse32.v	v27, (s1), a4, v0.t
 	add	a3, a3, a5
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vadd.vx	v26, v26, a5
-	add	a1, a1, a4
-	add	s1, s1, a0
+	add	a1, a1, a7
+	add	a2, a2, a0
 	bne	a6, a3, .LBB0_1
 	ld	s0, 56(sp)
 	ld	s1, 48(sp)
@@ -187,6 +141,6 @@ test:
 .Lfunc_end0:
 	.size	test, .Lfunc_end0-test
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 269bc684e7a0c3f727ea5e74270112585acaf55d)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git a819f6c8d1f4909a1ac3a2eff390236e4e31dba3)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

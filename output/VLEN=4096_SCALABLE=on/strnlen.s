@@ -10,19 +10,19 @@ my_strnlne:
 	beqz	a0, .LBB0_5
 	zext.w	a3, a0
 .LBB0_2:
-	add	a4, a1, a2
-	lbu	a4, 0(a4)
+	lbu	a4, 0(a1)
 	beqz	a4, .LBB0_5
-	addi	a2, a2, 1
-	bne	a3, a2, .LBB0_2
+	addiw	a2, a2, 1
+	addi	a3, a3, -1
+	addi	a1, a1, 1
+	bnez	a3, .LBB0_2
 	mv	a2, a0
 .LBB0_5:
-	sext.w	a1, a2
-	minu	a0, a1, a0
+	minu	a0, a2, a0
 	ret
 .Lfunc_end0:
 	.size	my_strnlne, .Lfunc_end0-my_strnlne
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 269bc684e7a0c3f727ea5e74270112585acaf55d)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git a819f6c8d1f4909a1ac3a2eff390236e4e31dba3)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

@@ -36,18 +36,20 @@ sparsevec_init_i32:
 	beqz	a6, .LBB0_8
 .LBB0_6:
 	sh1add	a0, a3, a2
+	sub	a2, a7, a3
 .LBB0_7:
-	lh	a2, 0(a0)
-	sh2add	a2, a2, a1
-	sw	a3, 0(a2)
-	addi	a3, a3, 1
+	lh	a4, 0(a0)
+	sh2add	a4, a4, a1
+	sw	a3, 0(a4)
+	addiw	a3, a3, 1
+	addi	a2, a2, -1
 	addi	a0, a0, 2
-	bne	a7, a3, .LBB0_7
+	bnez	a2, .LBB0_7
 .LBB0_8:
 	ret
 .Lfunc_end0:
 	.size	sparsevec_init_i32, .Lfunc_end0-sparsevec_init_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 269bc684e7a0c3f727ea5e74270112585acaf55d)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git a819f6c8d1f4909a1ac3a2eff390236e4e31dba3)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

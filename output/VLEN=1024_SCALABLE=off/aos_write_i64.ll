@@ -1,6 +1,6 @@
 ; ModuleID = 'aos_write_i64.c'
 source_filename = "aos_write_i64.c"
-target datalayout = "e-m:e-p:64:64-i64:64-i128:128-n64-S128"
+target datalayout = "e-m:e-p:64:64-i64:64-i128:128-n32:64-S128"
 target triple = "riscv64-unknown-unknown"
 
 %struct.T = type { i64, i64, i64, i64, i64, i64, i64 }
@@ -62,7 +62,7 @@ attributes #1 = { nocallback nofree nosync nounwind willreturn writeonly }
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64d"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 269bc684e7a0c3f727ea5e74270112585acaf55d)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git a819f6c8d1f4909a1ac3a2eff390236e4e31dba3)"}
 !4 = !{!5, !6, i64 48}
 !5 = !{!"T", !6, i64 0, !6, i64 8, !6, i64 16, !6, i64 24, !6, i64 32, !6, i64 40, !6, i64 48}
 !6 = !{!"long", !7, i64 0}

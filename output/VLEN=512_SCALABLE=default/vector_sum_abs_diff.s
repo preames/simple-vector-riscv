@@ -27,13 +27,15 @@ myabs:
 	.p2align	1
 	.type	vector_sum_abs_diff,@function
 vector_sum_abs_diff:
+	addi	sp, sp, -16
+	sd	s0, 8(sp)
 	li	a4, 8
 	bltu	a3, a4, .LBB2_6
 	srliw	a6, a3, 3
-	csrr	t1, vlenb
-	srli	t4, t1, 2
+	csrr	t2, vlenb
+	srli	t3, t2, 2
 	li	a3, 16
-	maxu	a3, t4, a3
+	maxu	a3, t3, a3
 	bltu	a6, a3, .LBB2_3
 	sh2add	a3, a6, a0
 	sh3add	a4, a6, a1
@@ -72,118 +74,116 @@ vector_sum_abs_diff:
 	addi	a0, a0, 4
 	bnez	a3, .LBB2_5
 .LBB2_6:
+	ld	s0, 8(sp)
+	addi	sp, sp, 16
 	ret
 .LBB2_7:
-	addi	a4, t4, -1
-	and	a7, a6, a4
+	li	t6, 0
+	addi	a3, t3, -1
+	and	a7, a6, a3
 	sub	t0, a6, a7
-	vsetvli	a4, zero, e64, m2, ta, ma
-	vid.v	v8
-	slli	t3, t1, 1
-	li	t2, 8
-	mv	t5, t0
-	mv	a5, a0
+	slli	t1, t2, 1
+	li	a4, 8
+	mv	t4, t0
+	mv	t5, a0
 .LBB2_8:
-	add	a4, a1, a3
-	vlse8.v	v12, (a4), t2
-	add	a4, a2, a3
-	vlse8.v	v13, (a4), t2
-	vsll.vi	v10, v8, 3
-	vsetvli	zero, zero, e8, mf4, ta, ma
-	vsub.vv	v12, v12, v13
-	vrsub.vi	v13, v12, 0
-	vmax.vv	v12, v12, v13
+	add	a5, a1, t6
+	vsetvli	a3, zero, e8, mf4, ta, ma
+	vlse8.v	v8, (a5), a4
+	add	a3, a2, t6
+	vlse8.v	v9, (a3), a4
+	vsub.vv	v8, v8, v9
+	vrsub.vi	v9, v8, 0
+	vmax.vv	v8, v8, v9
 	vsetvli	zero, zero, e32, m1, ta, ma
-	vsext.vf4	v13, v12
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vor.vi	v14, v10, 1
+	addi	s0, a5, 1
+	vlse8.v	v9, (s0), a4
+	addi	s0, a3, 1
+	vlse8.v	v10, (s0), a4
+	vsext.vf4	v11, v8
 	vsetvli	zero, zero, e8, mf4, ta, ma
-	vluxei64.v	v12, (a1), v14
-	vluxei64.v	v16, (a2), v14
-	vsub.vv	v12, v12, v16
-	vrsub.vi	v14, v12, 0
-	vmax.vv	v12, v12, v14
+	vsub.vv	v8, v9, v10
+	vrsub.vi	v9, v8, 0
+	vmax.vv	v8, v8, v9
 	vsetvli	zero, zero, e32, m1, ta, ma
-	vsext.vf4	v14, v12
-	vadd.vv	v12, v13, v14
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vor.vi	v14, v10, 2
+	addi	s0, a5, 2
+	vlse8.v	v9, (s0), a4
+	addi	s0, a3, 2
+	vlse8.v	v10, (s0), a4
+	vsext.vf4	v12, v8
+	vadd.vv	v8, v11, v12
 	vsetvli	zero, zero, e8, mf4, ta, ma
-	vluxei64.v	v13, (a1), v14
-	vluxei64.v	v16, (a2), v14
-	vsub.vv	v13, v13, v16
-	vrsub.vi	v14, v13, 0
-	vmax.vv	v13, v13, v14
+	vsub.vv	v9, v9, v10
+	vrsub.vi	v10, v9, 0
+	vmax.vv	v9, v9, v10
 	vsetvli	zero, zero, e32, m1, ta, ma
-	vsext.vf4	v14, v13
-	vadd.vv	v12, v12, v14
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vor.vi	v14, v10, 3
+	addi	s0, a5, 3
+	vlse8.v	v10, (s0), a4
+	addi	s0, a3, 3
+	vlse8.v	v11, (s0), a4
+	vsext.vf4	v12, v9
+	vadd.vv	v8, v8, v12
 	vsetvli	zero, zero, e8, mf4, ta, ma
-	vluxei64.v	v13, (a1), v14
-	vluxei64.v	v16, (a2), v14
-	vsub.vv	v13, v13, v16
-	vrsub.vi	v14, v13, 0
-	vmax.vv	v13, v13, v14
+	vsub.vv	v9, v10, v11
+	vrsub.vi	v10, v9, 0
+	vmax.vv	v9, v9, v10
 	vsetvli	zero, zero, e32, m1, ta, ma
-	vsext.vf4	v14, v13
-	vadd.vv	v12, v12, v14
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vor.vi	v14, v10, 4
+	addi	s0, a5, 4
+	vlse8.v	v10, (s0), a4
+	addi	s0, a3, 4
+	vlse8.v	v11, (s0), a4
+	vsext.vf4	v12, v9
+	vadd.vv	v8, v8, v12
 	vsetvli	zero, zero, e8, mf4, ta, ma
-	vluxei64.v	v13, (a1), v14
-	vluxei64.v	v16, (a2), v14
-	vsub.vv	v13, v13, v16
-	vrsub.vi	v14, v13, 0
-	vmax.vv	v13, v13, v14
+	vsub.vv	v9, v10, v11
+	vrsub.vi	v10, v9, 0
+	vmax.vv	v9, v9, v10
 	vsetvli	zero, zero, e32, m1, ta, ma
-	vsext.vf4	v14, v13
-	vadd.vv	v12, v12, v14
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vor.vi	v14, v10, 5
+	addi	s0, a5, 5
+	vlse8.v	v10, (s0), a4
+	addi	s0, a3, 5
+	vlse8.v	v11, (s0), a4
+	vsext.vf4	v12, v9
+	vadd.vv	v8, v8, v12
 	vsetvli	zero, zero, e8, mf4, ta, ma
-	vluxei64.v	v13, (a1), v14
-	vluxei64.v	v16, (a2), v14
-	vsub.vv	v13, v13, v16
-	vrsub.vi	v14, v13, 0
-	vmax.vv	v13, v13, v14
+	vsub.vv	v9, v10, v11
+	vrsub.vi	v10, v9, 0
+	vmax.vv	v9, v9, v10
 	vsetvli	zero, zero, e32, m1, ta, ma
-	vsext.vf4	v14, v13
-	vadd.vv	v12, v12, v14
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vor.vi	v14, v10, 6
+	addi	s0, a5, 6
+	vlse8.v	v10, (s0), a4
+	addi	s0, a3, 6
+	vlse8.v	v11, (s0), a4
+	vsext.vf4	v12, v9
+	vadd.vv	v8, v8, v12
 	vsetvli	zero, zero, e8, mf4, ta, ma
-	vluxei64.v	v13, (a1), v14
-	vluxei64.v	v16, (a2), v14
-	vsub.vv	v13, v13, v16
-	vrsub.vi	v14, v13, 0
-	vmax.vv	v13, v13, v14
+	vsub.vv	v9, v10, v11
+	vrsub.vi	v10, v9, 0
+	vmax.vv	v9, v9, v10
 	vsetvli	zero, zero, e32, m1, ta, ma
-	vsext.vf4	v14, v13
-	vadd.vv	v12, v12, v14
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vor.vi	v10, v10, 7
+	addi	a5, a5, 7
+	vlse8.v	v10, (a5), a4
+	addi	a3, a3, 7
+	vlse8.v	v11, (a3), a4
+	vsext.vf4	v12, v9
+	vadd.vv	v8, v8, v12
 	vsetvli	zero, zero, e8, mf4, ta, ma
-	vluxei64.v	v13, (a1), v10
-	vluxei64.v	v14, (a2), v10
-	vsub.vv	v10, v13, v14
-	vrsub.vi	v11, v10, 0
-	vmax.vv	v10, v10, v11
+	vsub.vv	v9, v10, v11
+	vrsub.vi	v10, v9, 0
+	vmax.vv	v9, v9, v10
 	vsetvli	zero, zero, e32, m1, ta, ma
-	vsext.vf4	v11, v10
-	vadd.vv	v10, v12, v11
-	vs1r.v	v10, (a5)
-	add	a3, a3, t3
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vadd.vx	v8, v8, t4
-	sub	t5, t5, t4
-	add	a5, a5, t1
-	bnez	t5, .LBB2_8
+	vsext.vf4	v10, v9
+	vadd.vv	v8, v8, v10
+	vs1r.v	v8, (t5)
+	add	t6, t6, t1
+	sub	t4, t4, t3
+	add	t5, t5, t2
+	bnez	t4, .LBB2_8
 	bnez	a7, .LBB2_4
 	j	.LBB2_6
 .Lfunc_end2:
 	.size	vector_sum_abs_diff, .Lfunc_end2-vector_sum_abs_diff
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 269bc684e7a0c3f727ea5e74270112585acaf55d)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git a819f6c8d1f4909a1ac3a2eff390236e4e31dba3)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig
