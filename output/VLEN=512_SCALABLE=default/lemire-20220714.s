@@ -25,6 +25,6 @@ remove_negatives_scalar:
 .Lfunc_end0:
 	.size	remove_negatives_scalar, .Lfunc_end0-remove_negatives_scalar
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git a819f6c8d1f4909a1ac3a2eff390236e4e31dba3)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9472a810ed33bc9e655484f43047eed07d50bc16)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig
