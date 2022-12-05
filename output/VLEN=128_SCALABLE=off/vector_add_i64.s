@@ -31,19 +31,19 @@ vector_add_i64:
 	beq	a1, a6, .LBB0_8
 .LBB0_6:
 	sh3add	a0, a1, a0
-	sub	a1, a6, a1
+	sub	a3, a6, a1
 .LBB0_7:
-	ld	a3, 0(a0)
-	add	a3, a3, a2
-	sd	a3, 0(a0)
-	addi	a1, a1, -1
+	ld	a1, 0(a0)
+	add	a1, a1, a2
+	sd	a1, 0(a0)
+	addi	a3, a3, -1
 	addi	a0, a0, 8
-	bnez	a1, .LBB0_7
+	bnez	a3, .LBB0_7
 .LBB0_8:
 	ret
 .Lfunc_end0:
 	.size	vector_add_i64, .Lfunc_end0-vector_add_i64
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9472a810ed33bc9e655484f43047eed07d50bc16)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

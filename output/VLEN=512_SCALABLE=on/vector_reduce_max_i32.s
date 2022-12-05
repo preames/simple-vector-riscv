@@ -6,38 +6,38 @@
 	.p2align	1
 	.type	vector_reduce_max_i32,@function
 vector_reduce_max_i32:
-	lui	a2, 807449
+	lui	a3, 807449
 	beqz	a1, .LBB0_3
 	zext.w	t0, a1
 	csrr	t1, vlenb
 	srli	a5, t1, 1
 	bgeu	t0, a5, .LBB0_4
 	li	a7, 0
-	addiw	a1, a2, 1871
+	addiw	a1, a3, 1871
 	j	.LBB0_7
 .LBB0_3:
-	addiw	a0, a2, 1871
+	addiw	a0, a3, 1871
 	ret
 .LBB0_4:
-	addi	a2, a5, -1
-	and	a6, t0, a2
+	addi	a1, a5, -1
+	and	a6, t0, a1
 	sub	a7, t0, a6
-	lui	a2, 807449
-	addiw	a2, a2, 1871
+	lui	a1, 807449
+	addiw	a1, a1, 1871
 	vsetvli	a3, zero, e32, m1, ta, ma
-	vmv.v.x	v8, a2
-	slli	a4, t1, 1
+	vmv.v.x	v8, a1
+	slli	a2, t1, 1
 	mv	a3, a7
-	mv	a2, a0
+	mv	a4, a0
 	vmv.v.v	v9, v8
 .LBB0_5:
-	vl1re32.v	v10, (a2)
-	add	a1, a2, t1
+	vl1re32.v	v10, (a4)
+	add	a1, a4, t1
 	vl1re32.v	v11, (a1)
 	vmax.vv	v8, v10, v8
 	vmax.vv	v9, v11, v9
 	sub	a3, a3, a5
-	add	a2, a2, a4
+	add	a4, a4, a2
 	bnez	a3, .LBB0_5
 	vmax.vv	v8, v8, v9
 	lui	a1, 524288
@@ -61,6 +61,6 @@ vector_reduce_max_i32:
 .Lfunc_end0:
 	.size	vector_reduce_max_i32, .Lfunc_end0-vector_reduce_max_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9472a810ed33bc9e655484f43047eed07d50bc16)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

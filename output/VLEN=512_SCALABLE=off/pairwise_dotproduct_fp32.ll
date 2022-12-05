@@ -3,7 +3,7 @@ source_filename = "pairwise_dotproduct_fp32.c"
 target datalayout = "e-m:e-p:64:64-i64:64-i128:128-n32:64-S128"
 target triple = "riscv64-unknown-unknown"
 
-; Function Attrs: argmemonly nofree nosync nounwind vscale_range(8,1024)
+; Function Attrs: nofree nosync nounwind memory(argmem: readwrite) vscale_range(8,1024)
 define dso_local void @pairwise_dotproduct_fp32(i32 noundef signext %len, ptr nocapture noundef writeonly %a, ptr nocapture noundef readonly %b, ptr nocapture noundef readonly %c) local_unnamed_addr #0 {
 entry:
   %div22 = and i32 %len, -2
@@ -96,19 +96,19 @@ for.body:                                         ; preds = %for.body.preheader3
   br i1 %cmp, label %for.body, label %for.cond.cleanup, !llvm.loop !19
 }
 
-; Function Attrs: mustprogress nocallback nofree nosync nounwind readnone speculatable willreturn
+; Function Attrs: mustprogress nocallback nofree nosync nounwind speculatable willreturn memory(none)
 declare float @llvm.fmuladd.f32(float, float, float) #1
 
-; Function Attrs: nocallback nofree nosync nounwind readonly willreturn
+; Function Attrs: nocallback nofree nosync nounwind willreturn memory(read)
 declare <16 x float> @llvm.masked.gather.v16f32.v16p0(<16 x ptr>, i32 immarg, <16 x i1>, <16 x float>) #2
 
-; Function Attrs: nocallback nofree nosync nounwind readnone speculatable willreturn
+; Function Attrs: nocallback nofree nosync nounwind speculatable willreturn memory(none)
 declare <16 x float> @llvm.fmuladd.v16f32(<16 x float>, <16 x float>, <16 x float>) #3
 
-attributes #0 = { argmemonly nofree nosync nounwind vscale_range(8,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
-attributes #1 = { mustprogress nocallback nofree nosync nounwind readnone speculatable willreturn }
-attributes #2 = { nocallback nofree nosync nounwind readonly willreturn }
-attributes #3 = { nocallback nofree nosync nounwind readnone speculatable willreturn }
+attributes #0 = { nofree nosync nounwind memory(argmem: readwrite) vscale_range(8,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
+attributes #1 = { mustprogress nocallback nofree nosync nounwind speculatable willreturn memory(none) }
+attributes #2 = { nocallback nofree nosync nounwind willreturn memory(read) }
+attributes #3 = { nocallback nofree nosync nounwind speculatable willreturn memory(none) }
 
 !llvm.module.flags = !{!0, !1, !2}
 !llvm.ident = !{!3}
@@ -116,7 +116,7 @@ attributes #3 = { nocallback nofree nosync nounwind readnone speculatable willre
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64d"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9472a810ed33bc9e655484f43047eed07d50bc16)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"float", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}

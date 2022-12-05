@@ -9,23 +9,23 @@ sparsevec_reduce_add_i32:
 	beqz	a0, .LBB0_8
 	zext.w	t0, a0
 	csrr	t1, vlenb
-	srli	a5, t1, 1
-	bgeu	t0, a5, .LBB0_3
+	srli	a3, t1, 1
+	bgeu	t0, a3, .LBB0_3
 	li	a7, 0
 	li	a0, 0
 	j	.LBB0_6
 .LBB0_3:
-	addi	a3, a5, -1
-	and	a6, t0, a3
+	addi	a4, a3, -1
+	and	a6, t0, a4
 	sub	a7, t0, a6
-	vsetvli	a3, zero, e32, m1, ta, ma
+	vsetvli	a4, zero, e32, m1, ta, ma
 	vmv.v.i	v8, 0
 	mv	a4, a7
-	mv	a3, a2
+	mv	a5, a2
 	vmv.v.i	v9, 0
 .LBB0_4:
-	vle16.v	v10, (a3)
-	add	a0, a3, a5
+	vle16.v	v10, (a5)
+	add	a0, a5, a3
 	vle16.v	v11, (a0)
 	vsetvli	zero, zero, e64, m2, ta, ma
 	vsext.vf4	v12, v10
@@ -37,8 +37,8 @@ sparsevec_reduce_add_i32:
 	vluxei64.v	v10, (a1), v12
 	vadd.vv	v8, v14, v8
 	vadd.vv	v9, v10, v9
-	sub	a4, a4, a5
-	add	a3, a3, t1
+	sub	a4, a4, a3
+	add	a5, a5, t1
 	bnez	a4, .LBB0_4
 	vadd.vv	v8, v9, v8
 	vmv.s.x	v9, zero
@@ -61,6 +61,6 @@ sparsevec_reduce_add_i32:
 .Lfunc_end0:
 	.size	sparsevec_reduce_add_i32, .Lfunc_end0-sparsevec_reduce_add_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9472a810ed33bc9e655484f43047eed07d50bc16)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

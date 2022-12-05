@@ -10,15 +10,15 @@ vector_andnot_i64:
 	zext.w	a7, a2
 	csrr	t1, vlenb
 	srli	t2, t1, 3
-	li	a2, 8
-	maxu	a2, t2, a2
-	bltu	a7, a2, .LBB0_3
-	sh3add	a2, a7, a0
+	li	a3, 8
+	maxu	a3, t2, a3
+	bltu	a7, a3, .LBB0_3
+	sh3add	a3, a7, a0
 	sh3add	a5, a7, a1
 	sltu	a5, a0, a5
-	sltu	a2, a1, a2
-	and	a2, a2, a5
-	beqz	a2, .LBB0_7
+	sltu	a3, a1, a3
+	and	a3, a3, a5
+	beqz	a3, .LBB0_7
 .LBB0_3:
 	li	t0, 0
 .LBB0_4:
@@ -37,19 +37,20 @@ vector_andnot_i64:
 .LBB0_6:
 	ret
 .LBB0_7:
+	li	a2, 0
 	addi	a5, t2, -1
 	and	a6, a7, a5
 	sub	t0, a7, a6
 	vsetvli	a5, zero, e64, m1, ta, ma
 	mv	a5, t0
 .LBB0_8:
-	add	a3, a0, a2
-	add	a4, a1, a2
-	vl1re64.v	v8, (a4)
-	vl1re64.v	v9, (a3)
+	add	a4, a0, a2
+	add	a3, a1, a2
+	vl1re64.v	v8, (a3)
+	vl1re64.v	v9, (a4)
 	vnot.v	v8, v8
 	vand.vv	v8, v9, v8
-	vs1r.v	v8, (a3)
+	vs1r.v	v8, (a4)
 	sub	a5, a5, t2
 	add	a2, a2, t1
 	bnez	a5, .LBB0_8
@@ -58,6 +59,6 @@ vector_andnot_i64:
 .Lfunc_end0:
 	.size	vector_andnot_i64, .Lfunc_end0-vector_andnot_i64
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9472a810ed33bc9e655484f43047eed07d50bc16)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

@@ -86,18 +86,18 @@ vector_sum_abs_diff:
 	mv	t4, t0
 	mv	t5, a0
 .LBB2_8:
-	add	a5, a1, t6
-	vsetvli	a3, zero, e8, mf4, ta, ma
-	vlse8.v	v8, (a5), a4
-	add	a3, a2, t6
-	vlse8.v	v9, (a3), a4
+	add	a3, a1, t6
+	vsetvli	a5, zero, e8, mf4, ta, ma
+	vlse8.v	v8, (a3), a4
+	add	a5, a2, t6
+	vlse8.v	v9, (a5), a4
 	vsub.vv	v8, v8, v9
 	vrsub.vi	v9, v8, 0
 	vmax.vv	v8, v8, v9
 	vsetvli	zero, zero, e32, m1, ta, ma
-	addi	s0, a5, 1
-	vlse8.v	v9, (s0), a4
 	addi	s0, a3, 1
+	vlse8.v	v9, (s0), a4
+	addi	s0, a5, 1
 	vlse8.v	v10, (s0), a4
 	vsext.vf4	v11, v8
 	vsetvli	zero, zero, e8, mf4, ta, ma
@@ -105,9 +105,9 @@ vector_sum_abs_diff:
 	vrsub.vi	v9, v8, 0
 	vmax.vv	v8, v8, v9
 	vsetvli	zero, zero, e32, m1, ta, ma
-	addi	s0, a5, 2
-	vlse8.v	v9, (s0), a4
 	addi	s0, a3, 2
+	vlse8.v	v9, (s0), a4
+	addi	s0, a5, 2
 	vlse8.v	v10, (s0), a4
 	vsext.vf4	v12, v8
 	vadd.vv	v8, v11, v12
@@ -116,9 +116,9 @@ vector_sum_abs_diff:
 	vrsub.vi	v10, v9, 0
 	vmax.vv	v9, v9, v10
 	vsetvli	zero, zero, e32, m1, ta, ma
-	addi	s0, a5, 3
-	vlse8.v	v10, (s0), a4
 	addi	s0, a3, 3
+	vlse8.v	v10, (s0), a4
+	addi	s0, a5, 3
 	vlse8.v	v11, (s0), a4
 	vsext.vf4	v12, v9
 	vadd.vv	v8, v8, v12
@@ -127,9 +127,9 @@ vector_sum_abs_diff:
 	vrsub.vi	v10, v9, 0
 	vmax.vv	v9, v9, v10
 	vsetvli	zero, zero, e32, m1, ta, ma
-	addi	s0, a5, 4
-	vlse8.v	v10, (s0), a4
 	addi	s0, a3, 4
+	vlse8.v	v10, (s0), a4
+	addi	s0, a5, 4
 	vlse8.v	v11, (s0), a4
 	vsext.vf4	v12, v9
 	vadd.vv	v8, v8, v12
@@ -138,20 +138,9 @@ vector_sum_abs_diff:
 	vrsub.vi	v10, v9, 0
 	vmax.vv	v9, v9, v10
 	vsetvli	zero, zero, e32, m1, ta, ma
-	addi	s0, a5, 5
-	vlse8.v	v10, (s0), a4
 	addi	s0, a3, 5
-	vlse8.v	v11, (s0), a4
-	vsext.vf4	v12, v9
-	vadd.vv	v8, v8, v12
-	vsetvli	zero, zero, e8, mf4, ta, ma
-	vsub.vv	v9, v10, v11
-	vrsub.vi	v10, v9, 0
-	vmax.vv	v9, v9, v10
-	vsetvli	zero, zero, e32, m1, ta, ma
-	addi	s0, a5, 6
 	vlse8.v	v10, (s0), a4
-	addi	s0, a3, 6
+	addi	s0, a5, 5
 	vlse8.v	v11, (s0), a4
 	vsext.vf4	v12, v9
 	vadd.vv	v8, v8, v12
@@ -160,10 +149,21 @@ vector_sum_abs_diff:
 	vrsub.vi	v10, v9, 0
 	vmax.vv	v9, v9, v10
 	vsetvli	zero, zero, e32, m1, ta, ma
-	addi	a5, a5, 7
-	vlse8.v	v10, (a5), a4
+	addi	s0, a3, 6
+	vlse8.v	v10, (s0), a4
+	addi	s0, a5, 6
+	vlse8.v	v11, (s0), a4
+	vsext.vf4	v12, v9
+	vadd.vv	v8, v8, v12
+	vsetvli	zero, zero, e8, mf4, ta, ma
+	vsub.vv	v9, v10, v11
+	vrsub.vi	v10, v9, 0
+	vmax.vv	v9, v9, v10
+	vsetvli	zero, zero, e32, m1, ta, ma
 	addi	a3, a3, 7
-	vlse8.v	v11, (a3), a4
+	vlse8.v	v10, (a3), a4
+	addi	a5, a5, 7
+	vlse8.v	v11, (a5), a4
 	vsext.vf4	v12, v9
 	vadd.vv	v8, v8, v12
 	vsetvli	zero, zero, e8, mf4, ta, ma
@@ -183,6 +183,6 @@ vector_sum_abs_diff:
 .Lfunc_end2:
 	.size	vector_sum_abs_diff, .Lfunc_end2-vector_sum_abs_diff
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9472a810ed33bc9e655484f43047eed07d50bc16)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

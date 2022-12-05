@@ -31,28 +31,28 @@ my_memcpy:
 .LBB0_6:
 	ret
 .LBB0_7:
-	li	a0, 0
-	addi	a3, t1, -1
-	and	a6, a7, a3
+	li	a5, 0
+	addi	a0, t1, -1
+	and	a6, a7, a0
 	sub	a4, a7, a6
-	add	t2, a2, t0
-	add	a3, a1, t0
+	add	a0, a2, t0
+	add	t0, t0, a1
 .LBB0_8:
-	add	a5, a2, a0
-	vl1r.v	v8, (a5)
-	add	a5, t2, a0
-	vl1r.v	v9, (a5)
-	add	a5, a1, a0
-	vs1r.v	v8, (a5)
-	add	a5, a3, a0
-	add	a0, a0, t1
-	vs1r.v	v9, (a5)
-	bne	a4, a0, .LBB0_8
+	add	a3, a2, a5
+	vl1r.v	v8, (a3)
+	add	a3, a0, a5
+	vl1r.v	v9, (a3)
+	add	a3, a1, a5
+	vs1r.v	v8, (a3)
+	add	a3, t0, a5
+	add	a5, a5, t1
+	vs1r.v	v9, (a3)
+	bne	a4, a5, .LBB0_8
 	bnez	a6, .LBB0_4
 	j	.LBB0_6
 .Lfunc_end0:
 	.size	my_memcpy, .Lfunc_end0-my_memcpy
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9472a810ed33bc9e655484f43047eed07d50bc16)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

@@ -36,7 +36,7 @@ saxpy:
 .LBB0_6:
 	ret
 .LBB0_7:
-	li	a5, 0
+	li	a4, 0
 	addi	a3, t1, -1
 	and	a6, a0, a3
 	sub	t0, a0, a6
@@ -47,26 +47,26 @@ saxpy:
 	add	a7, a7, a2
 	mv	a3, t0
 .LBB0_8:
-	add	a4, a1, a5
-	vl1re32.v	v9, (a4)
-	add	a4, t3, a5
-	vl1re32.v	v10, (a4)
-	add	t4, a2, a5
+	add	a5, a1, a4
+	vl1re32.v	v9, (a5)
+	add	a5, t3, a4
+	vl1re32.v	v10, (a5)
+	add	t4, a2, a4
 	vl1re32.v	v11, (t4)
-	add	a4, a7, a5
-	vl1re32.v	v12, (a4)
+	add	a5, a7, a4
+	vl1re32.v	v12, (a5)
 	vfmacc.vv	v11, v8, v9
 	vfmacc.vv	v12, v8, v10
 	vs1r.v	v11, (t4)
-	vs1r.v	v12, (a4)
+	vs1r.v	v12, (a5)
 	sub	a3, a3, t1
-	add	a5, a5, t2
+	add	a4, a4, t2
 	bnez	a3, .LBB0_8
 	bnez	a6, .LBB0_4
 	j	.LBB0_6
 .Lfunc_end0:
 	.size	saxpy, .Lfunc_end0-saxpy
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9472a810ed33bc9e655484f43047eed07d50bc16)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

@@ -3,7 +3,7 @@ source_filename = "memset_i8.c"
 target datalayout = "e-m:e-p:64:64-i64:64-i128:128-n32:64-S128"
 target triple = "riscv64-unknown-unknown"
 
-; Function Attrs: argmemonly nofree norecurse nosync nounwind writeonly vscale_range(16,1024)
+; Function Attrs: nofree norecurse nosync nounwind memory(argmem: write) vscale_range(16,1024)
 define dso_local void @my_memset(ptr nocapture noundef writeonly %a, i32 noundef signext %a_len, i8 noundef zeroext %b) local_unnamed_addr #0 {
 entry:
   %cmp3.not = icmp eq i32 %a_len, 0
@@ -18,11 +18,11 @@ for.cond.cleanup:                                 ; preds = %for.body.preheader,
   ret void
 }
 
-; Function Attrs: argmemonly nocallback nofree nounwind willreturn writeonly
+; Function Attrs: nocallback nofree nounwind willreturn memory(argmem: write)
 declare void @llvm.memset.p0.i64(ptr nocapture writeonly, i8, i64, i1 immarg) #1
 
-attributes #0 = { argmemonly nofree norecurse nosync nounwind writeonly vscale_range(16,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl1024b,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
-attributes #1 = { argmemonly nocallback nofree nounwind willreturn writeonly }
+attributes #0 = { nofree norecurse nosync nounwind memory(argmem: write) vscale_range(16,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl1024b,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
+attributes #1 = { nocallback nofree nounwind willreturn memory(argmem: write) }
 
 !llvm.module.flags = !{!0, !1, !2}
 !llvm.ident = !{!3}
@@ -30,7 +30,7 @@ attributes #1 = { argmemonly nocallback nofree nounwind willreturn writeonly }
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64d"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9472a810ed33bc9e655484f43047eed07d50bc16)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"omnipotent char", !6, i64 0}
 !6 = !{!"Simple C/C++ TBAA"}

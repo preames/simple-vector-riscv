@@ -28,17 +28,17 @@ vector_splat_ptr:
 	beq	a2, a6, .LBB0_8
 .LBB0_6:
 	sh3add	a0, a2, a0
-	sub	a2, a6, a2
+	sub	a3, a6, a2
 .LBB0_7:
 	sd	a1, 0(a0)
-	addi	a2, a2, -1
+	addi	a3, a3, -1
 	addi	a0, a0, 8
-	bnez	a2, .LBB0_7
+	bnez	a3, .LBB0_7
 .LBB0_8:
 	ret
 .Lfunc_end0:
 	.size	vector_splat_ptr, .Lfunc_end0-vector_splat_ptr
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9472a810ed33bc9e655484f43047eed07d50bc16)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

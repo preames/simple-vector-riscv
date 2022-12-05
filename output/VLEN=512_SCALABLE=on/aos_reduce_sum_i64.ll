@@ -5,7 +5,7 @@ target triple = "riscv64-unknown-unknown"
 
 %struct.T = type { i64, i64, i64, i64, i64, i64, i64 }
 
-; Function Attrs: argmemonly nofree norecurse nosync nounwind readonly vscale_range(8,1024)
+; Function Attrs: nofree norecurse nosync nounwind memory(argmem: read) vscale_range(8,1024)
 define dso_local signext i32 @aos_reduce_sum_i64(i32 noundef signext %len, ptr nocapture noundef readonly %a) local_unnamed_addr #0 {
 entry:
   %cmp4.not = icmp eq i32 %len, 0
@@ -70,21 +70,21 @@ for.body:                                         ; preds = %for.body.preheader7
   br i1 %exitcond.not, label %for.cond.cleanup.loopexit, label %for.body, !llvm.loop !12
 }
 
-; Function Attrs: nocallback nofree nosync nounwind readnone willreturn
+; Function Attrs: nocallback nofree nosync nounwind willreturn memory(none)
 declare i64 @llvm.vscale.i64() #1
 
-; Function Attrs: nocallback nofree nosync nounwind readnone willreturn
+; Function Attrs: nocallback nofree nosync nounwind willreturn memory(none)
 declare <vscale x 1 x i64> @llvm.experimental.stepvector.nxv1i64() #1
 
-; Function Attrs: nocallback nofree nosync nounwind readonly willreturn
+; Function Attrs: nocallback nofree nosync nounwind willreturn memory(read)
 declare <vscale x 1 x i64> @llvm.masked.gather.nxv1i64.nxv1p0(<vscale x 1 x ptr>, i32 immarg, <vscale x 1 x i1>, <vscale x 1 x i64>) #2
 
-; Function Attrs: nocallback nofree nosync nounwind readnone willreturn
+; Function Attrs: nocallback nofree nosync nounwind willreturn memory(none)
 declare i64 @llvm.vector.reduce.add.nxv1i64(<vscale x 1 x i64>) #1
 
-attributes #0 = { argmemonly nofree norecurse nosync nounwind readonly vscale_range(8,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
-attributes #1 = { nocallback nofree nosync nounwind readnone willreturn }
-attributes #2 = { nocallback nofree nosync nounwind readonly willreturn }
+attributes #0 = { nofree norecurse nosync nounwind memory(argmem: read) vscale_range(8,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
+attributes #1 = { nocallback nofree nosync nounwind willreturn memory(none) }
+attributes #2 = { nocallback nofree nosync nounwind willreturn memory(read) }
 
 !llvm.module.flags = !{!0, !1, !2}
 !llvm.ident = !{!3}
@@ -92,7 +92,7 @@ attributes #2 = { nocallback nofree nosync nounwind readonly willreturn }
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64d"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9472a810ed33bc9e655484f43047eed07d50bc16)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"}
 !4 = !{!5, !6, i64 48}
 !5 = !{!"T", !6, i64 0, !6, i64 8, !6, i64 16, !6, i64 24, !6, i64 32, !6, i64 40, !6, i64 48}
 !6 = !{!"long", !7, i64 0}

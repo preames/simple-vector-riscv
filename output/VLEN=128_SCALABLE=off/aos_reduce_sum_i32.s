@@ -52,6 +52,6 @@ aos_reduce_sum_i32:
 .Lfunc_end0:
 	.size	aos_reduce_sum_i32, .Lfunc_end0-aos_reduce_sum_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9472a810ed33bc9e655484f43047eed07d50bc16)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

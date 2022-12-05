@@ -15,12 +15,12 @@ pairwise_dotproduct_fp32:
 	srli	a6, a0, 1
 	sh2add	a0, a6, a1
 	addi	a0, a0, 4
-	slli	a5, a6, 3
-	addi	a5, a5, 8
-	add	a4, a2, a5
-	add	a7, a3, a5
-	sltu	a4, a1, a4
-	sltu	a5, a2, a0
+	slli	a4, a6, 3
+	addi	a4, a4, 8
+	add	a5, a2, a4
+	add	a7, a3, a4
+	sltu	a5, a1, a5
+	sltu	a4, a2, a0
 	and	a4, a4, a5
 	sltu	a5, a1, a7
 	sltu	a0, a3, a0
@@ -59,21 +59,21 @@ pairwise_dotproduct_fp32:
 	li	t1, 8
 	vsetivli	zero, 8, e32, m1, ta, ma
 	mv	t3, a3
-	mv	a5, a2
+	mv	a0, a2
 .LBB0_8:
-	vlse32.v	v8, (a5), t1
-	addi	a0, a5, 4
-	vlse32.v	v9, (a0), t1
-	addi	a0, t3, 4
-	vlse32.v	v10, (a0), t1
+	vlse32.v	v8, (a0), t1
+	addi	a5, a0, 4
+	vlse32.v	v9, (a5), t1
+	addi	a5, t3, 4
+	vlse32.v	v10, (a5), t1
 	vlse32.v	v11, (t3), t1
-	andi	a0, t2, -8
+	andi	a5, t2, -8
 	vfmul.vv	v9, v9, v10
 	vfmacc.vv	v9, v8, v11
-	sh2add	a0, a0, a1
-	vse32.v	v9, (a0)
+	sh2add	a5, a5, a1
+	vse32.v	v9, (a5)
 	addi	t2, t2, 8
-	addi	a5, a5, 64
+	addi	a0, a0, 64
 	addi	t3, t3, 64
 	bne	a7, t2, .LBB0_8
 	beq	a6, a7, .LBB0_6
@@ -81,6 +81,6 @@ pairwise_dotproduct_fp32:
 .Lfunc_end0:
 	.size	pairwise_dotproduct_fp32, .Lfunc_end0-pairwise_dotproduct_fp32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9472a810ed33bc9e655484f43047eed07d50bc16)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

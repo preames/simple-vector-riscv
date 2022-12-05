@@ -22,8 +22,8 @@ aos_reduce_sum_i64:
 	and	a6, t0, a2
 	sub	a7, t0, a6
 	addi	a5, a1, 48
-	slli	a2, a0, 3
-	sub	a4, a2, a0
+	slli	a4, a0, 3
+	sub	a4, a4, a0
 	vsetvli	a0, zero, e64, m1, ta, ma
 	vmv.v.i	v8, 0
 	li	a2, 56
@@ -56,6 +56,6 @@ aos_reduce_sum_i64:
 .Lfunc_end0:
 	.size	aos_reduce_sum_i64, .Lfunc_end0-aos_reduce_sum_i64
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9472a810ed33bc9e655484f43047eed07d50bc16)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

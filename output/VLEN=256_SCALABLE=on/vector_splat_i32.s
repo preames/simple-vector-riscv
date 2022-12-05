@@ -19,15 +19,15 @@ vector_splat_i32:
 	sub	a7, t0, a6
 	vsetvli	a2, zero, e32, m1, ta, ma
 	vmv.v.x	v8, a1
-	slli	a3, t1, 1
+	slli	a5, t1, 1
 	mv	a2, a7
-	mv	a4, a0
+	mv	a3, a0
 .LBB0_4:
+	vs1r.v	v8, (a3)
+	add	a4, a3, t1
 	vs1r.v	v8, (a4)
-	add	a5, a4, t1
-	vs1r.v	v8, (a5)
 	sub	a2, a2, t2
-	add	a4, a4, a3
+	add	a3, a3, a5
 	bnez	a2, .LBB0_4
 	beqz	a6, .LBB0_8
 .LBB0_6:
@@ -43,6 +43,6 @@ vector_splat_i32:
 .Lfunc_end0:
 	.size	vector_splat_i32, .Lfunc_end0-vector_splat_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9472a810ed33bc9e655484f43047eed07d50bc16)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

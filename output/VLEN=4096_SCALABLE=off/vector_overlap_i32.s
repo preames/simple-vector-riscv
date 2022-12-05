@@ -63,8 +63,8 @@ vector_overlap:
 	lw	a3, 0(a0)
 	addw	a5, a4, t3
 	mv	t3, a4
-	addw	a4, a5, a3
-	sw	a4, 0(a1)
+	addw	a5, a5, a3
+	sw	a5, 0(a1)
 	addi	a1, a1, 4
 	addi	a2, a2, -1
 	addi	a0, a0, 4
@@ -74,6 +74,6 @@ vector_overlap:
 .Lfunc_end0:
 	.size	vector_overlap, .Lfunc_end0-vector_overlap
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9472a810ed33bc9e655484f43047eed07d50bc16)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

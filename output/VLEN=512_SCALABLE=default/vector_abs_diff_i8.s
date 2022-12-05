@@ -63,39 +63,40 @@ vector_abs_diff:
 .LBB2_6:
 	ret
 .LBB2_7:
-	addi	a4, t1, -1
-	and	a6, a7, a4
+	li	a4, 0
+	addi	a3, t1, -1
+	and	a6, a7, a3
 	sub	a5, a7, a6
 	add	t2, a1, t0
 	add	t3, a2, t0
 	add	t0, t0, a0
-	vsetvli	a4, zero, e8, m1, ta, ma
+	vsetvli	a3, zero, e8, m1, ta, ma
 .LBB2_8:
-	add	a4, a1, a3
-	vl1r.v	v8, (a4)
-	add	a4, t2, a3
-	vl1r.v	v9, (a4)
-	add	a4, a2, a3
-	vl1r.v	v10, (a4)
-	add	a4, t3, a3
-	vl1r.v	v11, (a4)
+	add	a3, a1, a4
+	vl1r.v	v8, (a3)
+	add	a3, t2, a4
+	vl1r.v	v9, (a3)
+	add	a3, a2, a4
+	vl1r.v	v10, (a3)
+	add	a3, t3, a4
+	vl1r.v	v11, (a3)
 	vsub.vv	v8, v8, v10
 	vsub.vv	v9, v9, v11
 	vrsub.vi	v10, v8, 0
 	vmax.vv	v8, v8, v10
 	vrsub.vi	v10, v9, 0
 	vmax.vv	v9, v9, v10
-	add	a4, a0, a3
-	vs1r.v	v8, (a4)
-	add	a4, t0, a3
-	add	a3, a3, t1
-	vs1r.v	v9, (a4)
-	bne	a5, a3, .LBB2_8
+	add	a3, a0, a4
+	vs1r.v	v8, (a3)
+	add	a3, t0, a4
+	add	a4, a4, t1
+	vs1r.v	v9, (a3)
+	bne	a5, a4, .LBB2_8
 	bnez	a6, .LBB2_4
 	j	.LBB2_6
 .Lfunc_end2:
 	.size	vector_abs_diff, .Lfunc_end2-vector_abs_diff
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9472a810ed33bc9e655484f43047eed07d50bc16)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

@@ -9,14 +9,14 @@ vector_reduce_add_i32:
 	beqz	a1, .LBB0_8
 	zext.w	t0, a1
 	csrr	a4, vlenb
-	srli	a1, a4, 1
-	bgeu	t0, a1, .LBB0_3
+	srli	a2, a4, 1
+	bgeu	t0, a2, .LBB0_3
 	li	a3, 0
 	li	a1, 0
 	j	.LBB0_6
 .LBB0_3:
-	li	a5, 0
-	addi	a3, a1, -1
+	li	a1, 0
+	addi	a3, a2, -1
 	and	a6, t0, a3
 	sub	a3, t0, a6
 	srli	a7, a4, 2
@@ -25,16 +25,16 @@ vector_reduce_add_i32:
 	add	a4, a0, a7
 	vmv.v.i	v9, 0
 .LBB0_4:
-	add	a2, a0, a5
-	vle8.v	v10, (a2)
-	add	a2, a4, a5
-	vle8.v	v11, (a2)
+	add	a5, a0, a1
+	vle8.v	v10, (a5)
+	add	a5, a4, a1
+	vle8.v	v11, (a5)
 	vzext.vf4	v12, v10
 	vzext.vf4	v10, v11
 	vadd.vv	v8, v8, v12
-	add	a5, a5, a1
+	add	a1, a1, a2
 	vadd.vv	v9, v9, v10
-	bne	a3, a5, .LBB0_4
+	bne	a3, a1, .LBB0_4
 	vadd.vv	v8, v9, v8
 	vmv.s.x	v9, zero
 	vredsum.vs	v8, v8, v9
@@ -55,6 +55,6 @@ vector_reduce_add_i32:
 .Lfunc_end0:
 	.size	vector_reduce_add_i32, .Lfunc_end0-vector_reduce_add_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9472a810ed33bc9e655484f43047eed07d50bc16)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

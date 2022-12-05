@@ -7,13 +7,13 @@
 	.type	example_a2,@function
 example_a2:
 	beqz	a3, .LBB0_11
-	li	a4, 32
+	li	a4, 64
 	zext.w	a6, a3
 	bltu	a3, a4, .LBB0_3
 	sub	a3, a1, a0
-	sltiu	a3, a3, 32
+	sltiu	a3, a3, 64
 	sub	a4, a1, a2
-	sltiu	a4, a4, 32
+	sltiu	a4, a4, 64
 	or	a3, a3, a4
 	beqz	a3, .LBB0_8
 .LBB0_3:
@@ -39,24 +39,36 @@ example_a2:
 	lbu	a5, 0(a2)
 	j	.LBB0_5
 .LBB0_8:
-	andi	a7, a6, -32
+	andi	a7, a6, -64
 	li	a3, 32
 	vsetvli	zero, a3, e8, m1, ta, ma
-	vmv.v.i	v8, 1
+	vmv.v.i	v10, 1
 	mv	t0, a7
 	mv	a4, a1
 	mv	a3, a2
 	mv	a5, a0
 .LBB0_9:
-	vle8.v	v9, (a5)
-	vmsleu.vi	v0, v9, 4
-	vle8.v	v9, (a3), v0.t
-	vmerge.vvm	v9, v8, v9, v0
-	vse8.v	v9, (a4)
-	addi	a5, a5, 32
-	addi	a3, a3, 32
-	addi	t0, t0, -32
-	addi	a4, a4, 32
+	addi	t1, a5, 32
+	vle8.v	v8, (a5)
+	vle8.v	v9, (t1)
+	vmsleu.vi	v8, v8, 4
+	vmsleu.vi	v9, v9, 4
+	vmv1r.v	v0, v8
+	vle8.v	v11, (a3), v0.t
+	addi	t1, a3, 32
+	vmv1r.v	v0, v9
+	vle8.v	v12, (t1), v0.t
+	addi	t1, a4, 32
+	vmv1r.v	v0, v8
+	vmerge.vvm	v8, v10, v11, v0
+	vmv1r.v	v0, v9
+	vmerge.vvm	v9, v10, v12, v0
+	vse8.v	v8, (a4)
+	vse8.v	v9, (t1)
+	addi	a5, a5, 64
+	addi	a3, a3, 64
+	addi	t0, t0, -64
+	addi	a4, a4, 64
 	bnez	t0, .LBB0_9
 	bne	a7, a6, .LBB0_4
 .LBB0_11:
@@ -64,6 +76,6 @@ example_a2:
 .Lfunc_end0:
 	.size	example_a2, .Lfunc_end0-example_a2
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 9472a810ed33bc9e655484f43047eed07d50bc16)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig
