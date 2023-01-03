@@ -43,26 +43,26 @@ vector.body:                                      ; preds = %vector.body, %vecto
   br i1 %13, label %middle.block, label %vector.body, !llvm.loop !8
 
 middle.block:                                     ; preds = %vector.body
-  %14 = tail call <vscale x 2 x i32> @llvm.smax.nxv2i32(<vscale x 2 x i32> %11, <vscale x 2 x i32> %12)
-  %15 = tail call i32 @llvm.vector.reduce.smax.nxv2i32(<vscale x 2 x i32> %14)
+  %rdx.minmax.select = tail call <vscale x 2 x i32> @llvm.smax.nxv2i32(<vscale x 2 x i32> %11, <vscale x 2 x i32> %12)
+  %14 = tail call i32 @llvm.vector.reduce.smax.nxv2i32(<vscale x 2 x i32> %rdx.minmax.select)
   %cmp.n = icmp eq i64 %n.mod.vf, 0
   br i1 %cmp.n, label %for.cond.cleanup, label %for.body.preheader15
 
 for.body.preheader15:                             ; preds = %for.body.preheader, %middle.block
   %indvars.iv.ph = phi i64 [ 0, %for.body.preheader ], [ %n.vec, %middle.block ]
-  %max.011.ph = phi i32 [ -987654321, %for.body.preheader ], [ %15, %middle.block ]
+  %max.011.ph = phi i32 [ -987654321, %for.body.preheader ], [ %14, %middle.block ]
   br label %for.body
 
 for.cond.cleanup:                                 ; preds = %for.body, %middle.block, %entry
-  %max.0.lcssa = phi i32 [ -987654321, %entry ], [ %15, %middle.block ], [ %17, %for.body ]
+  %max.0.lcssa = phi i32 [ -987654321, %entry ], [ %14, %middle.block ], [ %.max.0, %for.body ]
   ret i32 %max.0.lcssa
 
 for.body:                                         ; preds = %for.body.preheader15, %for.body
   %indvars.iv = phi i64 [ %indvars.iv.next, %for.body ], [ %indvars.iv.ph, %for.body.preheader15 ]
-  %max.011 = phi i32 [ %17, %for.body ], [ %max.011.ph, %for.body.preheader15 ]
+  %max.011 = phi i32 [ %.max.0, %for.body ], [ %max.011.ph, %for.body.preheader15 ]
   %arrayidx = getelementptr inbounds i32, ptr %a, i64 %indvars.iv
-  %16 = load i32, ptr %arrayidx, align 4, !tbaa !4
-  %17 = tail call i32 @llvm.smax.i32(i32 %16, i32 %max.011)
+  %15 = load i32, ptr %arrayidx, align 4, !tbaa !4
+  %.max.0 = tail call i32 @llvm.smax.i32(i32 %15, i32 %max.011)
   %indvars.iv.next = add nuw nsw i64 %indvars.iv, 1
   %exitcond.not = icmp eq i64 %indvars.iv.next, %wide.trip.count
   br i1 %exitcond.not, label %for.cond.cleanup, label %for.body, !llvm.loop !11
@@ -83,7 +83,7 @@ declare <vscale x 2 x i32> @llvm.smax.nxv2i32(<vscale x 2 x i32>, <vscale x 2 x 
 ; Function Attrs: nocallback nofree nosync nounwind willreturn memory(none)
 declare i32 @llvm.vector.reduce.smax.nxv2i32(<vscale x 2 x i32>) #2
 
-attributes #0 = { nofree norecurse nosync nounwind memory(argmem: read) vscale_range(4,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl256b,+zvl32b,+zvl64b,-save-restore" }
+attributes #0 = { nofree norecurse nosync nounwind memory(argmem: read) vscale_range(4,1024) "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl256b,+zvl32b,+zvl64b,-save-restore" }
 attributes #1 = { nocallback nofree nosync nounwind speculatable willreturn memory(none) }
 attributes #2 = { nocallback nofree nosync nounwind willreturn memory(none) }
 
@@ -93,7 +93,7 @@ attributes #2 = { nocallback nofree nosync nounwind willreturn memory(none) }
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64d"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"int", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}

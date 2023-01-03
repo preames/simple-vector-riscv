@@ -7,17 +7,15 @@
 	.type	my_memcpy,@function
 my_memcpy:
 	beqz	a0, .LBB0_8
-	sltiu	a3, a0, 1024
-	sub	a4, a1, a2
-	sltiu	a4, a4, 1024
-	or	a3, a3, a4
+	sub	a3, a1, a2
+	minu	a3, a0, a3
+	li	a4, 1024
 	zext.w	a6, a0
-	beqz	a3, .LBB0_3
+	bgeu	a3, a4, .LBB0_3
 	li	a7, 0
 	j	.LBB0_6
 .LBB0_3:
 	andi	a7, a6, -1024
-	li	a4, 1024
 	mv	a5, a7
 	mv	a0, a1
 	mv	a3, a2
@@ -46,6 +44,6 @@ my_memcpy:
 .Lfunc_end0:
 	.size	my_memcpy, .Lfunc_end0-my_memcpy
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

@@ -184,6 +184,6 @@ vector_sum_abs_diff:
 .Lfunc_end2:
 	.size	vector_sum_abs_diff, .Lfunc_end2-vector_sum_abs_diff
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

@@ -82,7 +82,7 @@ declare <vscale x 1 x i64> @llvm.masked.gather.nxv1i64.nxv1p0(<vscale x 1 x ptr>
 ; Function Attrs: nocallback nofree nosync nounwind willreturn memory(none)
 declare i64 @llvm.vector.reduce.add.nxv1i64(<vscale x 1 x i64>) #1
 
-attributes #0 = { nofree norecurse nosync nounwind memory(argmem: read) vscale_range(64,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl1024b,+zvl128b,+zvl2048b,+zvl256b,+zvl32b,+zvl4096b,+zvl512b,+zvl64b,-save-restore" }
+attributes #0 = { nofree norecurse nosync nounwind memory(argmem: read) vscale_range(64,1024) "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl1024b,+zvl128b,+zvl2048b,+zvl256b,+zvl32b,+zvl4096b,+zvl512b,+zvl64b,-save-restore" }
 attributes #1 = { nocallback nofree nosync nounwind willreturn memory(none) }
 attributes #2 = { nocallback nofree nosync nounwind willreturn memory(read) }
 
@@ -92,7 +92,7 @@ attributes #2 = { nocallback nofree nosync nounwind willreturn memory(read) }
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64d"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"}
 !4 = !{!5, !6, i64 48}
 !5 = !{!"T", !6, i64 0, !6, i64 8, !6, i64 16, !6, i64 24, !6, i64 32, !6, i64 40, !6, i64 48}
 !6 = !{!"long", !7, i64 0}

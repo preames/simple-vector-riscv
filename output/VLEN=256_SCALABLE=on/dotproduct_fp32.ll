@@ -33,7 +33,7 @@ for.body:                                         ; preds = %for.body.preheader,
 ; Function Attrs: mustprogress nocallback nofree nosync nounwind speculatable willreturn memory(none)
 declare float @llvm.fmuladd.f32(float, float, float) #1
 
-attributes #0 = { nofree nosync nounwind memory(argmem: read) vscale_range(4,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl256b,+zvl32b,+zvl64b,-save-restore" }
+attributes #0 = { nofree nosync nounwind memory(argmem: read) vscale_range(4,1024) "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl256b,+zvl32b,+zvl64b,-save-restore" }
 attributes #1 = { mustprogress nocallback nofree nosync nounwind speculatable willreturn memory(none) }
 
 !llvm.module.flags = !{!0, !1, !2}
@@ -42,7 +42,7 @@ attributes #1 = { mustprogress nocallback nofree nosync nounwind speculatable wi
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64d"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"float", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}

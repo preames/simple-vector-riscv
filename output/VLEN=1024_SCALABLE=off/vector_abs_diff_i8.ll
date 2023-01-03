@@ -13,8 +13,8 @@ entry:
 ; Function Attrs: mustprogress nofree norecurse nosync nounwind willreturn memory(none) vscale_range(16,1024)
 define dso_local signext i8 @myabs(i8 noundef signext %c) local_unnamed_addr #0 {
 entry:
-  %0 = tail call i8 @llvm.abs.i8(i8 %c, i1 false)
-  ret i8 %0
+  %spec.select = tail call i8 @llvm.abs.i8(i8 %c, i1 false)
+  ret i8 %spec.select
 }
 
 ; Function Attrs: nofree nosync nounwind memory(argmem: readwrite) vscale_range(16,1024)
@@ -83,9 +83,9 @@ for.body:                                         ; preds = %for.body.preheader1
   %arrayidx2 = getelementptr inbounds i8, ptr %b, i64 %indvars.iv
   %14 = load i8, ptr %arrayidx2, align 1, !tbaa !4
   %sub.i = sub i8 %13, %14
-  %15 = tail call i8 @llvm.abs.i8(i8 %sub.i, i1 false)
+  %spec.select.i = tail call i8 @llvm.abs.i8(i8 %sub.i, i1 false)
   %arrayidx5 = getelementptr inbounds i8, ptr %c, i64 %indvars.iv
-  store i8 %15, ptr %arrayidx5, align 1, !tbaa !4
+  store i8 %spec.select.i, ptr %arrayidx5, align 1, !tbaa !4
   %indvars.iv.next = add nuw nsw i64 %indvars.iv, 1
   %exitcond.not = icmp eq i64 %indvars.iv.next, %wide.trip.count
   br i1 %exitcond.not, label %for.cond.cleanup, label %for.body, !llvm.loop !10
@@ -97,8 +97,8 @@ declare i8 @llvm.abs.i8(i8, i1 immarg) #2
 ; Function Attrs: nocallback nofree nosync nounwind speculatable willreturn memory(none)
 declare <128 x i8> @llvm.abs.v128i8(<128 x i8>, i1 immarg) #2
 
-attributes #0 = { mustprogress nofree norecurse nosync nounwind willreturn memory(none) vscale_range(16,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl1024b,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
-attributes #1 = { nofree nosync nounwind memory(argmem: readwrite) vscale_range(16,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl1024b,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
+attributes #0 = { mustprogress nofree norecurse nosync nounwind willreturn memory(none) vscale_range(16,1024) "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl1024b,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
+attributes #1 = { nofree nosync nounwind memory(argmem: readwrite) vscale_range(16,1024) "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl1024b,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
 attributes #2 = { nocallback nofree nosync nounwind speculatable willreturn memory(none) }
 
 !llvm.module.flags = !{!0, !1, !2}
@@ -107,7 +107,7 @@ attributes #2 = { nocallback nofree nosync nounwind speculatable willreturn memo
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64d"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"omnipotent char", !6, i64 0}
 !6 = !{!"Simple C/C++ TBAA"}

@@ -35,11 +35,9 @@ vector_abs_diff:
 	maxu	a3, t1, a3
 	bltu	a7, a3, .LBB2_3
 	sub	a3, a0, a1
-	sltu	a3, a3, t1
 	sub	a4, a0, a2
-	sltu	a4, a4, t1
-	or	a3, a3, a4
-	beqz	a3, .LBB2_7
+	minu	a3, a3, a4
+	bgeu	a3, t1, .LBB2_7
 .LBB2_3:
 	li	a5, 0
 .LBB2_4:
@@ -97,6 +95,6 @@ vector_abs_diff:
 .Lfunc_end2:
 	.size	vector_abs_diff, .Lfunc_end2-vector_abs_diff
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

@@ -39,10 +39,8 @@ vector_reduce_max_i32:
 	li	a1, 32
 	vsetvli	zero, a1, e32, m1, ta, ma
 	vmax.vv	v8, v8, v9
-	lui	a4, 524288
-	vsetivli	zero, 1, e32, m1, ta, ma
-	vmv.s.x	v9, a4
-	vsetvli	zero, a1, e32, m1, ta, ma
+	lui	a1, 524288
+	vmv.s.x	v9, a1
 	vredmax.vs	v8, v8, v9
 	vmv.x.s	a1, v8
 	beq	a3, a2, .LBB0_9
@@ -62,6 +60,6 @@ vector_reduce_max_i32:
 .Lfunc_end0:
 	.size	vector_reduce_max_i32, .Lfunc_end0-vector_reduce_max_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

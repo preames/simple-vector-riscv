@@ -37,176 +37,119 @@ entry:
   %.pre23 = load float, ptr %arrayidx.4.phi.trans.insert, align 4, !tbaa !4
   %arrayidx.3.phi.trans.insert = getelementptr inbounds float, ptr %A, i64 3
   %.pre = load float, ptr %arrayidx.3.phi.trans.insert, align 4, !tbaa !4
-  %3 = tail call i64 @llvm.vscale.i64()
-  %4 = shl nuw nsw i64 %3, 1
-  %5 = tail call i64 @llvm.vscale.i64()
-  %6 = shl nuw nsw i64 %5, 1
-  %n.rnd.up = add nuw nsw i64 %6, 3
-  %n.mod.vf = urem i64 %n.rnd.up, %4
-  %n.vec = sub nsw i64 %n.rnd.up, %n.mod.vf
-  %7 = tail call <vscale x 2 x i64> @llvm.experimental.stepvector.nxv2i64()
-  %8 = tail call i64 @llvm.vscale.i64()
-  %9 = shl nuw nsw i64 %8, 1
-  %.splatinsert = insertelement <vscale x 2 x i64> poison, i64 %9, i64 0
-  %.splat = shufflevector <vscale x 2 x i64> %.splatinsert, <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer
-  %broadcast.splatinsert = insertelement <vscale x 2 x float> poison, float %2, i64 0
-  %broadcast.splat = shufflevector <vscale x 2 x float> %broadcast.splatinsert, <vscale x 2 x float> poison, <vscale x 2 x i32> zeroinitializer
-  %broadcast.splatinsert36 = insertelement <vscale x 2 x float> poison, float %1, i64 0
-  %broadcast.splat37 = shufflevector <vscale x 2 x float> %broadcast.splatinsert36, <vscale x 2 x float> poison, <vscale x 2 x i32> zeroinitializer
-  %broadcast.splatinsert39 = insertelement <vscale x 2 x float> poison, float %0, i64 0
-  %broadcast.splat40 = shufflevector <vscale x 2 x float> %broadcast.splatinsert39, <vscale x 2 x float> poison, <vscale x 2 x i32> zeroinitializer
-  %broadcast.splatinsert42 = insertelement <vscale x 2 x float> poison, float %.pre, i64 0
-  %broadcast.splat43 = shufflevector <vscale x 2 x float> %broadcast.splatinsert42, <vscale x 2 x float> poison, <vscale x 2 x i32> zeroinitializer
-  %broadcast.splatinsert45 = insertelement <vscale x 2 x float> poison, float %.pre23, i64 0
-  %broadcast.splat46 = shufflevector <vscale x 2 x float> %broadcast.splatinsert45, <vscale x 2 x float> poison, <vscale x 2 x i32> zeroinitializer
-  %broadcast.splatinsert48 = insertelement <vscale x 2 x float> poison, float %.pre24, i64 0
-  %broadcast.splat49 = shufflevector <vscale x 2 x float> %broadcast.splatinsert48, <vscale x 2 x float> poison, <vscale x 2 x i32> zeroinitializer
-  %broadcast.splatinsert51 = insertelement <vscale x 2 x float> poison, float %.pre25, i64 0
-  %broadcast.splat52 = shufflevector <vscale x 2 x float> %broadcast.splatinsert51, <vscale x 2 x float> poison, <vscale x 2 x i32> zeroinitializer
-  %broadcast.splatinsert54 = insertelement <vscale x 2 x float> poison, float %.pre26, i64 0
-  %broadcast.splat55 = shufflevector <vscale x 2 x float> %broadcast.splatinsert54, <vscale x 2 x float> poison, <vscale x 2 x i32> zeroinitializer
-  %broadcast.splatinsert57 = insertelement <vscale x 2 x float> poison, float %.pre27, i64 0
-  %broadcast.splat58 = shufflevector <vscale x 2 x float> %broadcast.splatinsert57, <vscale x 2 x float> poison, <vscale x 2 x i32> zeroinitializer
-  %broadcast.splatinsert60 = insertelement <vscale x 2 x float> poison, float %.pre28, i64 0
-  %broadcast.splat61 = shufflevector <vscale x 2 x float> %broadcast.splatinsert60, <vscale x 2 x float> poison, <vscale x 2 x i32> zeroinitializer
-  %broadcast.splatinsert63 = insertelement <vscale x 2 x float> poison, float %.pre29, i64 0
-  %broadcast.splat64 = shufflevector <vscale x 2 x float> %broadcast.splatinsert63, <vscale x 2 x float> poison, <vscale x 2 x i32> zeroinitializer
-  %broadcast.splatinsert66 = insertelement <vscale x 2 x float> poison, float %.pre30, i64 0
-  %broadcast.splat67 = shufflevector <vscale x 2 x float> %broadcast.splatinsert66, <vscale x 2 x float> poison, <vscale x 2 x i32> zeroinitializer
-  %broadcast.splatinsert69 = insertelement <vscale x 2 x float> poison, float %.pre31, i64 0
-  %broadcast.splat70 = shufflevector <vscale x 2 x float> %broadcast.splatinsert69, <vscale x 2 x float> poison, <vscale x 2 x i32> zeroinitializer
-  %broadcast.splatinsert72 = insertelement <vscale x 2 x float> poison, float %.pre32, i64 0
-  %broadcast.splat73 = shufflevector <vscale x 2 x float> %broadcast.splatinsert72, <vscale x 2 x float> poison, <vscale x 2 x i32> zeroinitializer
-  %broadcast.splatinsert75 = insertelement <vscale x 2 x float> poison, float %.pre33, i64 0
-  %broadcast.splat76 = shufflevector <vscale x 2 x float> %broadcast.splatinsert75, <vscale x 2 x float> poison, <vscale x 2 x i32> zeroinitializer
-  %broadcast.splatinsert78 = insertelement <vscale x 2 x float> poison, float %.pre34, i64 0
-  %broadcast.splat79 = shufflevector <vscale x 2 x float> %broadcast.splatinsert78, <vscale x 2 x float> poison, <vscale x 2 x i32> zeroinitializer
-  %10 = tail call i64 @llvm.vscale.i64()
-  %11 = shl nuw nsw i64 %10, 1
-  br label %vector.body
-
-vector.body:                                      ; preds = %vector.body, %entry
-  %index = phi i64 [ 0, %entry ], [ %index.next, %vector.body ]
-  %vec.ind = phi <vscale x 2 x i64> [ %7, %entry ], [ %vec.ind.next, %vector.body ]
-  %active.lane.mask = tail call <vscale x 2 x i1> @llvm.get.active.lane.mask.nxv2i1.i64(i64 %index, i64 4)
-  %12 = getelementptr inbounds float, ptr %B, i64 %index
-  %wide.masked.load = tail call <vscale x 2 x float> @llvm.masked.load.nxv2f32.p0(ptr %12, i32 4, <vscale x 2 x i1> %active.lane.mask, <vscale x 2 x float> poison), !tbaa !4
-  %13 = shl nsw <vscale x 2 x i64> %vec.ind, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 4, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
-  %14 = getelementptr inbounds float, ptr %C, <vscale x 2 x i64> %13
-  %wide.masked.gather = tail call <vscale x 2 x float> @llvm.masked.gather.nxv2f32.nxv2p0(<vscale x 2 x ptr> %14, i32 4, <vscale x 2 x i1> %active.lane.mask, <vscale x 2 x float> poison), !tbaa !4
-  %15 = tail call <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float> %broadcast.splat, <vscale x 2 x float> %wide.masked.load, <vscale x 2 x float> %wide.masked.gather)
-  tail call void @llvm.masked.scatter.nxv2f32.nxv2p0(<vscale x 2 x float> %15, <vscale x 2 x ptr> %14, i32 4, <vscale x 2 x i1> %active.lane.mask), !tbaa !4
-  %16 = or <vscale x 2 x i64> %13, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 1, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
-  %17 = getelementptr inbounds float, ptr %C, <vscale x 2 x i64> %16
-  %wide.masked.gather35 = tail call <vscale x 2 x float> @llvm.masked.gather.nxv2f32.nxv2p0(<vscale x 2 x ptr> %17, i32 4, <vscale x 2 x i1> %active.lane.mask, <vscale x 2 x float> poison), !tbaa !4
-  %18 = tail call <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float> %broadcast.splat37, <vscale x 2 x float> %wide.masked.load, <vscale x 2 x float> %wide.masked.gather35)
-  tail call void @llvm.masked.scatter.nxv2f32.nxv2p0(<vscale x 2 x float> %18, <vscale x 2 x ptr> %17, i32 4, <vscale x 2 x i1> %active.lane.mask), !tbaa !4
-  %19 = or <vscale x 2 x i64> %13, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 2, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
-  %20 = getelementptr inbounds float, ptr %C, <vscale x 2 x i64> %19
-  %wide.masked.gather38 = tail call <vscale x 2 x float> @llvm.masked.gather.nxv2f32.nxv2p0(<vscale x 2 x ptr> %20, i32 4, <vscale x 2 x i1> %active.lane.mask, <vscale x 2 x float> poison), !tbaa !4
-  %21 = tail call <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float> %broadcast.splat40, <vscale x 2 x float> %wide.masked.load, <vscale x 2 x float> %wide.masked.gather38)
-  tail call void @llvm.masked.scatter.nxv2f32.nxv2p0(<vscale x 2 x float> %21, <vscale x 2 x ptr> %20, i32 4, <vscale x 2 x i1> %active.lane.mask), !tbaa !4
-  %22 = or <vscale x 2 x i64> %13, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 3, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
-  %23 = getelementptr inbounds float, ptr %C, <vscale x 2 x i64> %22
-  %wide.masked.gather41 = tail call <vscale x 2 x float> @llvm.masked.gather.nxv2f32.nxv2p0(<vscale x 2 x ptr> %23, i32 4, <vscale x 2 x i1> %active.lane.mask, <vscale x 2 x float> poison), !tbaa !4
-  %24 = tail call <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float> %broadcast.splat43, <vscale x 2 x float> %wide.masked.load, <vscale x 2 x float> %wide.masked.gather41)
-  tail call void @llvm.masked.scatter.nxv2f32.nxv2p0(<vscale x 2 x float> %24, <vscale x 2 x ptr> %23, i32 4, <vscale x 2 x i1> %active.lane.mask), !tbaa !4
-  %25 = or <vscale x 2 x i64> %13, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 4, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
-  %26 = getelementptr inbounds float, ptr %C, <vscale x 2 x i64> %25
-  %wide.masked.gather44 = tail call <vscale x 2 x float> @llvm.masked.gather.nxv2f32.nxv2p0(<vscale x 2 x ptr> %26, i32 4, <vscale x 2 x i1> %active.lane.mask, <vscale x 2 x float> poison), !tbaa !4
-  %27 = tail call <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float> %broadcast.splat46, <vscale x 2 x float> %wide.masked.load, <vscale x 2 x float> %wide.masked.gather44)
-  tail call void @llvm.masked.scatter.nxv2f32.nxv2p0(<vscale x 2 x float> %27, <vscale x 2 x ptr> %26, i32 4, <vscale x 2 x i1> %active.lane.mask), !tbaa !4
-  %28 = or <vscale x 2 x i64> %13, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 5, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
-  %29 = getelementptr inbounds float, ptr %C, <vscale x 2 x i64> %28
-  %wide.masked.gather47 = tail call <vscale x 2 x float> @llvm.masked.gather.nxv2f32.nxv2p0(<vscale x 2 x ptr> %29, i32 4, <vscale x 2 x i1> %active.lane.mask, <vscale x 2 x float> poison), !tbaa !4
-  %30 = tail call <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float> %broadcast.splat49, <vscale x 2 x float> %wide.masked.load, <vscale x 2 x float> %wide.masked.gather47)
-  tail call void @llvm.masked.scatter.nxv2f32.nxv2p0(<vscale x 2 x float> %30, <vscale x 2 x ptr> %29, i32 4, <vscale x 2 x i1> %active.lane.mask), !tbaa !4
-  %31 = or <vscale x 2 x i64> %13, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 6, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
-  %32 = getelementptr inbounds float, ptr %C, <vscale x 2 x i64> %31
-  %wide.masked.gather50 = tail call <vscale x 2 x float> @llvm.masked.gather.nxv2f32.nxv2p0(<vscale x 2 x ptr> %32, i32 4, <vscale x 2 x i1> %active.lane.mask, <vscale x 2 x float> poison), !tbaa !4
-  %33 = tail call <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float> %broadcast.splat52, <vscale x 2 x float> %wide.masked.load, <vscale x 2 x float> %wide.masked.gather50)
-  tail call void @llvm.masked.scatter.nxv2f32.nxv2p0(<vscale x 2 x float> %33, <vscale x 2 x ptr> %32, i32 4, <vscale x 2 x i1> %active.lane.mask), !tbaa !4
-  %34 = or <vscale x 2 x i64> %13, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 7, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
-  %35 = getelementptr inbounds float, ptr %C, <vscale x 2 x i64> %34
-  %wide.masked.gather53 = tail call <vscale x 2 x float> @llvm.masked.gather.nxv2f32.nxv2p0(<vscale x 2 x ptr> %35, i32 4, <vscale x 2 x i1> %active.lane.mask, <vscale x 2 x float> poison), !tbaa !4
-  %36 = tail call <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float> %broadcast.splat55, <vscale x 2 x float> %wide.masked.load, <vscale x 2 x float> %wide.masked.gather53)
-  tail call void @llvm.masked.scatter.nxv2f32.nxv2p0(<vscale x 2 x float> %36, <vscale x 2 x ptr> %35, i32 4, <vscale x 2 x i1> %active.lane.mask), !tbaa !4
-  %37 = or <vscale x 2 x i64> %13, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 8, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
-  %38 = getelementptr inbounds float, ptr %C, <vscale x 2 x i64> %37
-  %wide.masked.gather56 = tail call <vscale x 2 x float> @llvm.masked.gather.nxv2f32.nxv2p0(<vscale x 2 x ptr> %38, i32 4, <vscale x 2 x i1> %active.lane.mask, <vscale x 2 x float> poison), !tbaa !4
-  %39 = tail call <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float> %broadcast.splat58, <vscale x 2 x float> %wide.masked.load, <vscale x 2 x float> %wide.masked.gather56)
-  tail call void @llvm.masked.scatter.nxv2f32.nxv2p0(<vscale x 2 x float> %39, <vscale x 2 x ptr> %38, i32 4, <vscale x 2 x i1> %active.lane.mask), !tbaa !4
-  %40 = or <vscale x 2 x i64> %13, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 9, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
-  %41 = getelementptr inbounds float, ptr %C, <vscale x 2 x i64> %40
-  %wide.masked.gather59 = tail call <vscale x 2 x float> @llvm.masked.gather.nxv2f32.nxv2p0(<vscale x 2 x ptr> %41, i32 4, <vscale x 2 x i1> %active.lane.mask, <vscale x 2 x float> poison), !tbaa !4
-  %42 = tail call <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float> %broadcast.splat61, <vscale x 2 x float> %wide.masked.load, <vscale x 2 x float> %wide.masked.gather59)
-  tail call void @llvm.masked.scatter.nxv2f32.nxv2p0(<vscale x 2 x float> %42, <vscale x 2 x ptr> %41, i32 4, <vscale x 2 x i1> %active.lane.mask), !tbaa !4
-  %43 = or <vscale x 2 x i64> %13, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 10, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
-  %44 = getelementptr inbounds float, ptr %C, <vscale x 2 x i64> %43
-  %wide.masked.gather62 = tail call <vscale x 2 x float> @llvm.masked.gather.nxv2f32.nxv2p0(<vscale x 2 x ptr> %44, i32 4, <vscale x 2 x i1> %active.lane.mask, <vscale x 2 x float> poison), !tbaa !4
-  %45 = tail call <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float> %broadcast.splat64, <vscale x 2 x float> %wide.masked.load, <vscale x 2 x float> %wide.masked.gather62)
-  tail call void @llvm.masked.scatter.nxv2f32.nxv2p0(<vscale x 2 x float> %45, <vscale x 2 x ptr> %44, i32 4, <vscale x 2 x i1> %active.lane.mask), !tbaa !4
-  %46 = or <vscale x 2 x i64> %13, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 11, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
-  %47 = getelementptr inbounds float, ptr %C, <vscale x 2 x i64> %46
-  %wide.masked.gather65 = tail call <vscale x 2 x float> @llvm.masked.gather.nxv2f32.nxv2p0(<vscale x 2 x ptr> %47, i32 4, <vscale x 2 x i1> %active.lane.mask, <vscale x 2 x float> poison), !tbaa !4
-  %48 = tail call <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float> %broadcast.splat67, <vscale x 2 x float> %wide.masked.load, <vscale x 2 x float> %wide.masked.gather65)
-  tail call void @llvm.masked.scatter.nxv2f32.nxv2p0(<vscale x 2 x float> %48, <vscale x 2 x ptr> %47, i32 4, <vscale x 2 x i1> %active.lane.mask), !tbaa !4
-  %49 = or <vscale x 2 x i64> %13, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 12, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
-  %50 = getelementptr inbounds float, ptr %C, <vscale x 2 x i64> %49
-  %wide.masked.gather68 = tail call <vscale x 2 x float> @llvm.masked.gather.nxv2f32.nxv2p0(<vscale x 2 x ptr> %50, i32 4, <vscale x 2 x i1> %active.lane.mask, <vscale x 2 x float> poison), !tbaa !4
-  %51 = tail call <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float> %broadcast.splat70, <vscale x 2 x float> %wide.masked.load, <vscale x 2 x float> %wide.masked.gather68)
-  tail call void @llvm.masked.scatter.nxv2f32.nxv2p0(<vscale x 2 x float> %51, <vscale x 2 x ptr> %50, i32 4, <vscale x 2 x i1> %active.lane.mask), !tbaa !4
-  %52 = or <vscale x 2 x i64> %13, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 13, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
-  %53 = getelementptr inbounds float, ptr %C, <vscale x 2 x i64> %52
-  %wide.masked.gather71 = tail call <vscale x 2 x float> @llvm.masked.gather.nxv2f32.nxv2p0(<vscale x 2 x ptr> %53, i32 4, <vscale x 2 x i1> %active.lane.mask, <vscale x 2 x float> poison), !tbaa !4
-  %54 = tail call <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float> %broadcast.splat73, <vscale x 2 x float> %wide.masked.load, <vscale x 2 x float> %wide.masked.gather71)
-  tail call void @llvm.masked.scatter.nxv2f32.nxv2p0(<vscale x 2 x float> %54, <vscale x 2 x ptr> %53, i32 4, <vscale x 2 x i1> %active.lane.mask), !tbaa !4
-  %55 = or <vscale x 2 x i64> %13, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 14, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
-  %56 = getelementptr inbounds float, ptr %C, <vscale x 2 x i64> %55
-  %wide.masked.gather74 = tail call <vscale x 2 x float> @llvm.masked.gather.nxv2f32.nxv2p0(<vscale x 2 x ptr> %56, i32 4, <vscale x 2 x i1> %active.lane.mask, <vscale x 2 x float> poison), !tbaa !4
-  %57 = tail call <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float> %broadcast.splat76, <vscale x 2 x float> %wide.masked.load, <vscale x 2 x float> %wide.masked.gather74)
-  tail call void @llvm.masked.scatter.nxv2f32.nxv2p0(<vscale x 2 x float> %57, <vscale x 2 x ptr> %56, i32 4, <vscale x 2 x i1> %active.lane.mask), !tbaa !4
-  %58 = or <vscale x 2 x i64> %13, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 15, i32 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
-  %59 = getelementptr inbounds float, ptr %C, <vscale x 2 x i64> %58
-  %wide.masked.gather77 = tail call <vscale x 2 x float> @llvm.masked.gather.nxv2f32.nxv2p0(<vscale x 2 x ptr> %59, i32 4, <vscale x 2 x i1> %active.lane.mask, <vscale x 2 x float> poison), !tbaa !4
-  %60 = tail call <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float> %broadcast.splat79, <vscale x 2 x float> %wide.masked.load, <vscale x 2 x float> %wide.masked.gather77)
-  tail call void @llvm.masked.scatter.nxv2f32.nxv2p0(<vscale x 2 x float> %60, <vscale x 2 x ptr> %59, i32 4, <vscale x 2 x i1> %active.lane.mask), !tbaa !4
-  %index.next = add i64 %index, %11
-  %vec.ind.next = add <vscale x 2 x i64> %vec.ind, %.splat
-  %61 = icmp eq i64 %index.next, %n.vec
-  br i1 %61, label %for.cond.cleanup, label %vector.body, !llvm.loop !8
-
-for.cond.cleanup:                                 ; preds = %vector.body
+  %broadcast.splatinsert = insertelement <4 x float> poison, float %2, i64 0
+  %broadcast.splat = shufflevector <4 x float> %broadcast.splatinsert, <4 x float> poison, <4 x i32> zeroinitializer
+  %broadcast.splatinsert36 = insertelement <4 x float> poison, float %1, i64 0
+  %broadcast.splat37 = shufflevector <4 x float> %broadcast.splatinsert36, <4 x float> poison, <4 x i32> zeroinitializer
+  %broadcast.splatinsert39 = insertelement <4 x float> poison, float %0, i64 0
+  %broadcast.splat40 = shufflevector <4 x float> %broadcast.splatinsert39, <4 x float> poison, <4 x i32> zeroinitializer
+  %broadcast.splatinsert42 = insertelement <4 x float> poison, float %.pre, i64 0
+  %broadcast.splat43 = shufflevector <4 x float> %broadcast.splatinsert42, <4 x float> poison, <4 x i32> zeroinitializer
+  %broadcast.splatinsert45 = insertelement <4 x float> poison, float %.pre23, i64 0
+  %broadcast.splat46 = shufflevector <4 x float> %broadcast.splatinsert45, <4 x float> poison, <4 x i32> zeroinitializer
+  %broadcast.splatinsert48 = insertelement <4 x float> poison, float %.pre24, i64 0
+  %broadcast.splat49 = shufflevector <4 x float> %broadcast.splatinsert48, <4 x float> poison, <4 x i32> zeroinitializer
+  %broadcast.splatinsert51 = insertelement <4 x float> poison, float %.pre25, i64 0
+  %broadcast.splat52 = shufflevector <4 x float> %broadcast.splatinsert51, <4 x float> poison, <4 x i32> zeroinitializer
+  %broadcast.splatinsert54 = insertelement <4 x float> poison, float %.pre26, i64 0
+  %broadcast.splat55 = shufflevector <4 x float> %broadcast.splatinsert54, <4 x float> poison, <4 x i32> zeroinitializer
+  %broadcast.splatinsert57 = insertelement <4 x float> poison, float %.pre27, i64 0
+  %broadcast.splat58 = shufflevector <4 x float> %broadcast.splatinsert57, <4 x float> poison, <4 x i32> zeroinitializer
+  %broadcast.splatinsert60 = insertelement <4 x float> poison, float %.pre28, i64 0
+  %broadcast.splat61 = shufflevector <4 x float> %broadcast.splatinsert60, <4 x float> poison, <4 x i32> zeroinitializer
+  %broadcast.splatinsert63 = insertelement <4 x float> poison, float %.pre29, i64 0
+  %broadcast.splat64 = shufflevector <4 x float> %broadcast.splatinsert63, <4 x float> poison, <4 x i32> zeroinitializer
+  %broadcast.splatinsert66 = insertelement <4 x float> poison, float %.pre30, i64 0
+  %broadcast.splat67 = shufflevector <4 x float> %broadcast.splatinsert66, <4 x float> poison, <4 x i32> zeroinitializer
+  %broadcast.splatinsert69 = insertelement <4 x float> poison, float %.pre31, i64 0
+  %broadcast.splat70 = shufflevector <4 x float> %broadcast.splatinsert69, <4 x float> poison, <4 x i32> zeroinitializer
+  %broadcast.splatinsert72 = insertelement <4 x float> poison, float %.pre32, i64 0
+  %broadcast.splat73 = shufflevector <4 x float> %broadcast.splatinsert72, <4 x float> poison, <4 x i32> zeroinitializer
+  %broadcast.splatinsert75 = insertelement <4 x float> poison, float %.pre33, i64 0
+  %broadcast.splat76 = shufflevector <4 x float> %broadcast.splatinsert75, <4 x float> poison, <4 x i32> zeroinitializer
+  %broadcast.splatinsert78 = insertelement <4 x float> poison, float %.pre34, i64 0
+  %broadcast.splat79 = shufflevector <4 x float> %broadcast.splatinsert78, <4 x float> poison, <4 x i32> zeroinitializer
+  %wide.load = load <4 x float>, ptr %B, align 4, !tbaa !4
+  %3 = getelementptr inbounds float, ptr %C, <4 x i64> <i64 0, i64 16, i64 32, i64 48>
+  %wide.masked.gather = tail call <4 x float> @llvm.masked.gather.v4f32.v4p0(<4 x ptr> %3, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>, <4 x float> poison), !tbaa !4
+  %4 = tail call <4 x float> @llvm.fmuladd.v4f32(<4 x float> %broadcast.splat, <4 x float> %wide.load, <4 x float> %wide.masked.gather)
+  tail call void @llvm.masked.scatter.v4f32.v4p0(<4 x float> %4, <4 x ptr> %3, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>), !tbaa !4
+  %5 = getelementptr inbounds float, ptr %C, <4 x i64> <i64 1, i64 17, i64 33, i64 49>
+  %wide.masked.gather35 = tail call <4 x float> @llvm.masked.gather.v4f32.v4p0(<4 x ptr> %5, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>, <4 x float> poison), !tbaa !4
+  %6 = tail call <4 x float> @llvm.fmuladd.v4f32(<4 x float> %broadcast.splat37, <4 x float> %wide.load, <4 x float> %wide.masked.gather35)
+  tail call void @llvm.masked.scatter.v4f32.v4p0(<4 x float> %6, <4 x ptr> %5, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>), !tbaa !4
+  %7 = getelementptr inbounds float, ptr %C, <4 x i64> <i64 2, i64 18, i64 34, i64 50>
+  %wide.masked.gather38 = tail call <4 x float> @llvm.masked.gather.v4f32.v4p0(<4 x ptr> %7, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>, <4 x float> poison), !tbaa !4
+  %8 = tail call <4 x float> @llvm.fmuladd.v4f32(<4 x float> %broadcast.splat40, <4 x float> %wide.load, <4 x float> %wide.masked.gather38)
+  tail call void @llvm.masked.scatter.v4f32.v4p0(<4 x float> %8, <4 x ptr> %7, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>), !tbaa !4
+  %9 = getelementptr inbounds float, ptr %C, <4 x i64> <i64 3, i64 19, i64 35, i64 51>
+  %wide.masked.gather41 = tail call <4 x float> @llvm.masked.gather.v4f32.v4p0(<4 x ptr> %9, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>, <4 x float> poison), !tbaa !4
+  %10 = tail call <4 x float> @llvm.fmuladd.v4f32(<4 x float> %broadcast.splat43, <4 x float> %wide.load, <4 x float> %wide.masked.gather41)
+  tail call void @llvm.masked.scatter.v4f32.v4p0(<4 x float> %10, <4 x ptr> %9, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>), !tbaa !4
+  %11 = getelementptr inbounds float, ptr %C, <4 x i64> <i64 4, i64 20, i64 36, i64 52>
+  %wide.masked.gather44 = tail call <4 x float> @llvm.masked.gather.v4f32.v4p0(<4 x ptr> %11, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>, <4 x float> poison), !tbaa !4
+  %12 = tail call <4 x float> @llvm.fmuladd.v4f32(<4 x float> %broadcast.splat46, <4 x float> %wide.load, <4 x float> %wide.masked.gather44)
+  tail call void @llvm.masked.scatter.v4f32.v4p0(<4 x float> %12, <4 x ptr> %11, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>), !tbaa !4
+  %13 = getelementptr inbounds float, ptr %C, <4 x i64> <i64 5, i64 21, i64 37, i64 53>
+  %wide.masked.gather47 = tail call <4 x float> @llvm.masked.gather.v4f32.v4p0(<4 x ptr> %13, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>, <4 x float> poison), !tbaa !4
+  %14 = tail call <4 x float> @llvm.fmuladd.v4f32(<4 x float> %broadcast.splat49, <4 x float> %wide.load, <4 x float> %wide.masked.gather47)
+  tail call void @llvm.masked.scatter.v4f32.v4p0(<4 x float> %14, <4 x ptr> %13, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>), !tbaa !4
+  %15 = getelementptr inbounds float, ptr %C, <4 x i64> <i64 6, i64 22, i64 38, i64 54>
+  %wide.masked.gather50 = tail call <4 x float> @llvm.masked.gather.v4f32.v4p0(<4 x ptr> %15, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>, <4 x float> poison), !tbaa !4
+  %16 = tail call <4 x float> @llvm.fmuladd.v4f32(<4 x float> %broadcast.splat52, <4 x float> %wide.load, <4 x float> %wide.masked.gather50)
+  tail call void @llvm.masked.scatter.v4f32.v4p0(<4 x float> %16, <4 x ptr> %15, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>), !tbaa !4
+  %17 = getelementptr inbounds float, ptr %C, <4 x i64> <i64 7, i64 23, i64 39, i64 55>
+  %wide.masked.gather53 = tail call <4 x float> @llvm.masked.gather.v4f32.v4p0(<4 x ptr> %17, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>, <4 x float> poison), !tbaa !4
+  %18 = tail call <4 x float> @llvm.fmuladd.v4f32(<4 x float> %broadcast.splat55, <4 x float> %wide.load, <4 x float> %wide.masked.gather53)
+  tail call void @llvm.masked.scatter.v4f32.v4p0(<4 x float> %18, <4 x ptr> %17, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>), !tbaa !4
+  %19 = getelementptr inbounds float, ptr %C, <4 x i64> <i64 8, i64 24, i64 40, i64 56>
+  %wide.masked.gather56 = tail call <4 x float> @llvm.masked.gather.v4f32.v4p0(<4 x ptr> %19, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>, <4 x float> poison), !tbaa !4
+  %20 = tail call <4 x float> @llvm.fmuladd.v4f32(<4 x float> %broadcast.splat58, <4 x float> %wide.load, <4 x float> %wide.masked.gather56)
+  tail call void @llvm.masked.scatter.v4f32.v4p0(<4 x float> %20, <4 x ptr> %19, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>), !tbaa !4
+  %21 = getelementptr inbounds float, ptr %C, <4 x i64> <i64 9, i64 25, i64 41, i64 57>
+  %wide.masked.gather59 = tail call <4 x float> @llvm.masked.gather.v4f32.v4p0(<4 x ptr> %21, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>, <4 x float> poison), !tbaa !4
+  %22 = tail call <4 x float> @llvm.fmuladd.v4f32(<4 x float> %broadcast.splat61, <4 x float> %wide.load, <4 x float> %wide.masked.gather59)
+  tail call void @llvm.masked.scatter.v4f32.v4p0(<4 x float> %22, <4 x ptr> %21, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>), !tbaa !4
+  %23 = getelementptr inbounds float, ptr %C, <4 x i64> <i64 10, i64 26, i64 42, i64 58>
+  %wide.masked.gather62 = tail call <4 x float> @llvm.masked.gather.v4f32.v4p0(<4 x ptr> %23, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>, <4 x float> poison), !tbaa !4
+  %24 = tail call <4 x float> @llvm.fmuladd.v4f32(<4 x float> %broadcast.splat64, <4 x float> %wide.load, <4 x float> %wide.masked.gather62)
+  tail call void @llvm.masked.scatter.v4f32.v4p0(<4 x float> %24, <4 x ptr> %23, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>), !tbaa !4
+  %25 = getelementptr inbounds float, ptr %C, <4 x i64> <i64 11, i64 27, i64 43, i64 59>
+  %wide.masked.gather65 = tail call <4 x float> @llvm.masked.gather.v4f32.v4p0(<4 x ptr> %25, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>, <4 x float> poison), !tbaa !4
+  %26 = tail call <4 x float> @llvm.fmuladd.v4f32(<4 x float> %broadcast.splat67, <4 x float> %wide.load, <4 x float> %wide.masked.gather65)
+  tail call void @llvm.masked.scatter.v4f32.v4p0(<4 x float> %26, <4 x ptr> %25, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>), !tbaa !4
+  %27 = getelementptr inbounds float, ptr %C, <4 x i64> <i64 12, i64 28, i64 44, i64 60>
+  %wide.masked.gather68 = tail call <4 x float> @llvm.masked.gather.v4f32.v4p0(<4 x ptr> %27, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>, <4 x float> poison), !tbaa !4
+  %28 = tail call <4 x float> @llvm.fmuladd.v4f32(<4 x float> %broadcast.splat70, <4 x float> %wide.load, <4 x float> %wide.masked.gather68)
+  tail call void @llvm.masked.scatter.v4f32.v4p0(<4 x float> %28, <4 x ptr> %27, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>), !tbaa !4
+  %29 = getelementptr inbounds float, ptr %C, <4 x i64> <i64 13, i64 29, i64 45, i64 61>
+  %wide.masked.gather71 = tail call <4 x float> @llvm.masked.gather.v4f32.v4p0(<4 x ptr> %29, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>, <4 x float> poison), !tbaa !4
+  %30 = tail call <4 x float> @llvm.fmuladd.v4f32(<4 x float> %broadcast.splat73, <4 x float> %wide.load, <4 x float> %wide.masked.gather71)
+  tail call void @llvm.masked.scatter.v4f32.v4p0(<4 x float> %30, <4 x ptr> %29, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>), !tbaa !4
+  %31 = getelementptr inbounds float, ptr %C, <4 x i64> <i64 14, i64 30, i64 46, i64 62>
+  %wide.masked.gather74 = tail call <4 x float> @llvm.masked.gather.v4f32.v4p0(<4 x ptr> %31, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>, <4 x float> poison), !tbaa !4
+  %32 = tail call <4 x float> @llvm.fmuladd.v4f32(<4 x float> %broadcast.splat76, <4 x float> %wide.load, <4 x float> %wide.masked.gather74)
+  tail call void @llvm.masked.scatter.v4f32.v4p0(<4 x float> %32, <4 x ptr> %31, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>), !tbaa !4
+  %33 = getelementptr inbounds float, ptr %C, <4 x i64> <i64 15, i64 31, i64 47, i64 63>
+  %wide.masked.gather77 = tail call <4 x float> @llvm.masked.gather.v4f32.v4p0(<4 x ptr> %33, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>, <4 x float> poison), !tbaa !4
+  %34 = tail call <4 x float> @llvm.fmuladd.v4f32(<4 x float> %broadcast.splat79, <4 x float> %wide.load, <4 x float> %wide.masked.gather77)
+  tail call void @llvm.masked.scatter.v4f32.v4p0(<4 x float> %34, <4 x ptr> %33, i32 4, <4 x i1> <i1 true, i1 true, i1 true, i1 true>), !tbaa !4
   ret void
 }
 
-; Function Attrs: nocallback nofree nosync nounwind willreturn memory(none)
-declare i64 @llvm.vscale.i64() #1
-
-; Function Attrs: nocallback nofree nosync nounwind willreturn memory(none)
-declare <vscale x 2 x i64> @llvm.experimental.stepvector.nxv2i64() #1
-
-; Function Attrs: nocallback nofree nosync nounwind willreturn memory(none)
-declare <vscale x 2 x i1> @llvm.get.active.lane.mask.nxv2i1.i64(i64, i64) #1
-
-; Function Attrs: nocallback nofree nosync nounwind willreturn memory(argmem: read)
-declare <vscale x 2 x float> @llvm.masked.load.nxv2f32.p0(ptr nocapture, i32 immarg, <vscale x 2 x i1>, <vscale x 2 x float>) #2
-
 ; Function Attrs: nocallback nofree nosync nounwind willreturn memory(read)
-declare <vscale x 2 x float> @llvm.masked.gather.nxv2f32.nxv2p0(<vscale x 2 x ptr>, i32 immarg, <vscale x 2 x i1>, <vscale x 2 x float>) #3
+declare <4 x float> @llvm.masked.gather.v4f32.v4p0(<4 x ptr>, i32 immarg, <4 x i1>, <4 x float>) #1
 
 ; Function Attrs: nocallback nofree nosync nounwind speculatable willreturn memory(none)
-declare <vscale x 2 x float> @llvm.fmuladd.nxv2f32(<vscale x 2 x float>, <vscale x 2 x float>, <vscale x 2 x float>) #4
+declare <4 x float> @llvm.fmuladd.v4f32(<4 x float>, <4 x float>, <4 x float>) #2
 
 ; Function Attrs: nocallback nofree nosync nounwind willreturn memory(write)
-declare void @llvm.masked.scatter.nxv2f32.nxv2p0(<vscale x 2 x float>, <vscale x 2 x ptr>, i32 immarg, <vscale x 2 x i1>) #5
+declare void @llvm.masked.scatter.v4f32.v4p0(<4 x float>, <4 x ptr>, i32 immarg, <4 x i1>) #3
 
-attributes #0 = { nofree nosync nounwind memory(argmem: readwrite) vscale_range(2,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl32b,+zvl64b,-save-restore" }
-attributes #1 = { nocallback nofree nosync nounwind willreturn memory(none) }
-attributes #2 = { nocallback nofree nosync nounwind willreturn memory(argmem: read) }
-attributes #3 = { nocallback nofree nosync nounwind willreturn memory(read) }
-attributes #4 = { nocallback nofree nosync nounwind speculatable willreturn memory(none) }
-attributes #5 = { nocallback nofree nosync nounwind willreturn memory(write) }
+attributes #0 = { nofree nosync nounwind memory(argmem: readwrite) vscale_range(2,1024) "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl32b,+zvl64b,-save-restore" }
+attributes #1 = { nocallback nofree nosync nounwind willreturn memory(read) }
+attributes #2 = { nocallback nofree nosync nounwind speculatable willreturn memory(none) }
+attributes #3 = { nocallback nofree nosync nounwind willreturn memory(write) }
 
 !llvm.module.flags = !{!0, !1, !2}
 !llvm.ident = !{!3}
@@ -214,11 +157,8 @@ attributes #5 = { nocallback nofree nosync nounwind willreturn memory(write) }
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64d"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"float", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}
 !7 = !{!"Simple C/C++ TBAA"}
-!8 = distinct !{!8, !9, !10}
-!9 = !{!"llvm.loop.mustprogress"}
-!10 = !{!"llvm.loop.isvectorized", i32 1}

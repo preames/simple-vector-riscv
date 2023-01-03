@@ -12,11 +12,9 @@ example_a2:
 	slli	t0, a3, 1
 	bltu	a7, t0, .LBB0_3
 	sub	a4, a1, a0
-	sltu	a4, a4, t0
 	sub	a5, a1, a2
-	sltu	a5, a5, t0
-	or	a4, a4, a5
-	beqz	a4, .LBB0_8
+	minu	a4, a4, a5
+	bgeu	a4, t0, .LBB0_8
 .LBB0_3:
 	li	a5, 0
 .LBB0_4:
@@ -40,6 +38,7 @@ example_a2:
 	lbu	a5, 0(a2)
 	j	.LBB0_5
 .LBB0_8:
+	li	a4, 0
 	addi	a5, t0, -1
 	and	a6, a7, a5
 	sub	a5, a7, a6
@@ -77,6 +76,6 @@ example_a2:
 .Lfunc_end0:
 	.size	example_a2, .Lfunc_end0-example_a2
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

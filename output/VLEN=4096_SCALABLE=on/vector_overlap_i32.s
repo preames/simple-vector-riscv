@@ -6,14 +6,13 @@
 	.p2align	1
 	.type	vector_overlap,@function
 vector_overlap:
-	addi	sp, sp, -32
-	sd	s0, 24(sp)
-	sd	s1, 16(sp)
-	sd	s2, 8(sp)
+	addi	sp, sp, -16
+	sd	s0, 8(sp)
+	sd	s1, 0(sp)
 	li	a3, 2
 	bltu	a2, a3, .LBB0_8
 	zext.w	a6, a2
-	lw	s1, 0(a0)
+	lw	a5, 0(a0)
 	lw	a4, 4(a0)
 	addi	a7, a6, -1
 	csrr	t3, vlenb
@@ -25,8 +24,8 @@ vector_overlap:
 	and	t0, a7, a3
 	sub	a3, a7, t0
 	addi	t1, a3, 1
-	srli	s2, t3, 2
-	addiw	a7, s2, -1
+	srli	s1, t3, 2
+	addiw	a7, s1, -1
 	vsetvli	s0, zero, e32, m1, ta, ma
 	vmv.s.x	v9, a4
 	zext.w	a7, a7
@@ -34,7 +33,7 @@ vector_overlap:
 	vsetvli	zero, a4, e32, m1, ta, ma
 	vslideup.vx	v8, v9, a7
 	vsetvli	s0, zero, e32, m1, ta, ma
-	vmv.s.x	v10, s1
+	vmv.s.x	v10, a5
 	vsetvli	zero, a4, e32, m1, ta, ma
 	vslideup.vx	v9, v10, a7
 	addi	t6, a0, 8
@@ -42,7 +41,7 @@ vector_overlap:
 	add	t5, t6, t3
 	addi	a5, a1, 4
 	add	t3, t3, a5
-	addi	a4, s2, -1
+	addi	a4, s1, -1
 .LBB0_3:
 	vmv1r.v	v10, v9
 	vmv1r.v	v9, v8
@@ -52,21 +51,20 @@ vector_overlap:
 	vl1re32.v	v8, (s0)
 	vsetivli	zero, 1, e32, m1, ta, ma
 	vslidedown.vx	v12, v9, a4
-	vsetvli	s0, zero, e32, m1, tu, ma
+	vsetvli	s0, zero, e32, m1, ta, ma
 	vslideup.vi	v12, v11, 1
 	vsetivli	zero, 1, e32, m1, ta, ma
 	vslidedown.vx	v9, v11, a4
-	vsetvli	s0, zero, e32, m1, tu, ma
+	vsetvli	s0, zero, e32, m1, ta, ma
 	vslideup.vi	v9, v8, 1
 	vsetivli	zero, 1, e32, m1, ta, ma
 	vslidedown.vx	v10, v10, a4
-	vsetvli	s0, zero, e32, m1, tu, ma
+	vsetvli	s0, zero, e32, m1, ta, ma
 	vslideup.vi	v10, v12, 1
 	vsetivli	zero, 1, e32, m1, ta, ma
 	vslidedown.vx	v13, v12, a4
-	vsetvli	s0, zero, e32, m1, tu, ma
+	vsetvli	s0, zero, e32, m1, ta, ma
 	vslideup.vi	v13, v9, 1
-	vsetvli	zero, zero, e32, m1, ta, ma
 	vadd.vv	v10, v12, v10
 	vadd.vv	v12, v9, v13
 	vadd.vv	v10, v10, v11
@@ -83,7 +81,7 @@ vector_overlap:
 	vslidedown.vx	v8, v8, a7
 	vmv.x.s	a4, v8
 	vslidedown.vx	v8, v9, a7
-	vmv.x.s	s1, v8
+	vmv.x.s	a5, v8
 .LBB0_6:
 	sh2add	a1, t1, a1
 	sub	a2, a6, t1
@@ -92,23 +90,22 @@ vector_overlap:
 .LBB0_7:
 	mv	a3, a4
 	lw	a4, 0(a0)
-	addw	a5, a3, s1
-	mv	s1, a3
-	addw	a5, a5, a4
+	add	a5, a5, a4
+	add	a5, a5, a3
 	sw	a5, 0(a1)
 	addi	a1, a1, 4
 	addi	a2, a2, -1
 	addi	a0, a0, 4
+	mv	a5, a3
 	bnez	a2, .LBB0_7
 .LBB0_8:
-	ld	s0, 24(sp)
-	ld	s1, 16(sp)
-	ld	s2, 8(sp)
-	addi	sp, sp, 32
+	ld	s0, 8(sp)
+	ld	s1, 0(sp)
+	addi	sp, sp, 16
 	ret
 .Lfunc_end0:
 	.size	vector_overlap, .Lfunc_end0-vector_overlap
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

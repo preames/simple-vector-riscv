@@ -13,8 +13,8 @@ entry:
 ; Function Attrs: mustprogress nofree norecurse nosync nounwind willreturn memory(none) vscale_range(16,1024)
 define dso_local signext i8 @myabs(i8 noundef signext %c) local_unnamed_addr #0 {
 entry:
-  %0 = tail call i8 @llvm.abs.i8(i8 %c, i1 false)
-  ret i8 %0
+  %spec.select = tail call i8 @llvm.abs.i8(i8 %c, i1 false)
+  ret i8 %spec.select
 }
 
 ; Function Attrs: nofree nosync nounwind memory(argmem: readwrite) vscale_range(16,1024)
@@ -173,8 +173,8 @@ declare <8 x i8> @llvm.abs.v8i8(<8 x i8>, i1 immarg) #2
 ; Function Attrs: nocallback nofree nosync nounwind willreturn memory(none)
 declare i32 @llvm.vector.reduce.add.v8i32(<8 x i32>) #4
 
-attributes #0 = { mustprogress nofree norecurse nosync nounwind willreturn memory(none) vscale_range(16,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl1024b,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
-attributes #1 = { nofree nosync nounwind memory(argmem: readwrite) vscale_range(16,1024) "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl1024b,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
+attributes #0 = { mustprogress nofree norecurse nosync nounwind willreturn memory(none) vscale_range(16,1024) "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl1024b,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
+attributes #1 = { nofree nosync nounwind memory(argmem: readwrite) vscale_range(16,1024) "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl1024b,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
 attributes #2 = { nocallback nofree nosync nounwind speculatable willreturn memory(none) }
 attributes #3 = { nocallback nofree nosync nounwind willreturn memory(read) }
 attributes #4 = { nocallback nofree nosync nounwind willreturn memory(none) }
@@ -185,7 +185,7 @@ attributes #4 = { nocallback nofree nosync nounwind willreturn memory(none) }
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64d"}
 !2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"}
+!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"omnipotent char", !6, i64 0}
 !6 = !{!"Simple C/C++ TBAA"}

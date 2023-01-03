@@ -29,15 +29,13 @@ myabs:
 vector_abs_diff:
 	beqz	a3, .LBB2_6
 	zext.w	a7, a3
-	csrr	t0, vlenb
-	slli	t1, t0, 1
-	bltu	a7, t1, .LBB2_3
-	sub	a3, a0, a1
-	sltu	a3, a3, t1
-	sub	a4, a0, a2
-	sltu	a4, a4, t1
-	or	a3, a3, a4
-	beqz	a3, .LBB2_7
+	csrr	a3, vlenb
+	slli	t0, a3, 1
+	bltu	a7, t0, .LBB2_3
+	sub	a4, a0, a1
+	sub	a5, a0, a2
+	minu	a4, a4, a5
+	bgeu	a4, t0, .LBB2_7
 .LBB2_3:
 	li	a5, 0
 .LBB2_4:
@@ -62,21 +60,21 @@ vector_abs_diff:
 	ret
 .LBB2_7:
 	li	a4, 0
-	addi	a3, t1, -1
-	and	a6, a7, a3
+	addi	a5, t0, -1
+	and	a6, a7, a5
 	sub	a5, a7, a6
-	add	t2, a1, t0
-	add	t3, a2, t0
-	add	t0, t0, a0
+	add	t1, a1, a3
+	add	t2, a2, a3
+	add	t3, a0, a3
 	vsetvli	a3, zero, e8, m1, ta, ma
 .LBB2_8:
 	add	a3, a1, a4
 	vl1r.v	v8, (a3)
-	add	a3, t2, a4
+	add	a3, t1, a4
 	vl1r.v	v9, (a3)
 	add	a3, a2, a4
 	vl1r.v	v10, (a3)
-	add	a3, t3, a4
+	add	a3, t2, a4
 	vl1r.v	v11, (a3)
 	vsub.vv	v8, v8, v10
 	vsub.vv	v9, v9, v11
@@ -86,8 +84,8 @@ vector_abs_diff:
 	vmax.vv	v9, v9, v10
 	add	a3, a0, a4
 	vs1r.v	v8, (a3)
-	add	a3, t0, a4
-	add	a4, a4, t1
+	add	a3, t3, a4
+	add	a4, a4, t0
 	vs1r.v	v9, (a3)
 	bne	a5, a4, .LBB2_8
 	bnez	a6, .LBB2_4
@@ -95,6 +93,6 @@ vector_abs_diff:
 .Lfunc_end2:
 	.size	vector_abs_diff, .Lfunc_end2-vector_abs_diff
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

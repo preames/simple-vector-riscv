@@ -8,7 +8,7 @@
 vector_overlap:
 	li	a3, 2
 	bltu	a2, a3, .LBB0_8
-	lw	t2, 0(a0)
+	lw	a5, 0(a0)
 	lw	a3, 4(a0)
 	zext.w	a6, a2
 	li	a4, 33
@@ -16,11 +16,11 @@ vector_overlap:
 	bltu	a2, a4, .LBB0_6
 	addi	a7, a6, -1
 	andi	t0, a7, -32
-	ori	t1, t0, 1
+	addi	t1, t0, 1
 	li	a2, 32
 	vsetvli	zero, a2, e32, m1, ta, ma
 	vmv.v.x	v8, a3
-	vmv.v.x	v9, t2
+	vmv.v.x	v9, a5
 	addi	a3, a0, 8
 	addi	a5, a1, 4
 	mv	a4, t0
@@ -29,13 +29,12 @@ vector_overlap:
 	vle32.v	v8, (a3)
 	vsetivli	zero, 1, e32, m1, ta, ma
 	vslidedown.vi	v10, v10, 31
-	vsetvli	zero, a2, e32, m1, tu, ma
+	vsetvli	zero, a2, e32, m1, ta, ma
 	vslideup.vi	v10, v8, 1
 	vsetivli	zero, 1, e32, m1, ta, ma
 	vslidedown.vi	v9, v9, 31
-	vsetvli	zero, a2, e32, m1, tu, ma
+	vsetvli	zero, a2, e32, m1, ta, ma
 	vslideup.vi	v9, v10, 1
-	vsetvli	zero, zero, e32, m1, ta, ma
 	vadd.vv	v9, v10, v9
 	vadd.vv	v9, v9, v8
 	vse32.v	v9, (a5)
@@ -49,7 +48,7 @@ vector_overlap:
 	vslidedown.vi	v9, v8, 31
 	vmv.x.s	a3, v9
 	vslidedown.vi	v8, v8, 30
-	vmv.x.s	t2, v8
+	vmv.x.s	a5, v8
 .LBB0_6:
 	sh2add	a1, t1, a1
 	sub	a2, a6, t1
@@ -58,19 +57,19 @@ vector_overlap:
 .LBB0_7:
 	mv	a4, a3
 	lw	a3, 0(a0)
-	addw	a5, a4, t2
-	mv	t2, a4
-	addw	a5, a5, a3
+	add	a5, a5, a3
+	add	a5, a5, a4
 	sw	a5, 0(a1)
 	addi	a1, a1, 4
 	addi	a2, a2, -1
 	addi	a0, a0, 4
+	mv	a5, a4
 	bnez	a2, .LBB0_7
 .LBB0_8:
 	ret
 .Lfunc_end0:
 	.size	vector_overlap, .Lfunc_end0-vector_overlap
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

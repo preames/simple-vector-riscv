@@ -15,7 +15,7 @@ sparsevec_add_i32:
 	lw	a6, 0(a5)
 	sh2add	a7, a7, a1
 	lw	a5, 0(a7)
-	addw	a5, a5, a6
+	add	a5, a5, a6
 	sw	a5, 0(a7)
 	addi	a4, a4, 2
 	addi	a0, a0, -1
@@ -26,6 +26,6 @@ sparsevec_add_i32:
 .Lfunc_end0:
 	.size	sparsevec_add_i32, .Lfunc_end0-sparsevec_add_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

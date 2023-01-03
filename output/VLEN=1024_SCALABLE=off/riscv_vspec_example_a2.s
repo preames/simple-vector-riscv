@@ -11,11 +11,9 @@ example_a2:
 	zext.w	a6, a3
 	bltu	a3, a4, .LBB0_3
 	sub	a3, a1, a0
-	sltiu	a3, a3, 256
-	sub	a4, a1, a2
-	sltiu	a4, a4, 256
-	or	a3, a3, a4
-	beqz	a3, .LBB0_8
+	sub	a5, a1, a2
+	minu	a3, a3, a5
+	bgeu	a3, a4, .LBB0_8
 .LBB0_3:
 	li	a7, 0
 .LBB0_4:
@@ -76,6 +74,6 @@ example_a2:
 .Lfunc_end0:
 	.size	example_a2, .Lfunc_end0-example_a2
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

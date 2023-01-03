@@ -34,7 +34,7 @@ vector_add_i32:
 	sub	a3, a6, a1
 .LBB0_7:
 	lw	a1, 0(a0)
-	addw	a1, a1, a2
+	add	a1, a1, a2
 	sw	a1, 0(a0)
 	addi	a3, a3, -1
 	addi	a0, a0, 4
@@ -44,6 +44,6 @@ vector_add_i32:
 .Lfunc_end0:
 	.size	vector_add_i32, .Lfunc_end0-vector_add_i32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git b77533306876fc807e58e355d95d848a0077131f)"
+	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig
