@@ -1,6 +1,6 @@
 	.text
 	.attribute	4, 16
-	.attribute	5, "rv64i2p0_m2p0_a2p0_f2p0_d2p0_c2p0_v1p0_zba1p0_zbb1p0_zbc1p0_zbs1p0_zve32f1p0_zve32x1p0_zve64d1p0_zve64f1p0_zve64x1p0_zvl1024b1p0_zvl128b1p0_zvl256b1p0_zvl32b1p0_zvl512b1p0_zvl64b1p0"
+	.attribute	5, "rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_v1p0_zicsr2p0_zifencei2p0_zba1p0_zbb1p0_zbc1p0_zbs1p0_zve32f1p0_zve32x1p0_zve64d1p0_zve64f1p0_zve64x1p0_zvl128b1p0_zvl32b1p0_zvl64b1p0"
 	.file	"pairwise_dotproduct_fp32.c"
 	.globl	pairwise_dotproduct_fp32
 	.p2align	1
@@ -8,10 +8,10 @@
 pairwise_dotproduct_fp32:
 	andi	a0, a0, -2
 	beqz	a0, .LBB0_6
-	li	a4, 63
-	zext.w	t1, a0
+	li	a4, 31
+	zext.w	t0, a0
 	bltu	a0, a4, .LBB0_3
-	addi	a0, t1, -1
+	addi	a0, t0, -1
 	srli	a6, a0, 1
 	sh2add	a0, a6, a1
 	addi	a0, a0, 4
@@ -37,51 +37,44 @@ pairwise_dotproduct_fp32:
 	srli	a0, a4, 1
 	sh2add	a1, a0, a1
 .LBB0_5:
-	flw	ft0, -4(a2)
-	flw	ft1, 0(a2)
-	flw	ft2, 0(a3)
-	flw	ft3, -4(a3)
-	fmul.s	ft1, ft1, ft2
-	fmadd.s	ft0, ft0, ft3, ft1
-	fsw	ft0, 0(a1)
+	flw	fa5, -4(a2)
+	flw	fa4, 0(a2)
+	flw	fa3, 0(a3)
+	flw	fa2, -4(a3)
+	fmul.s	fa4, fa4, fa3
+	fmadd.s	fa5, fa5, fa2, fa4
+	fsw	fa5, 0(a1)
 	addi	a4, a4, 2
 	addi	a2, a2, 8
 	addi	a3, a3, 8
 	addi	a1, a1, 4
-	bltu	a4, t1, .LBB0_5
+	bltu	a4, t0, .LBB0_5
 .LBB0_6:
 	ret
 .LBB0_7:
-	li	t3, 0
 	addi	a6, a6, 1
-	andi	a7, a6, -32
+	andi	a7, a6, -8
 	slli	a4, a7, 1
-	li	t0, 32
-	li	t2, 8
-	mv	t4, a3
-	mv	a0, a2
+	vsetivli	zero, 8, e32, m2, ta, ma
+	mv	t1, a3
+	mv	t2, a2
 .LBB0_8:
-	vsetvli	zero, t0, e32, m1, ta, ma
-	vlse32.v	v8, (a0), t2
-	addi	a5, a0, 4
-	vlse32.v	v9, (a5), t2
-	addi	a5, t4, 4
-	vlse32.v	v10, (a5), t2
-	vlse32.v	v11, (t4), t2
-	andi	a5, t3, -32
-	vfmul.vv	v9, v9, v10
-	vfmacc.vv	v9, v8, v11
+	vlseg2e32.v	v8, (t2)
+	vlseg2e32.v	v12, (t1)
+	vfmul.vv	v10, v10, v14
+	vfmacc.vv	v10, v8, v12
+	andi	a5, a0, -8
 	sh2add	a5, a5, a1
-	vse32.v	v9, (a5)
-	addi	t3, t3, 32
-	addi	a0, a0, 256
-	addi	t4, t4, 256
-	bne	a7, t3, .LBB0_8
+	vse32.v	v10, (a5)
+	addi	a0, a0, 8
+	addi	t2, t2, 64
+	addi	t1, t1, 64
+	bne	a7, a0, .LBB0_8
 	beq	a6, a7, .LBB0_6
 	j	.LBB0_4
 .Lfunc_end0:
 	.size	pairwise_dotproduct_fp32, .Lfunc_end0-pairwise_dotproduct_fp32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"
+	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git 8c3a8d17c8a154894895c48a304a04df9ece4328)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

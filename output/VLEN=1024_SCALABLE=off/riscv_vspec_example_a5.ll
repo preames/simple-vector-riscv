@@ -3,48 +3,48 @@ source_filename = "riscv_vspec_example_a5.c"
 target datalayout = "e-m:e-p:64:64-i64:64-i128:128-n32:64-S128"
 target triple = "riscv64-unknown-unknown"
 
-; Function Attrs: nofree nosync nounwind memory(argmem: readwrite) vscale_range(16,1024)
+; Function Attrs: nofree nosync nounwind memory(argmem: readwrite) vscale_range(2,1024)
 define dso_local void @saxpy(i64 noundef %n, float noundef %a, ptr nocapture noundef readonly %x, ptr nocapture noundef %y) local_unnamed_addr #0 {
 entry:
   %cmp8 = icmp sgt i64 %n, 0
   br i1 %cmp8, label %for.body.preheader, label %for.end
 
 for.body.preheader:                               ; preds = %entry
-  %min.iters.check = icmp ult i64 %n, 64
+  %min.iters.check = icmp ult i64 %n, 16
   br i1 %min.iters.check, label %for.body.preheader16, label %vector.memcheck
 
 vector.memcheck:                                  ; preds = %for.body.preheader
   %0 = shl i64 %n, 2
-  %uglygep = getelementptr i8, ptr %y, i64 %0
-  %uglygep10 = getelementptr i8, ptr %x, i64 %0
-  %bound0 = icmp ugt ptr %uglygep10, %y
-  %bound1 = icmp ugt ptr %uglygep, %x
+  %scevgep = getelementptr i8, ptr %y, i64 %0
+  %scevgep10 = getelementptr i8, ptr %x, i64 %0
+  %bound0 = icmp ugt ptr %scevgep10, %y
+  %bound1 = icmp ugt ptr %scevgep, %x
   %found.conflict = and i1 %bound0, %bound1
   br i1 %found.conflict, label %for.body.preheader16, label %vector.ph
 
 vector.ph:                                        ; preds = %vector.memcheck
-  %n.vec = and i64 %n, -64
-  %broadcast.splatinsert = insertelement <32 x float> poison, float %a, i64 0
-  %broadcast.splat = shufflevector <32 x float> %broadcast.splatinsert, <32 x float> poison, <32 x i32> zeroinitializer
-  %broadcast.splatinsert14 = insertelement <32 x float> poison, float %a, i64 0
-  %broadcast.splat15 = shufflevector <32 x float> %broadcast.splatinsert14, <32 x float> poison, <32 x i32> zeroinitializer
+  %n.vec = and i64 %n, -16
+  %broadcast.splatinsert = insertelement <8 x float> poison, float %a, i64 0
+  %broadcast.splat = shufflevector <8 x float> %broadcast.splatinsert, <8 x float> poison, <8 x i32> zeroinitializer
+  %broadcast.splatinsert14 = insertelement <8 x float> poison, float %a, i64 0
+  %broadcast.splat15 = shufflevector <8 x float> %broadcast.splatinsert14, <8 x float> poison, <8 x i32> zeroinitializer
   br label %vector.body
 
 vector.body:                                      ; preds = %vector.body, %vector.ph
   %index = phi i64 [ 0, %vector.ph ], [ %index.next, %vector.body ]
   %1 = getelementptr inbounds float, ptr %x, i64 %index
-  %wide.load = load <32 x float>, ptr %1, align 4, !tbaa !4, !alias.scope !8
-  %2 = getelementptr inbounds float, ptr %1, i64 32
-  %wide.load11 = load <32 x float>, ptr %2, align 4, !tbaa !4, !alias.scope !8
+  %wide.load = load <8 x float>, ptr %1, align 4, !tbaa !4, !alias.scope !8
+  %2 = getelementptr inbounds float, ptr %1, i64 8
+  %wide.load11 = load <8 x float>, ptr %2, align 4, !tbaa !4, !alias.scope !8
   %3 = getelementptr inbounds float, ptr %y, i64 %index
-  %wide.load12 = load <32 x float>, ptr %3, align 4, !tbaa !4, !alias.scope !11, !noalias !8
-  %4 = getelementptr inbounds float, ptr %3, i64 32
-  %wide.load13 = load <32 x float>, ptr %4, align 4, !tbaa !4, !alias.scope !11, !noalias !8
-  %5 = tail call <32 x float> @llvm.fmuladd.v32f32(<32 x float> %broadcast.splat, <32 x float> %wide.load, <32 x float> %wide.load12)
-  %6 = tail call <32 x float> @llvm.fmuladd.v32f32(<32 x float> %broadcast.splat15, <32 x float> %wide.load11, <32 x float> %wide.load13)
-  store <32 x float> %5, ptr %3, align 4, !tbaa !4, !alias.scope !11, !noalias !8
-  store <32 x float> %6, ptr %4, align 4, !tbaa !4, !alias.scope !11, !noalias !8
-  %index.next = add nuw i64 %index, 64
+  %wide.load12 = load <8 x float>, ptr %3, align 4, !tbaa !4, !alias.scope !11, !noalias !8
+  %4 = getelementptr inbounds float, ptr %3, i64 8
+  %wide.load13 = load <8 x float>, ptr %4, align 4, !tbaa !4, !alias.scope !11, !noalias !8
+  %5 = tail call <8 x float> @llvm.fmuladd.v8f32(<8 x float> %broadcast.splat, <8 x float> %wide.load, <8 x float> %wide.load12)
+  %6 = tail call <8 x float> @llvm.fmuladd.v8f32(<8 x float> %broadcast.splat15, <8 x float> %wide.load11, <8 x float> %wide.load13)
+  store <8 x float> %5, ptr %3, align 4, !tbaa !4, !alias.scope !11, !noalias !8
+  store <8 x float> %6, ptr %4, align 4, !tbaa !4, !alias.scope !11, !noalias !8
+  %index.next = add nuw i64 %index, 16
   %7 = icmp eq i64 %index.next, %n.vec
   br i1 %7, label %middle.block, label %vector.body, !llvm.loop !13
 
@@ -66,7 +66,7 @@ for.body:                                         ; preds = %for.body.preheader1
   store float %10, ptr %arrayidx1, align 4, !tbaa !4
   %inc = add nuw nsw i64 %i.09, 1
   %exitcond.not = icmp eq i64 %inc, %n
-  br i1 %exitcond.not, label %for.end, label %for.body, !llvm.loop !16
+  br i1 %exitcond.not, label %for.end, label %for.body, !llvm.loop !17
 
 for.end:                                          ; preds = %for.body, %middle.block, %entry
   ret void
@@ -76,9 +76,9 @@ for.end:                                          ; preds = %for.body, %middle.b
 declare float @llvm.fmuladd.f32(float, float, float) #1
 
 ; Function Attrs: nocallback nofree nosync nounwind speculatable willreturn memory(none)
-declare <32 x float> @llvm.fmuladd.v32f32(<32 x float>, <32 x float>, <32 x float>) #2
+declare <8 x float> @llvm.fmuladd.v8f32(<8 x float>, <8 x float>, <8 x float>) #2
 
-attributes #0 = { nofree nosync nounwind memory(argmem: readwrite) vscale_range(16,1024) "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl1024b,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
+attributes #0 = { nofree nosync nounwind memory(argmem: readwrite) vscale_range(2,1024) "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zicsr,+zifencei,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl32b,+zvl64b,-e,-experimental-smaia,-experimental-ssaia,-experimental-zca,-experimental-zcb,-experimental-zcd,-experimental-zcf,-experimental-zcmp,-experimental-zcmt,-experimental-zfa,-experimental-zicond,-experimental-zihintntl,-experimental-ztso,-experimental-zvbb,-experimental-zvbc,-experimental-zvfh,-experimental-zvkg,-experimental-zvkn,-experimental-zvkned,-experimental-zvkng,-experimental-zvknha,-experimental-zvknhb,-experimental-zvks,-experimental-zvksed,-experimental-zvksg,-experimental-zvksh,-experimental-zvkt,-h,-save-restore,-svinval,-svnapot,-svpbmt,-xsfvcp,-xtheadba,-xtheadbb,-xtheadbs,-xtheadcmo,-xtheadcondmov,-xtheadfmemidx,-xtheadmac,-xtheadmemidx,-xtheadmempair,-xtheadsync,-xtheadvdot,-xventanacondops,-zawrs,-zbkb,-zbkc,-zbkx,-zdinx,-zfh,-zfhmin,-zfinx,-zhinx,-zhinxmin,-zicbom,-zicbop,-zicboz,-zicntr,-zihintpause,-zihpm,-zk,-zkn,-zknd,-zkne,-zknh,-zkr,-zks,-zksed,-zksh,-zkt,-zmmul,-zvl1024b,-zvl16384b,-zvl2048b,-zvl256b,-zvl32768b,-zvl4096b,-zvl512b,-zvl65536b,-zvl8192b" }
 attributes #1 = { mustprogress nocallback nofree nosync nounwind speculatable willreturn memory(none) }
 attributes #2 = { nocallback nofree nosync nounwind speculatable willreturn memory(none) }
 
@@ -87,8 +87,8 @@ attributes #2 = { nocallback nofree nosync nounwind speculatable willreturn memo
 
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64d"}
-!2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"}
+!2 = !{i32 8, !"SmallDataLimit", i32 8}
+!3 = !{!"clang version 17.0.0 (https://github.com/llvm/llvm-project.git 8c3a8d17c8a154894895c48a304a04df9ece4328)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"float", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}
@@ -98,7 +98,8 @@ attributes #2 = { nocallback nofree nosync nounwind speculatable willreturn memo
 !10 = distinct !{!10, !"LVerDomain"}
 !11 = !{!12}
 !12 = distinct !{!12, !10}
-!13 = distinct !{!13, !14, !15}
+!13 = distinct !{!13, !14, !15, !16}
 !14 = !{!"llvm.loop.mustprogress"}
 !15 = !{!"llvm.loop.isvectorized", i32 1}
-!16 = distinct !{!16, !14, !15}
+!16 = !{!"llvm.loop.unroll.runtime.disable"}
+!17 = distinct !{!17, !14, !15}

@@ -3,7 +3,7 @@ source_filename = "vector_init_i32.c"
 target datalayout = "e-m:e-p:64:64-i64:64-i128:128-n32:64-S128"
 target triple = "riscv64-unknown-unknown"
 
-; Function Attrs: nofree norecurse nosync nounwind memory(argmem: write) vscale_range(16,1024)
+; Function Attrs: nofree norecurse nosync nounwind memory(argmem: write) vscale_range(2,1024)
 define dso_local void @vector_init_i32(ptr nocapture noundef writeonly %a, i32 noundef signext %a_len) local_unnamed_addr #0 {
 entry:
   %cmp4.not = icmp eq i32 %a_len, 0
@@ -11,23 +11,23 @@ entry:
 
 for.body.preheader:                               ; preds = %entry
   %wide.trip.count = zext i32 %a_len to i64
-  %min.iters.check = icmp ult i32 %a_len, 64
+  %min.iters.check = icmp ult i32 %a_len, 16
   br i1 %min.iters.check, label %for.body.preheader7, label %vector.ph
 
 vector.ph:                                        ; preds = %for.body.preheader
-  %n.vec = and i64 %wide.trip.count, 4294967232
+  %n.vec = and i64 %wide.trip.count, 4294967280
   br label %vector.body
 
 vector.body:                                      ; preds = %vector.body, %vector.ph
   %index = phi i64 [ 0, %vector.ph ], [ %index.next, %vector.body ]
-  %vec.ind = phi <32 x i32> [ <i32 0, i32 1, i32 2, i32 3, i32 4, i32 5, i32 6, i32 7, i32 8, i32 9, i32 10, i32 11, i32 12, i32 13, i32 14, i32 15, i32 16, i32 17, i32 18, i32 19, i32 20, i32 21, i32 22, i32 23, i32 24, i32 25, i32 26, i32 27, i32 28, i32 29, i32 30, i32 31>, %vector.ph ], [ %vec.ind.next, %vector.body ]
-  %step.add = add <32 x i32> %vec.ind, <i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32, i32 32>
+  %vec.ind = phi <8 x i32> [ <i32 0, i32 1, i32 2, i32 3, i32 4, i32 5, i32 6, i32 7>, %vector.ph ], [ %vec.ind.next, %vector.body ]
+  %step.add = add <8 x i32> %vec.ind, <i32 8, i32 8, i32 8, i32 8, i32 8, i32 8, i32 8, i32 8>
   %0 = getelementptr inbounds i32, ptr %a, i64 %index
-  store <32 x i32> %vec.ind, ptr %0, align 4, !tbaa !4
-  %1 = getelementptr inbounds i32, ptr %0, i64 32
-  store <32 x i32> %step.add, ptr %1, align 4, !tbaa !4
-  %index.next = add nuw i64 %index, 64
-  %vec.ind.next = add <32 x i32> %vec.ind, <i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64, i32 64>
+  store <8 x i32> %vec.ind, ptr %0, align 4, !tbaa !4
+  %1 = getelementptr inbounds i32, ptr %0, i64 8
+  store <8 x i32> %step.add, ptr %1, align 4, !tbaa !4
+  %index.next = add nuw i64 %index, 16
+  %vec.ind.next = add <8 x i32> %vec.ind, <i32 16, i32 16, i32 16, i32 16, i32 16, i32 16, i32 16, i32 16>
   %2 = icmp eq i64 %index.next, %n.vec
   br i1 %2, label %middle.block, label %vector.body, !llvm.loop !8
 
@@ -49,24 +49,24 @@ for.body:                                         ; preds = %for.body.preheader7
   store i32 %3, ptr %arrayidx, align 4, !tbaa !4
   %indvars.iv.next = add nuw nsw i64 %indvars.iv, 1
   %exitcond.not = icmp eq i64 %indvars.iv.next, %wide.trip.count
-  br i1 %exitcond.not, label %for.cond.cleanup, label %for.body, !llvm.loop !11
+  br i1 %exitcond.not, label %for.cond.cleanup, label %for.body, !llvm.loop !12
 }
 
-attributes #0 = { nofree norecurse nosync nounwind memory(argmem: write) vscale_range(16,1024) "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl1024b,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
+attributes #0 = { nofree norecurse nosync nounwind memory(argmem: write) vscale_range(2,1024) "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zicsr,+zifencei,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl32b,+zvl64b,-e,-experimental-smaia,-experimental-ssaia,-experimental-zca,-experimental-zcb,-experimental-zcd,-experimental-zcf,-experimental-zcmp,-experimental-zcmt,-experimental-zfa,-experimental-zicond,-experimental-zihintntl,-experimental-ztso,-experimental-zvbb,-experimental-zvbc,-experimental-zvfh,-experimental-zvkg,-experimental-zvkn,-experimental-zvkned,-experimental-zvkng,-experimental-zvknha,-experimental-zvknhb,-experimental-zvks,-experimental-zvksed,-experimental-zvksg,-experimental-zvksh,-experimental-zvkt,-h,-save-restore,-svinval,-svnapot,-svpbmt,-xsfvcp,-xtheadba,-xtheadbb,-xtheadbs,-xtheadcmo,-xtheadcondmov,-xtheadfmemidx,-xtheadmac,-xtheadmemidx,-xtheadmempair,-xtheadsync,-xtheadvdot,-xventanacondops,-zawrs,-zbkb,-zbkc,-zbkx,-zdinx,-zfh,-zfhmin,-zfinx,-zhinx,-zhinxmin,-zicbom,-zicbop,-zicboz,-zicntr,-zihintpause,-zihpm,-zk,-zkn,-zknd,-zkne,-zknh,-zkr,-zks,-zksed,-zksh,-zkt,-zmmul,-zvl1024b,-zvl16384b,-zvl2048b,-zvl256b,-zvl32768b,-zvl4096b,-zvl512b,-zvl65536b,-zvl8192b" }
 
 !llvm.module.flags = !{!0, !1, !2}
 !llvm.ident = !{!3}
 
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64d"}
-!2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"}
+!2 = !{i32 8, !"SmallDataLimit", i32 8}
+!3 = !{!"clang version 17.0.0 (https://github.com/llvm/llvm-project.git 8c3a8d17c8a154894895c48a304a04df9ece4328)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"int", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}
 !7 = !{!"Simple C/C++ TBAA"}
-!8 = distinct !{!8, !9, !10}
+!8 = distinct !{!8, !9, !10, !11}
 !9 = !{!"llvm.loop.mustprogress"}
 !10 = !{!"llvm.loop.isvectorized", i32 1}
-!11 = distinct !{!11, !9, !12, !10}
-!12 = !{!"llvm.loop.unroll.runtime.disable"}
+!11 = !{!"llvm.loop.unroll.runtime.disable"}
+!12 = distinct !{!12, !9, !11, !10}

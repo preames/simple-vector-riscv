@@ -3,7 +3,7 @@ source_filename = "riscv_vspec_example_a2.c"
 target datalayout = "e-m:e-p:64:64-i64:64-i128:128-n32:64-S128"
 target triple = "riscv64-unknown-unknown"
 
-; Function Attrs: nofree norecurse nosync nounwind memory(argmem: readwrite) vscale_range(8,1024)
+; Function Attrs: nofree norecurse nosync nounwind memory(argmem: readwrite) vscale_range(2,1024)
 define dso_local void @example_a2(ptr nocapture noundef readonly %a, ptr nocapture noundef writeonly %b, ptr nocapture noundef readonly %c, i32 noundef signext %n) local_unnamed_addr #0 {
 entry:
   %c17 = ptrtoint ptr %c to i64
@@ -14,40 +14,40 @@ entry:
 
 for.body.preheader:                               ; preds = %entry
   %wide.trip.count = zext i32 %n to i64
-  %min.iters.check = icmp ult i32 %n, 128
+  %min.iters.check = icmp ult i32 %n, 64
   br i1 %min.iters.check, label %for.body.preheader22, label %vector.memcheck
 
 vector.memcheck:                                  ; preds = %for.body.preheader
   %0 = sub i64 %b15, %a16
-  %diff.check = icmp ult i64 %0, 128
+  %diff.check = icmp ult i64 %0, 64
   %1 = sub i64 %b15, %c17
-  %diff.check18 = icmp ult i64 %1, 128
+  %diff.check18 = icmp ult i64 %1, 64
   %conflict.rdx = or i1 %diff.check, %diff.check18
   br i1 %conflict.rdx, label %for.body.preheader22, label %vector.ph
 
 vector.ph:                                        ; preds = %vector.memcheck
-  %n.vec = and i64 %wide.trip.count, 4294967168
+  %n.vec = and i64 %wide.trip.count, 4294967232
   br label %vector.body
 
 vector.body:                                      ; preds = %vector.body, %vector.ph
   %index = phi i64 [ 0, %vector.ph ], [ %index.next, %vector.body ]
   %2 = getelementptr inbounds i8, ptr %a, i64 %index
-  %wide.load = load <64 x i8>, ptr %2, align 1, !tbaa !4
-  %3 = getelementptr inbounds i8, ptr %2, i64 64
-  %wide.load19 = load <64 x i8>, ptr %3, align 1, !tbaa !4
-  %4 = icmp ult <64 x i8> %wide.load, <i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5>
-  %5 = icmp ult <64 x i8> %wide.load19, <i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5>
+  %wide.load = load <32 x i8>, ptr %2, align 1, !tbaa !4
+  %3 = getelementptr inbounds i8, ptr %2, i64 32
+  %wide.load19 = load <32 x i8>, ptr %3, align 1, !tbaa !4
+  %4 = icmp ult <32 x i8> %wide.load, <i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5>
+  %5 = icmp ult <32 x i8> %wide.load19, <i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5, i8 5>
   %6 = getelementptr i8, ptr %c, i64 %index
-  %wide.masked.load = tail call <64 x i8> @llvm.masked.load.v64i8.p0(ptr %6, i32 1, <64 x i1> %4, <64 x i8> poison), !tbaa !4
-  %7 = getelementptr i8, ptr %6, i64 64
-  %wide.masked.load20 = tail call <64 x i8> @llvm.masked.load.v64i8.p0(ptr %7, i32 1, <64 x i1> %5, <64 x i8> poison), !tbaa !4
-  %predphi = select <64 x i1> %4, <64 x i8> %wide.masked.load, <64 x i8> <i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1>
-  %predphi21 = select <64 x i1> %5, <64 x i8> %wide.masked.load20, <64 x i8> <i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1>
+  %wide.masked.load = tail call <32 x i8> @llvm.masked.load.v32i8.p0(ptr %6, i32 1, <32 x i1> %4, <32 x i8> poison), !tbaa !4
+  %7 = getelementptr i8, ptr %6, i64 32
+  %wide.masked.load20 = tail call <32 x i8> @llvm.masked.load.v32i8.p0(ptr %7, i32 1, <32 x i1> %5, <32 x i8> poison), !tbaa !4
+  %predphi = select <32 x i1> %4, <32 x i8> %wide.masked.load, <32 x i8> <i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1>
+  %predphi21 = select <32 x i1> %5, <32 x i8> %wide.masked.load20, <32 x i8> <i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1, i8 1>
   %8 = getelementptr inbounds i8, ptr %b, i64 %index
-  store <64 x i8> %predphi, ptr %8, align 1, !tbaa !4
-  %9 = getelementptr inbounds i8, ptr %8, i64 64
-  store <64 x i8> %predphi21, ptr %9, align 1, !tbaa !4
-  %index.next = add nuw i64 %index, 128
+  store <32 x i8> %predphi, ptr %8, align 1, !tbaa !4
+  %9 = getelementptr inbounds i8, ptr %8, i64 32
+  store <32 x i8> %predphi21, ptr %9, align 1, !tbaa !4
+  %index.next = add nuw i64 %index, 64
   %10 = icmp eq i64 %index.next, %n.vec
   br i1 %10, label %middle.block, label %vector.body, !llvm.loop !7
 
@@ -80,13 +80,13 @@ cond.end:                                         ; preds = %for.body, %cond.tru
   store i8 %cond, ptr %arrayidx8, align 1, !tbaa !4
   %indvars.iv.next = add nuw nsw i64 %indvars.iv, 1
   %exitcond.not = icmp eq i64 %indvars.iv.next, %wide.trip.count
-  br i1 %exitcond.not, label %for.cond.cleanup, label %for.body, !llvm.loop !10
+  br i1 %exitcond.not, label %for.cond.cleanup, label %for.body, !llvm.loop !11
 }
 
 ; Function Attrs: nocallback nofree nosync nounwind willreturn memory(argmem: read)
-declare <64 x i8> @llvm.masked.load.v64i8.p0(ptr nocapture, i32 immarg, <64 x i1>, <64 x i8>) #1
+declare <32 x i8> @llvm.masked.load.v32i8.p0(ptr nocapture, i32 immarg, <32 x i1>, <32 x i8>) #1
 
-attributes #0 = { nofree norecurse nosync nounwind memory(argmem: readwrite) vscale_range(8,1024) "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl256b,+zvl32b,+zvl512b,+zvl64b,-save-restore" }
+attributes #0 = { nofree norecurse nosync nounwind memory(argmem: readwrite) vscale_range(2,1024) "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zicsr,+zifencei,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl32b,+zvl64b,-e,-experimental-smaia,-experimental-ssaia,-experimental-zca,-experimental-zcb,-experimental-zcd,-experimental-zcf,-experimental-zcmp,-experimental-zcmt,-experimental-zfa,-experimental-zicond,-experimental-zihintntl,-experimental-ztso,-experimental-zvbb,-experimental-zvbc,-experimental-zvfh,-experimental-zvkg,-experimental-zvkn,-experimental-zvkned,-experimental-zvkng,-experimental-zvknha,-experimental-zvknhb,-experimental-zvks,-experimental-zvksed,-experimental-zvksg,-experimental-zvksh,-experimental-zvkt,-h,-save-restore,-svinval,-svnapot,-svpbmt,-xsfvcp,-xtheadba,-xtheadbb,-xtheadbs,-xtheadcmo,-xtheadcondmov,-xtheadfmemidx,-xtheadmac,-xtheadmemidx,-xtheadmempair,-xtheadsync,-xtheadvdot,-xventanacondops,-zawrs,-zbkb,-zbkc,-zbkx,-zdinx,-zfh,-zfhmin,-zfinx,-zhinx,-zhinxmin,-zicbom,-zicbop,-zicboz,-zicntr,-zihintpause,-zihpm,-zk,-zkn,-zknd,-zkne,-zknh,-zkr,-zks,-zksed,-zksh,-zkt,-zmmul,-zvl1024b,-zvl16384b,-zvl2048b,-zvl256b,-zvl32768b,-zvl4096b,-zvl512b,-zvl65536b,-zvl8192b" }
 attributes #1 = { nocallback nofree nosync nounwind willreturn memory(argmem: read) }
 
 !llvm.module.flags = !{!0, !1, !2}
@@ -94,12 +94,13 @@ attributes #1 = { nocallback nofree nosync nounwind willreturn memory(argmem: re
 
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64d"}
-!2 = !{i32 1, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"}
+!2 = !{i32 8, !"SmallDataLimit", i32 8}
+!3 = !{!"clang version 17.0.0 (https://github.com/llvm/llvm-project.git 8c3a8d17c8a154894895c48a304a04df9ece4328)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"omnipotent char", !6, i64 0}
 !6 = !{!"Simple C/C++ TBAA"}
-!7 = distinct !{!7, !8, !9}
+!7 = distinct !{!7, !8, !9, !10}
 !8 = !{!"llvm.loop.mustprogress"}
 !9 = !{!"llvm.loop.isvectorized", i32 1}
-!10 = distinct !{!10, !8, !9}
+!10 = !{!"llvm.loop.unroll.runtime.disable"}
+!11 = distinct !{!11, !8, !9}

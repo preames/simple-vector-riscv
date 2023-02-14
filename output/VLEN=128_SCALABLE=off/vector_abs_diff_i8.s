@@ -1,6 +1,6 @@
 	.text
 	.attribute	4, 16
-	.attribute	5, "rv64i2p0_m2p0_a2p0_f2p0_d2p0_c2p0_v1p0_zba1p0_zbb1p0_zbc1p0_zbs1p0_zve32f1p0_zve32x1p0_zve64d1p0_zve64f1p0_zve64x1p0_zvl128b1p0_zvl32b1p0_zvl64b1p0"
+	.attribute	5, "rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_v1p0_zicsr2p0_zifencei2p0_zba1p0_zbb1p0_zbc1p0_zbs1p0_zve32f1p0_zve32x1p0_zve64d1p0_zve64f1p0_zve64x1p0_zvl128b1p0_zvl32b1p0_zvl64b1p0"
 	.file	"vector_abs_diff_i8.c"
 	.globl	sub
 	.p2align	1
@@ -28,7 +28,7 @@ myabs:
 	.type	vector_abs_diff,@function
 vector_abs_diff:
 	beqz	a3, .LBB2_6
-	li	a4, 32
+	li	a4, 64
 	zext.w	a6, a3
 	bltu	a3, a4, .LBB2_3
 	sub	a3, a0, a1
@@ -36,15 +36,15 @@ vector_abs_diff:
 	minu	a3, a3, a5
 	bgeu	a3, a4, .LBB2_7
 .LBB2_3:
-	li	a7, 0
+	li	t0, 0
 .LBB2_4:
-	add	a1, a1, a7
-	add	a2, a2, a7
-	add	a0, a0, a7
-	sub	a3, a6, a7
+	add	a1, a1, t0
+	add	a2, a2, t0
+	add	a0, a0, t0
+	sub	a3, a6, t0
 .LBB2_5:
-	lb	a4, 0(a1)
-	lb	a5, 0(a2)
+	lbu	a4, 0(a1)
+	lbu	a5, 0(a2)
 	subw	a4, a4, a5
 	sext.b	a4, a4
 	neg	a5, a4
@@ -58,38 +58,39 @@ vector_abs_diff:
 .LBB2_6:
 	ret
 .LBB2_7:
-	andi	a7, a6, -32
-	vsetivli	zero, 16, e8, m1, ta, ma
-	mv	t0, a7
-	mv	a4, a0
-	mv	a3, a2
-	mv	a5, a1
+	andi	t0, a6, -64
+	li	a7, 32
+	mv	t1, t0
+	mv	a5, a0
+	mv	a4, a2
+	mv	a3, a1
 .LBB2_8:
-	addi	t1, a3, 16
-	addi	t2, a5, 16
-	vle8.v	v8, (a5)
-	vle8.v	v9, (t2)
-	vle8.v	v10, (a3)
-	vle8.v	v11, (t1)
-	addi	t1, a4, 16
-	vsub.vv	v8, v8, v10
-	vsub.vv	v9, v9, v11
-	vrsub.vi	v10, v8, 0
-	vmax.vv	v8, v8, v10
-	vrsub.vi	v10, v9, 0
-	vmax.vv	v9, v9, v10
-	vse8.v	v8, (a4)
-	vse8.v	v9, (t1)
-	addi	a5, a5, 32
-	addi	a3, a3, 32
-	addi	t0, t0, -32
-	addi	a4, a4, 32
-	bnez	t0, .LBB2_8
-	beq	a7, a6, .LBB2_6
+	addi	t2, a4, 32
+	addi	t3, a3, 32
+	vsetvli	zero, a7, e8, m2, ta, ma
+	vle8.v	v8, (a3)
+	vle8.v	v10, (t3)
+	vle8.v	v12, (a4)
+	vle8.v	v14, (t2)
+	addi	t2, a5, 32
+	vsub.vv	v8, v8, v12
+	vsub.vv	v10, v10, v14
+	vrsub.vi	v12, v8, 0
+	vmax.vv	v8, v8, v12
+	vrsub.vi	v12, v10, 0
+	vmax.vv	v10, v10, v12
+	vse8.v	v8, (a5)
+	vse8.v	v10, (t2)
+	addi	a3, a3, 64
+	addi	a4, a4, 64
+	addi	t1, t1, -64
+	addi	a5, a5, 64
+	bnez	t1, .LBB2_8
+	beq	t0, a6, .LBB2_6
 	j	.LBB2_4
 .Lfunc_end2:
 	.size	vector_abs_diff, .Lfunc_end2-vector_abs_diff
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"
+	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git 8c3a8d17c8a154894895c48a304a04df9ece4328)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

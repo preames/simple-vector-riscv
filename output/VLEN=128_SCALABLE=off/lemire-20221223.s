@@ -1,6 +1,6 @@
 	.text
 	.attribute	4, 16
-	.attribute	5, "rv64i2p0_m2p0_a2p0_f2p0_d2p0_c2p0_v1p0_zba1p0_zbb1p0_zbc1p0_zbs1p0_zve32f1p0_zve32x1p0_zve64d1p0_zve64f1p0_zve64x1p0_zvl128b1p0_zvl32b1p0_zvl64b1p0"
+	.attribute	5, "rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_v1p0_zicsr2p0_zifencei2p0_zba1p0_zbb1p0_zbc1p0_zbs1p0_zve32f1p0_zve32x1p0_zve64d1p0_zve64f1p0_zve64x1p0_zvl128b1p0_zvl32b1p0_zvl64b1p0"
 	.file	"lemire-20221223.c"
 	.globl	encode_byte_table
 	.p2align	1
@@ -40,27 +40,19 @@ encode_byte_table:
 	andi	a6, a1, -16
 	sh1add	a3, a6, a2
 	lui	a4, %hi(.L__const.encode_byte_table.table)
-	addi	a7, a4, %lo(.L__const.encode_byte_table.table)
+	addi	t0, a4, %lo(.L__const.encode_byte_table.table)
+	li	a7, 32
 	mv	a4, a6
 	mv	a5, a0
 .LBB0_8:
-	addi	t0, a5, 8
-	vsetivli	zero, 8, e64, m4, ta, ma
+	vsetivli	zero, 16, e64, m8, ta, ma
 	vle8.v	v8, (a5)
-	vle8.v	v9, (t0)
-	vzext.vf8	v12, v8
-	vzext.vf8	v16, v9
-	vadd.vv	v8, v12, v12
-	vsetvli	zero, zero, e16, m1, ta, ma
-	vluxei64.v	v12, (a7), v8
-	vsetvli	zero, zero, e64, m4, ta, ma
+	vzext.vf8	v16, v8
 	vadd.vv	v8, v16, v16
-	vsetvli	zero, zero, e16, m1, ta, ma
-	vluxei64.v	v13, (a7), v8
-	addi	t0, a2, 16
-	vsetivli	zero, 16, e8, m1, ta, ma
-	vse8.v	v12, (a2)
-	vse8.v	v13, (t0)
+	vsetvli	zero, zero, e16, m2, ta, ma
+	vluxei64.v	v16, (t0), v8
+	vsetvli	zero, a7, e8, m2, ta, ma
+	vse8.v	v16, (a2)
 	addi	a5, a5, 16
 	addi	a4, a4, -16
 	addi	a2, a2, 32
@@ -75,7 +67,7 @@ encode_byte_table:
 	.type	encode_nibble_table,@function
 encode_nibble_table:
 	beqz	a1, .LBB1_6
-	li	a3, 4
+	li	a3, 8
 	bltu	a1, a3, .LBB1_3
 	sh2add	a3, a1, a2
 	add	a4, a0, a1
@@ -113,37 +105,38 @@ encode_nibble_table:
 .LBB1_6:
 	ret
 .LBB1_7:
-	andi	a6, a1, -4
+	andi	a6, a1, -8
 	sh2add	a3, a6, a2
 	lui	a4, %hi(.L__const.encode_nibble_table.table)
-	addi	a7, a4, %lo(.L__const.encode_nibble_table.table)
+	addi	t0, a4, %lo(.L__const.encode_nibble_table.table)
+	li	a7, 32
 	mv	a4, a6
 	mv	a5, a0
 .LBB1_8:
-	vsetivli	zero, 4, e8, mf4, ta, ma
+	vsetivli	zero, 8, e8, mf2, ta, ma
 	vle8.v	v8, (a5)
 	vand.vi	v9, v8, 15
 	vsrl.vi	v8, v8, 4
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vzext.vf8	v10, v9
-	vadd.vv	v10, v10, v10
-	vsetvli	zero, zero, e16, mf2, ta, ma
-	vluxei64.v	v9, (a7), v10
-	vsetvli	zero, zero, e64, m2, ta, ma
-	vzext.vf8	v10, v8
-	vadd.vv	v10, v10, v10
-	vsetvli	zero, zero, e16, mf2, ta, ma
-	vluxei64.v	v8, (a7), v10
-	vsetvli	zero, zero, e32, m1, ta, ma
+	vsetvli	zero, zero, e64, m4, ta, ma
+	vzext.vf8	v12, v9
+	vadd.vv	v12, v12, v12
+	vsetvli	zero, zero, e16, m1, ta, ma
+	vluxei64.v	v9, (t0), v12
+	vsetvli	zero, zero, e64, m4, ta, ma
+	vzext.vf8	v12, v8
+	vadd.vv	v12, v12, v12
+	vsetvli	zero, zero, e16, m1, ta, ma
+	vluxei64.v	v8, (t0), v12
+	vsetvli	zero, zero, e32, m2, ta, ma
 	vzext.vf2	v10, v9
-	vzext.vf2	v9, v8
-	vsll.vi	v8, v9, 16
+	vzext.vf2	v12, v8
+	vsll.vi	v8, v12, 16
 	vor.vv	v8, v8, v10
-	vsetivli	zero, 16, e8, m1, ta, ma
+	vsetvli	zero, a7, e8, m2, ta, ma
 	vse8.v	v8, (a2)
-	addi	a5, a5, 4
-	addi	a4, a4, -4
-	addi	a2, a2, 16
+	addi	a5, a5, 8
+	addi	a4, a4, -8
+	addi	a2, a2, 32
 	bnez	a4, .LBB1_8
 	bne	a6, a1, .LBB1_4
 	j	.LBB1_6
@@ -434,6 +427,6 @@ encode_nibble_table:
 	.half	48
 	.size	.L__const.encode_nibble_table.table, 32
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"
+	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git 8c3a8d17c8a154894895c48a304a04df9ece4328)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

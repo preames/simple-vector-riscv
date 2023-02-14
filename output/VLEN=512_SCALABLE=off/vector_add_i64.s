@@ -1,32 +1,32 @@
 	.text
 	.attribute	4, 16
-	.attribute	5, "rv64i2p0_m2p0_a2p0_f2p0_d2p0_c2p0_v1p0_zba1p0_zbb1p0_zbc1p0_zbs1p0_zve32f1p0_zve32x1p0_zve64d1p0_zve64f1p0_zve64x1p0_zvl128b1p0_zvl256b1p0_zvl32b1p0_zvl512b1p0_zvl64b1p0"
+	.attribute	5, "rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_v1p0_zicsr2p0_zifencei2p0_zba1p0_zbb1p0_zbc1p0_zbs1p0_zve32f1p0_zve32x1p0_zve64d1p0_zve64f1p0_zve64x1p0_zvl128b1p0_zvl32b1p0_zvl64b1p0"
 	.file	"vector_add_i64.c"
 	.globl	vector_add_i64
 	.p2align	1
 	.type	vector_add_i64,@function
 vector_add_i64:
 	beqz	a1, .LBB0_8
-	li	a4, 16
+	li	a4, 8
 	zext.w	a6, a1
 	bgeu	a1, a4, .LBB0_3
 	li	a1, 0
 	j	.LBB0_6
 .LBB0_3:
-	andi	a1, a6, -16
-	vsetivli	zero, 8, e64, m1, ta, ma
+	andi	a1, a6, -8
+	vsetivli	zero, 4, e64, m2, ta, ma
 	mv	a4, a1
 	mv	a5, a0
 .LBB0_4:
-	addi	a3, a5, 64
+	addi	a3, a5, 32
 	vle64.v	v8, (a5)
-	vle64.v	v9, (a3)
+	vle64.v	v10, (a3)
 	vadd.vx	v8, v8, a2
-	vadd.vx	v9, v9, a2
+	vadd.vx	v10, v10, a2
 	vse64.v	v8, (a5)
-	vse64.v	v9, (a3)
-	addi	a4, a4, -16
-	addi	a5, a5, 128
+	vse64.v	v10, (a3)
+	addi	a4, a4, -8
+	addi	a5, a5, 64
 	bnez	a4, .LBB0_4
 	beq	a1, a6, .LBB0_8
 .LBB0_6:
@@ -44,6 +44,6 @@ vector_add_i64:
 .Lfunc_end0:
 	.size	vector_add_i64, .Lfunc_end0-vector_add_i64
 
-	.ident	"clang version 16.0.0 (https://github.com/llvm/llvm-project.git 49caf7012170422afa84868598063818f9344228)"
+	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git 8c3a8d17c8a154894895c48a304a04df9ece4328)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

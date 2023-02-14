@@ -1,6 +1,8 @@
 
-CLANG=~/llvm-dev/build/bin/clang-15
+CLANG=~/llvm-dev/build/bin/clang
 BASE_TARGET_OPTS="-target riscv64 -march=rv64gcv_zba_zbb_zbc_zbs"
+
+# -mllvm -prefer-predicate-over-epilogue=predicate-dont-vectorize
 
 # uncmment if you want command lines
 # set -x
