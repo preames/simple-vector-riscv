@@ -2,41 +2,48 @@
 	.attribute	4, 16
 	.attribute	5, "rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_v1p0_zicsr2p0_zifencei2p0_zba1p0_zbb1p0_zbc1p0_zbs1p0_zve32f1p0_zve32x1p0_zve64d1p0_zve64f1p0_zve64x1p0_zvl128b1p0_zvl32b1p0_zvl64b1p0"
 	.file	"riscv_vspec_example_a2.c"
-	.globl	example_a2
+	.globl	example_a2                      # -- Begin function example_a2
 	.p2align	1
 	.type	example_a2,@function
-example_a2:
+example_a2:                             # @example_a2
+# %bb.0:                                # %entry
 	beqz	a3, .LBB0_11
+# %bb.1:                                # %for.body.preheader
 	li	a4, 64
 	zext.w	a6, a3
 	bltu	a3, a4, .LBB0_3
+# %bb.2:                                # %vector.memcheck
 	sub	a3, a1, a0
 	sub	a5, a1, a2
 	minu	a3, a3, a5
 	bgeu	a3, a4, .LBB0_8
 .LBB0_3:
 	li	a7, 0
-.LBB0_4:
+.LBB0_4:                                # %for.body.preheader22
 	add	a0, a0, a7
 	add	a2, a2, a7
 	add	a1, a1, a7
 	sub	a3, a6, a7
 	li	a6, 4
 	j	.LBB0_6
-.LBB0_5:
+.LBB0_5:                                # %cond.end
+                                        #   in Loop: Header=BB0_6 Depth=1
 	sb	a5, 0(a1)
 	addi	a0, a0, 1
 	addi	a2, a2, 1
 	addi	a3, a3, -1
 	addi	a1, a1, 1
 	beqz	a3, .LBB0_11
-.LBB0_6:
+.LBB0_6:                                # %for.body
+                                        # =>This Inner Loop Header: Depth=1
 	lbu	a4, 0(a0)
 	li	a5, 1
 	bltu	a6, a4, .LBB0_5
+# %bb.7:                                # %cond.true
+                                        #   in Loop: Header=BB0_6 Depth=1
 	lbu	a5, 0(a2)
 	j	.LBB0_5
-.LBB0_8:
+.LBB0_8:                                # %vector.ph
 	andi	a7, a6, -64
 	li	a3, 32
 	vsetvli	zero, a3, e8, m2, ta, ma
@@ -45,7 +52,8 @@ example_a2:
 	mv	a4, a1
 	mv	a3, a2
 	mv	a5, a0
-.LBB0_9:
+.LBB0_9:                                # %vector.body
+                                        # =>This Inner Loop Header: Depth=1
 	addi	t1, a5, 32
 	vle8.v	v12, (a5)
 	vle8.v	v14, (t1)
@@ -68,12 +76,13 @@ example_a2:
 	addi	t0, t0, -64
 	addi	a4, a4, 64
 	bnez	t0, .LBB0_9
+# %bb.10:                               # %middle.block
 	bne	a7, a6, .LBB0_4
-.LBB0_11:
+.LBB0_11:                               # %for.cond.cleanup
 	ret
 .Lfunc_end0:
 	.size	example_a2, .Lfunc_end0-example_a2
-
-	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git 8c3a8d17c8a154894895c48a304a04df9ece4328)"
+                                        # -- End function
+	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

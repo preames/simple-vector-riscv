@@ -2,35 +2,40 @@
 	.attribute	4, 16
 	.attribute	5, "rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_v1p0_zicsr2p0_zifencei2p0_zba1p0_zbb1p0_zbc1p0_zbs1p0_zve32f1p0_zve32x1p0_zve64d1p0_zve64f1p0_zve64x1p0_zvl128b1p0_zvl32b1p0_zvl64b1p0"
 	.file	"vector_sum_abs_diff.c"
-	.globl	sub
+	.globl	sub                             # -- Begin function sub
 	.p2align	1
 	.type	sub,@function
-sub:
+sub:                                    # @sub
+# %bb.0:                                # %entry
 	subw	a0, a0, a1
 	sext.b	a0, a0
 	ret
 .Lfunc_end0:
 	.size	sub, .Lfunc_end0-sub
-
-	.globl	myabs
+                                        # -- End function
+	.globl	myabs                           # -- Begin function myabs
 	.p2align	1
 	.type	myabs,@function
-myabs:
+myabs:                                  # @myabs
+# %bb.0:                                # %entry
 	neg	a1, a0
 	max	a0, a0, a1
 	sext.b	a0, a0
 	ret
 .Lfunc_end1:
 	.size	myabs, .Lfunc_end1-myabs
-
-	.globl	vector_sum_abs_diff
+                                        # -- End function
+	.globl	vector_sum_abs_diff             # -- Begin function vector_sum_abs_diff
 	.p2align	1
 	.type	vector_sum_abs_diff,@function
-vector_sum_abs_diff:
+vector_sum_abs_diff:                    # @vector_sum_abs_diff
+# %bb.0:                                # %entry
 	srliw	a6, a3, 3
 	beqz	a6, .LBB2_6
+# %bb.1:                                # %for.cond1.preheader.preheader
 	li	a4, 64
 	bltu	a3, a4, .LBB2_3
+# %bb.2:                                # %vector.memcheck
 	sh2add	a3, a6, a0
 	sh3add	a4, a6, a1
 	sh3add	a7, a6, a2
@@ -44,12 +49,13 @@ vector_sum_abs_diff:
 	beqz	a3, .LBB2_7
 .LBB2_3:
 	li	a7, 0
-.LBB2_4:
+.LBB2_4:                                # %for.cond1.preheader.preheader51
 	sh3add	a1, a7, a1
 	sh3add	a2, a7, a2
 	sh2add	a0, a7, a0
 	sub	a3, a6, a7
-.LBB2_5:
+.LBB2_5:                                # %for.cond1.preheader
+                                        # =>This Inner Loop Header: Depth=1
 	vsetivli	zero, 8, e8, mf2, ta, ma
 	vle8.v	v8, (a1)
 	vle8.v	v9, (a2)
@@ -67,15 +73,16 @@ vector_sum_abs_diff:
 	addi	a3, a3, -1
 	addi	a0, a0, 4
 	bnez	a3, .LBB2_5
-.LBB2_6:
+.LBB2_6:                                # %for.cond.cleanup
 	ret
-.LBB2_7:
+.LBB2_7:                                # %vector.ph
 	andi	a7, a6, -8
 	mv	t0, a7
 	mv	a4, a0
 	mv	a3, a1
 	mv	a5, a2
-.LBB2_8:
+.LBB2_8:                                # %vector.body
+                                        # =>This Inner Loop Header: Depth=1
 	vsetivli	zero, 8, e8, mf2, ta, ma
 	vlseg8e8.v	v8, (a3)
 	vlseg8e8.v	v16, (a5)
@@ -137,11 +144,12 @@ vector_sum_abs_diff:
 	addi	t0, t0, -8
 	addi	a4, a4, 32
 	bnez	t0, .LBB2_8
+# %bb.9:                                # %middle.block
 	beq	a7, a6, .LBB2_6
 	j	.LBB2_4
 .Lfunc_end2:
 	.size	vector_sum_abs_diff, .Lfunc_end2-vector_sum_abs_diff
-
-	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git 8c3a8d17c8a154894895c48a304a04df9ece4328)"
+                                        # -- End function
+	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

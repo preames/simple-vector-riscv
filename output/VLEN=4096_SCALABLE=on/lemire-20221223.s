@@ -2,15 +2,18 @@
 	.attribute	4, 16
 	.attribute	5, "rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_v1p0_zicsr2p0_zifencei2p0_zba1p0_zbb1p0_zbc1p0_zbs1p0_zve32f1p0_zve32x1p0_zve64d1p0_zve64f1p0_zve64x1p0_zvl128b1p0_zvl32b1p0_zvl64b1p0"
 	.file	"lemire-20221223.c"
-	.globl	encode_byte_table
+	.globl	encode_byte_table               # -- Begin function encode_byte_table
 	.p2align	1
 	.type	encode_byte_table,@function
-encode_byte_table:
+encode_byte_table:                      # @encode_byte_table
+# %bb.0:                                # %entry
 	beqz	a1, .LBB0_6
+# %bb.1:                                # %for.body.preheader
 	csrr	t2, vlenb
 	li	a3, 16
 	maxu	a3, t2, a3
 	bltu	a1, a3, .LBB0_3
+# %bb.2:                                # %vector.memcheck
 	sh1add	a3, a1, a2
 	add	a4, a0, a1
 	sltu	a4, a2, a4
@@ -20,12 +23,13 @@ encode_byte_table:
 .LBB0_3:
 	li	a7, 0
 	mv	a3, a2
-.LBB0_4:
+.LBB0_4:                                # %for.body.preheader10
 	sub	a1, a1, a7
 	add	a0, a0, a7
 	lui	a2, %hi(.L__const.encode_byte_table.table)
 	addi	a2, a2, %lo(.L__const.encode_byte_table.table)
-.LBB0_5:
+.LBB0_5:                                # %for.body
+                                        # =>This Inner Loop Header: Depth=1
 	lbu	a4, 0(a0)
 	sh1add	a4, a4, a2
 	lh	a4, 0(a4)
@@ -36,9 +40,9 @@ encode_byte_table:
 	addi	a1, a1, -1
 	addi	a0, a0, 1
 	bnez	a1, .LBB0_5
-.LBB0_6:
+.LBB0_6:                                # %for.cond.cleanup
 	ret
-.LBB0_7:
+.LBB0_7:                                # %vector.ph
 	addi	a3, t2, -1
 	and	a6, a1, a3
 	sub	a7, a1, a6
@@ -48,7 +52,8 @@ encode_byte_table:
 	addi	t1, a4, %lo(.L__const.encode_byte_table.table)
 	mv	t3, a7
 	mv	a4, a0
-.LBB0_8:
+.LBB0_8:                                # %vector.body
+                                        # =>This Inner Loop Header: Depth=1
 	vl1r.v	v8, (a4)
 	vsetvli	a5, zero, e64, m8, ta, ma
 	vzext.vf8	v16, v8
@@ -60,21 +65,25 @@ encode_byte_table:
 	sub	t3, t3, t2
 	add	a2, a2, t0
 	bnez	t3, .LBB0_8
+# %bb.9:                                # %middle.block
 	bnez	a6, .LBB0_4
 	j	.LBB0_6
 .Lfunc_end0:
 	.size	encode_byte_table, .Lfunc_end0-encode_byte_table
-
-	.globl	encode_nibble_table
+                                        # -- End function
+	.globl	encode_nibble_table             # -- Begin function encode_nibble_table
 	.p2align	1
 	.type	encode_nibble_table,@function
-encode_nibble_table:
+encode_nibble_table:                    # @encode_nibble_table
+# %bb.0:                                # %entry
 	beqz	a1, .LBB1_6
+# %bb.1:                                # %for.body.preheader
 	csrr	t0, vlenb
 	srli	t1, t0, 1
 	li	a3, 8
 	maxu	a3, t1, a3
 	bltu	a1, a3, .LBB1_3
+# %bb.2:                                # %vector.memcheck
 	sh2add	a3, a1, a2
 	add	a4, a0, a1
 	sltu	a4, a2, a4
@@ -84,12 +93,13 @@ encode_nibble_table:
 .LBB1_3:
 	li	a7, 0
 	mv	a3, a2
-.LBB1_4:
+.LBB1_4:                                # %for.body.preheader19
 	sub	a1, a1, a7
 	add	a0, a0, a7
 	lui	a2, %hi(.L__const.encode_nibble_table.table)
 	addi	a2, a2, %lo(.L__const.encode_nibble_table.table)
-.LBB1_5:
+.LBB1_5:                                # %for.body
+                                        # =>This Inner Loop Header: Depth=1
 	lbu	a4, 0(a0)
 	andi	a5, a4, 15
 	sh1add	a5, a5, a2
@@ -108,9 +118,9 @@ encode_nibble_table:
 	addi	a1, a1, -1
 	addi	a0, a0, 1
 	bnez	a1, .LBB1_5
-.LBB1_6:
+.LBB1_6:                                # %for.cond.cleanup
 	ret
-.LBB1_7:
+.LBB1_7:                                # %vector.ph
 	addi	a3, t1, -1
 	and	a6, a1, a3
 	sub	a7, a1, a6
@@ -120,7 +130,8 @@ encode_nibble_table:
 	addi	t2, a4, %lo(.L__const.encode_nibble_table.table)
 	mv	t3, a7
 	mv	a5, a0
-.LBB1_8:
+.LBB1_8:                                # %vector.body
+                                        # =>This Inner Loop Header: Depth=1
 	vsetvli	a4, zero, e8, mf2, ta, ma
 	vle8.v	v8, (a5)
 	vand.vi	v9, v8, 15
@@ -145,295 +156,296 @@ encode_nibble_table:
 	sub	t3, t3, t1
 	add	a2, a2, t0
 	bnez	t3, .LBB1_8
+# %bb.9:                                # %middle.block
 	bnez	a6, .LBB1_4
 	j	.LBB1_6
 .Lfunc_end1:
 	.size	encode_nibble_table, .Lfunc_end1-encode_nibble_table
-
-	.type	.L__const.encode_byte_table.table,@object
+                                        # -- End function
+	.type	.L__const.encode_byte_table.table,@object # @__const.encode_byte_table.table
 	.section	.rodata,"a",@progbits
 	.p2align	1, 0x0
 .L__const.encode_byte_table.table:
-	.half	12336
-	.half	12592
-	.half	12848
-	.half	13104
-	.half	13360
-	.half	13616
-	.half	13872
-	.half	14128
-	.half	14384
-	.half	14640
-	.half	24880
-	.half	25136
-	.half	25392
-	.half	25648
-	.half	25904
-	.half	26160
-	.half	12337
-	.half	12593
-	.half	12849
-	.half	13105
-	.half	13361
-	.half	13617
-	.half	13873
-	.half	14129
-	.half	14385
-	.half	14641
-	.half	24881
-	.half	25137
-	.half	25393
-	.half	25649
-	.half	25905
-	.half	26161
-	.half	12338
-	.half	12594
-	.half	12850
-	.half	13106
-	.half	13362
-	.half	13618
-	.half	13874
-	.half	14130
-	.half	14386
-	.half	14642
-	.half	24882
-	.half	25138
-	.half	25394
-	.half	25650
-	.half	25906
-	.half	26162
-	.half	12339
-	.half	12595
-	.half	12851
-	.half	13107
-	.half	13363
-	.half	13619
-	.half	13875
-	.half	14131
-	.half	14387
-	.half	14643
-	.half	24883
-	.half	25139
-	.half	25395
-	.half	25651
-	.half	25907
-	.half	26163
-	.half	12340
-	.half	12596
-	.half	12852
-	.half	13108
-	.half	13364
-	.half	13620
-	.half	13876
-	.half	14132
-	.half	14388
-	.half	14644
-	.half	24884
-	.half	25140
-	.half	25396
-	.half	25652
-	.half	25908
-	.half	26164
-	.half	12341
-	.half	12597
-	.half	12853
-	.half	13109
-	.half	13365
-	.half	13621
-	.half	13877
-	.half	14133
-	.half	14389
-	.half	14645
-	.half	24885
-	.half	25141
-	.half	25397
-	.half	25653
-	.half	25909
-	.half	26165
-	.half	12342
-	.half	12598
-	.half	12854
-	.half	13110
-	.half	13366
-	.half	13622
-	.half	13878
-	.half	14134
-	.half	14390
-	.half	14646
-	.half	24886
-	.half	25142
-	.half	25398
-	.half	25654
-	.half	25910
-	.half	26166
-	.half	12343
-	.half	12599
-	.half	12855
-	.half	13111
-	.half	13367
-	.half	13623
-	.half	13879
-	.half	14135
-	.half	14391
-	.half	14647
-	.half	24887
-	.half	25143
-	.half	25399
-	.half	25655
-	.half	25911
-	.half	26167
-	.half	12344
-	.half	12600
-	.half	12856
-	.half	13112
-	.half	13368
-	.half	13624
-	.half	13880
-	.half	14136
-	.half	14392
-	.half	14648
-	.half	24888
-	.half	25144
-	.half	25400
-	.half	25656
-	.half	25912
-	.half	26168
-	.half	12345
-	.half	12601
-	.half	12857
-	.half	13113
-	.half	13369
-	.half	13625
-	.half	13881
-	.half	14137
-	.half	14393
-	.half	14649
-	.half	24889
-	.half	25145
-	.half	25401
-	.half	25657
-	.half	25913
-	.half	26169
-	.half	12385
-	.half	12641
-	.half	12897
-	.half	13153
-	.half	13409
-	.half	13665
-	.half	13921
-	.half	14177
-	.half	14433
-	.half	14689
-	.half	24929
-	.half	25185
-	.half	25441
-	.half	25697
-	.half	25953
-	.half	26209
-	.half	12386
-	.half	12642
-	.half	12898
-	.half	13154
-	.half	13410
-	.half	13666
-	.half	13922
-	.half	14178
-	.half	14434
-	.half	14690
-	.half	24930
-	.half	25186
-	.half	25442
-	.half	25698
-	.half	25954
-	.half	26210
-	.half	12387
-	.half	12643
-	.half	12899
-	.half	13155
-	.half	13411
-	.half	13667
-	.half	13923
-	.half	14179
-	.half	14435
-	.half	14691
-	.half	24931
-	.half	25187
-	.half	25443
-	.half	25699
-	.half	25955
-	.half	26211
-	.half	12388
-	.half	12644
-	.half	12900
-	.half	13156
-	.half	13412
-	.half	13668
-	.half	13924
-	.half	14180
-	.half	14436
-	.half	14692
-	.half	24932
-	.half	25188
-	.half	25444
-	.half	25700
-	.half	25956
-	.half	26212
-	.half	12389
-	.half	12645
-	.half	12901
-	.half	13157
-	.half	13413
-	.half	13669
-	.half	13925
-	.half	14181
-	.half	14437
-	.half	14693
-	.half	24933
-	.half	25189
-	.half	25445
-	.half	25701
-	.half	25957
-	.half	26213
-	.half	12390
-	.half	12646
-	.half	12902
-	.half	13158
-	.half	13414
-	.half	13670
-	.half	13926
-	.half	14182
-	.half	14438
-	.half	14694
-	.half	24934
-	.half	25190
-	.half	25446
-	.half	25702
-	.half	25958
-	.half	26214
+	.half	12336                           # 0x3030
+	.half	12592                           # 0x3130
+	.half	12848                           # 0x3230
+	.half	13104                           # 0x3330
+	.half	13360                           # 0x3430
+	.half	13616                           # 0x3530
+	.half	13872                           # 0x3630
+	.half	14128                           # 0x3730
+	.half	14384                           # 0x3830
+	.half	14640                           # 0x3930
+	.half	24880                           # 0x6130
+	.half	25136                           # 0x6230
+	.half	25392                           # 0x6330
+	.half	25648                           # 0x6430
+	.half	25904                           # 0x6530
+	.half	26160                           # 0x6630
+	.half	12337                           # 0x3031
+	.half	12593                           # 0x3131
+	.half	12849                           # 0x3231
+	.half	13105                           # 0x3331
+	.half	13361                           # 0x3431
+	.half	13617                           # 0x3531
+	.half	13873                           # 0x3631
+	.half	14129                           # 0x3731
+	.half	14385                           # 0x3831
+	.half	14641                           # 0x3931
+	.half	24881                           # 0x6131
+	.half	25137                           # 0x6231
+	.half	25393                           # 0x6331
+	.half	25649                           # 0x6431
+	.half	25905                           # 0x6531
+	.half	26161                           # 0x6631
+	.half	12338                           # 0x3032
+	.half	12594                           # 0x3132
+	.half	12850                           # 0x3232
+	.half	13106                           # 0x3332
+	.half	13362                           # 0x3432
+	.half	13618                           # 0x3532
+	.half	13874                           # 0x3632
+	.half	14130                           # 0x3732
+	.half	14386                           # 0x3832
+	.half	14642                           # 0x3932
+	.half	24882                           # 0x6132
+	.half	25138                           # 0x6232
+	.half	25394                           # 0x6332
+	.half	25650                           # 0x6432
+	.half	25906                           # 0x6532
+	.half	26162                           # 0x6632
+	.half	12339                           # 0x3033
+	.half	12595                           # 0x3133
+	.half	12851                           # 0x3233
+	.half	13107                           # 0x3333
+	.half	13363                           # 0x3433
+	.half	13619                           # 0x3533
+	.half	13875                           # 0x3633
+	.half	14131                           # 0x3733
+	.half	14387                           # 0x3833
+	.half	14643                           # 0x3933
+	.half	24883                           # 0x6133
+	.half	25139                           # 0x6233
+	.half	25395                           # 0x6333
+	.half	25651                           # 0x6433
+	.half	25907                           # 0x6533
+	.half	26163                           # 0x6633
+	.half	12340                           # 0x3034
+	.half	12596                           # 0x3134
+	.half	12852                           # 0x3234
+	.half	13108                           # 0x3334
+	.half	13364                           # 0x3434
+	.half	13620                           # 0x3534
+	.half	13876                           # 0x3634
+	.half	14132                           # 0x3734
+	.half	14388                           # 0x3834
+	.half	14644                           # 0x3934
+	.half	24884                           # 0x6134
+	.half	25140                           # 0x6234
+	.half	25396                           # 0x6334
+	.half	25652                           # 0x6434
+	.half	25908                           # 0x6534
+	.half	26164                           # 0x6634
+	.half	12341                           # 0x3035
+	.half	12597                           # 0x3135
+	.half	12853                           # 0x3235
+	.half	13109                           # 0x3335
+	.half	13365                           # 0x3435
+	.half	13621                           # 0x3535
+	.half	13877                           # 0x3635
+	.half	14133                           # 0x3735
+	.half	14389                           # 0x3835
+	.half	14645                           # 0x3935
+	.half	24885                           # 0x6135
+	.half	25141                           # 0x6235
+	.half	25397                           # 0x6335
+	.half	25653                           # 0x6435
+	.half	25909                           # 0x6535
+	.half	26165                           # 0x6635
+	.half	12342                           # 0x3036
+	.half	12598                           # 0x3136
+	.half	12854                           # 0x3236
+	.half	13110                           # 0x3336
+	.half	13366                           # 0x3436
+	.half	13622                           # 0x3536
+	.half	13878                           # 0x3636
+	.half	14134                           # 0x3736
+	.half	14390                           # 0x3836
+	.half	14646                           # 0x3936
+	.half	24886                           # 0x6136
+	.half	25142                           # 0x6236
+	.half	25398                           # 0x6336
+	.half	25654                           # 0x6436
+	.half	25910                           # 0x6536
+	.half	26166                           # 0x6636
+	.half	12343                           # 0x3037
+	.half	12599                           # 0x3137
+	.half	12855                           # 0x3237
+	.half	13111                           # 0x3337
+	.half	13367                           # 0x3437
+	.half	13623                           # 0x3537
+	.half	13879                           # 0x3637
+	.half	14135                           # 0x3737
+	.half	14391                           # 0x3837
+	.half	14647                           # 0x3937
+	.half	24887                           # 0x6137
+	.half	25143                           # 0x6237
+	.half	25399                           # 0x6337
+	.half	25655                           # 0x6437
+	.half	25911                           # 0x6537
+	.half	26167                           # 0x6637
+	.half	12344                           # 0x3038
+	.half	12600                           # 0x3138
+	.half	12856                           # 0x3238
+	.half	13112                           # 0x3338
+	.half	13368                           # 0x3438
+	.half	13624                           # 0x3538
+	.half	13880                           # 0x3638
+	.half	14136                           # 0x3738
+	.half	14392                           # 0x3838
+	.half	14648                           # 0x3938
+	.half	24888                           # 0x6138
+	.half	25144                           # 0x6238
+	.half	25400                           # 0x6338
+	.half	25656                           # 0x6438
+	.half	25912                           # 0x6538
+	.half	26168                           # 0x6638
+	.half	12345                           # 0x3039
+	.half	12601                           # 0x3139
+	.half	12857                           # 0x3239
+	.half	13113                           # 0x3339
+	.half	13369                           # 0x3439
+	.half	13625                           # 0x3539
+	.half	13881                           # 0x3639
+	.half	14137                           # 0x3739
+	.half	14393                           # 0x3839
+	.half	14649                           # 0x3939
+	.half	24889                           # 0x6139
+	.half	25145                           # 0x6239
+	.half	25401                           # 0x6339
+	.half	25657                           # 0x6439
+	.half	25913                           # 0x6539
+	.half	26169                           # 0x6639
+	.half	12385                           # 0x3061
+	.half	12641                           # 0x3161
+	.half	12897                           # 0x3261
+	.half	13153                           # 0x3361
+	.half	13409                           # 0x3461
+	.half	13665                           # 0x3561
+	.half	13921                           # 0x3661
+	.half	14177                           # 0x3761
+	.half	14433                           # 0x3861
+	.half	14689                           # 0x3961
+	.half	24929                           # 0x6161
+	.half	25185                           # 0x6261
+	.half	25441                           # 0x6361
+	.half	25697                           # 0x6461
+	.half	25953                           # 0x6561
+	.half	26209                           # 0x6661
+	.half	12386                           # 0x3062
+	.half	12642                           # 0x3162
+	.half	12898                           # 0x3262
+	.half	13154                           # 0x3362
+	.half	13410                           # 0x3462
+	.half	13666                           # 0x3562
+	.half	13922                           # 0x3662
+	.half	14178                           # 0x3762
+	.half	14434                           # 0x3862
+	.half	14690                           # 0x3962
+	.half	24930                           # 0x6162
+	.half	25186                           # 0x6262
+	.half	25442                           # 0x6362
+	.half	25698                           # 0x6462
+	.half	25954                           # 0x6562
+	.half	26210                           # 0x6662
+	.half	12387                           # 0x3063
+	.half	12643                           # 0x3163
+	.half	12899                           # 0x3263
+	.half	13155                           # 0x3363
+	.half	13411                           # 0x3463
+	.half	13667                           # 0x3563
+	.half	13923                           # 0x3663
+	.half	14179                           # 0x3763
+	.half	14435                           # 0x3863
+	.half	14691                           # 0x3963
+	.half	24931                           # 0x6163
+	.half	25187                           # 0x6263
+	.half	25443                           # 0x6363
+	.half	25699                           # 0x6463
+	.half	25955                           # 0x6563
+	.half	26211                           # 0x6663
+	.half	12388                           # 0x3064
+	.half	12644                           # 0x3164
+	.half	12900                           # 0x3264
+	.half	13156                           # 0x3364
+	.half	13412                           # 0x3464
+	.half	13668                           # 0x3564
+	.half	13924                           # 0x3664
+	.half	14180                           # 0x3764
+	.half	14436                           # 0x3864
+	.half	14692                           # 0x3964
+	.half	24932                           # 0x6164
+	.half	25188                           # 0x6264
+	.half	25444                           # 0x6364
+	.half	25700                           # 0x6464
+	.half	25956                           # 0x6564
+	.half	26212                           # 0x6664
+	.half	12389                           # 0x3065
+	.half	12645                           # 0x3165
+	.half	12901                           # 0x3265
+	.half	13157                           # 0x3365
+	.half	13413                           # 0x3465
+	.half	13669                           # 0x3565
+	.half	13925                           # 0x3665
+	.half	14181                           # 0x3765
+	.half	14437                           # 0x3865
+	.half	14693                           # 0x3965
+	.half	24933                           # 0x6165
+	.half	25189                           # 0x6265
+	.half	25445                           # 0x6365
+	.half	25701                           # 0x6465
+	.half	25957                           # 0x6565
+	.half	26213                           # 0x6665
+	.half	12390                           # 0x3066
+	.half	12646                           # 0x3166
+	.half	12902                           # 0x3266
+	.half	13158                           # 0x3366
+	.half	13414                           # 0x3466
+	.half	13670                           # 0x3566
+	.half	13926                           # 0x3666
+	.half	14182                           # 0x3766
+	.half	14438                           # 0x3866
+	.half	14694                           # 0x3966
+	.half	24934                           # 0x6166
+	.half	25190                           # 0x6266
+	.half	25446                           # 0x6366
+	.half	25702                           # 0x6466
+	.half	25958                           # 0x6566
+	.half	26214                           # 0x6666
 	.size	.L__const.encode_byte_table.table, 512
 
-	.type	.L__const.encode_nibble_table.table,@object
+	.type	.L__const.encode_nibble_table.table,@object # @__const.encode_nibble_table.table
 	.section	.rodata.cst32,"aM",@progbits,32
 	.p2align	1, 0x0
 .L__const.encode_nibble_table.table:
-	.half	102
-	.half	101
-	.half	100
-	.half	99
-	.half	98
-	.half	97
-	.half	57
-	.half	56
-	.half	55
-	.half	54
-	.half	53
-	.half	52
-	.half	51
-	.half	50
-	.half	49
-	.half	48
+	.half	102                             # 0x66
+	.half	101                             # 0x65
+	.half	100                             # 0x64
+	.half	99                              # 0x63
+	.half	98                              # 0x62
+	.half	97                              # 0x61
+	.half	57                              # 0x39
+	.half	56                              # 0x38
+	.half	55                              # 0x37
+	.half	54                              # 0x36
+	.half	53                              # 0x35
+	.half	52                              # 0x34
+	.half	51                              # 0x33
+	.half	50                              # 0x32
+	.half	49                              # 0x31
+	.half	48                              # 0x30
 	.size	.L__const.encode_nibble_table.table, 32
 
-	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git 8c3a8d17c8a154894895c48a304a04df9ece4328)"
+	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

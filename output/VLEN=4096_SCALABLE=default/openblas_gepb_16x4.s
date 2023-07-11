@@ -2,10 +2,11 @@
 	.attribute	4, 16
 	.attribute	5, "rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_v1p0_zicsr2p0_zifencei2p0_zba1p0_zbb1p0_zbc1p0_zbs1p0_zve32f1p0_zve32x1p0_zve64d1p0_zve64f1p0_zve64x1p0_zvl128b1p0_zvl32b1p0_zvl64b1p0"
 	.file	"openblas_gepb_16x4.c"
-	.globl	test
+	.globl	test                            # -- Begin function test
 	.p2align	1
 	.type	test,@function
-test:
+test:                                   # @test
+# %bb.0:                                # %entry
 	flw	fa0, 8(a0)
 	flw	ft0, 4(a0)
 	flw	ft1, 0(a0)
@@ -91,7 +92,7 @@ test:
 	ret
 .Lfunc_end0:
 	.size	test, .Lfunc_end0-test
-
-	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git 8c3a8d17c8a154894895c48a304a04df9ece4328)"
+                                        # -- End function
+	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

@@ -2,12 +2,14 @@
 	.attribute	4, 16
 	.attribute	5, "rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_v1p0_zicsr2p0_zifencei2p0_zba1p0_zbb1p0_zbc1p0_zbs1p0_zve32f1p0_zve32x1p0_zve64d1p0_zve64f1p0_zve64x1p0_zvl128b1p0_zvl32b1p0_zvl64b1p0"
 	.file	"vector_overlap_i32.c"
-	.globl	vector_overlap
+	.globl	vector_overlap                  # -- Begin function vector_overlap
 	.p2align	1
 	.type	vector_overlap,@function
-vector_overlap:
+vector_overlap:                         # @vector_overlap
+# %bb.0:                                # %entry
 	li	a3, 2
 	bltu	a2, a3, .LBB0_8
+# %bb.1:                                # %for.body.preheader
 	zext.w	a7, a2
 	lw	t5, 0(a0)
 	lw	a5, 4(a0)
@@ -16,6 +18,7 @@ vector_overlap:
 	srli	t1, t3, 1
 	li	t0, 1
 	bltu	a3, t1, .LBB0_6
+# %bb.2:                                # %vector.ph
 	addi	t2, t1, -1
 	and	a6, a3, t2
 	sub	a3, a3, a6
@@ -33,7 +36,8 @@ vector_overlap:
 	addi	a2, a0, 8
 	slli	t3, t3, 1
 	addi	a5, a1, 4
-.LBB0_3:
+.LBB0_3:                                # %vector.body
+                                        # =>This Inner Loop Header: Depth=1
 	vmv2r.v	v12, v10
 	vmv2r.v	v10, v8
 	vl2re32.v	v8, (a2)
@@ -52,7 +56,9 @@ vector_overlap:
 	sub	a3, a3, t1
 	add	a5, a5, t3
 	bnez	a3, .LBB0_3
+# %bb.4:                                # %middle.block
 	beqz	a6, .LBB0_8
+# %bb.5:
 	addiw	t1, t1, -1
 	zext.w	a2, t1
 	vsetivli	zero, 1, e32, m2, ta, ma
@@ -60,12 +66,13 @@ vector_overlap:
 	vmv.x.s	a5, v8
 	vslidedown.vx	v8, v10, a2
 	vmv.x.s	t5, v8
-.LBB0_6:
+.LBB0_6:                                # %for.body.preheader25
 	sh2add	a1, t0, a1
 	sub	a3, a7, t0
 	sh2add	a0, t0, a0
 	addi	a0, a0, 4
-.LBB0_7:
+.LBB0_7:                                # %for.body
+                                        # =>This Inner Loop Header: Depth=1
 	mv	a4, a5
 	lw	a5, 0(a0)
 	add	a2, a4, t5
@@ -76,11 +83,11 @@ vector_overlap:
 	addi	a3, a3, -1
 	addi	a0, a0, 4
 	bnez	a3, .LBB0_7
-.LBB0_8:
+.LBB0_8:                                # %for.cond.cleanup
 	ret
 .Lfunc_end0:
 	.size	vector_overlap, .Lfunc_end0-vector_overlap
-
-	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git 8c3a8d17c8a154894895c48a304a04df9ece4328)"
+                                        # -- End function
+	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig
