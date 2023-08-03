@@ -15,7 +15,7 @@ aos_reduce_sum_i64:                     # @aos_reduce_sum_i64
 	bgeu	a0, a6, .LBB0_7
 # %bb.2:                                # %vector.ph
 	addi	a3, a0, -1
-	and	a4, a6, a3
+	and	a4, a3, a6
 	mv	a3, a0
 	beqz	a4, .LBB0_4
 # %bb.3:                                # %vector.ph
@@ -62,6 +62,6 @@ aos_reduce_sum_i64:                     # @aos_reduce_sum_i64
 .Lfunc_end0:
 	.size	aos_reduce_sum_i64, .Lfunc_end0-aos_reduce_sum_i64
                                         # -- End function
-	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"
+	.ident	"clang version 18.0.0 (https://github.com/llvm/llvm-project.git 660b740e4b3c4b23dfba36940ae0fe2ad41bfedf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

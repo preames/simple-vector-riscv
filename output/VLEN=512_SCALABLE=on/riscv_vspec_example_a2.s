@@ -9,24 +9,24 @@ example_a2:                             # @example_a2
 # %bb.0:                                # %entry
 	beqz	a3, .LBB0_11
 # %bb.1:                                # %for.body.preheader
-	zext.w	a7, a3
-	csrr	t1, vlenb
-	slli	t1, t1, 1
+	zext.w	a6, a3
+	csrr	t0, vlenb
+	slli	t0, t0, 1
 	li	a3, 32
-	maxu	a3, t1, a3
-	bltu	a7, a3, .LBB0_3
+	maxu	a3, t0, a3
+	bltu	a6, a3, .LBB0_3
 # %bb.2:                                # %vector.memcheck
 	sub	a3, a1, a0
 	sub	a4, a1, a2
 	minu	a3, a3, a4
-	bgeu	a3, t1, .LBB0_8
+	bgeu	a3, t0, .LBB0_8
 .LBB0_3:
-	li	t0, 0
+	li	a7, 0
 .LBB0_4:                                # %for.body.preheader19
-	add	a0, a0, t0
-	add	a2, a2, t0
-	add	a1, a1, t0
-	sub	a3, a7, t0
+	add	a0, a0, a7
+	add	a2, a2, a7
+	add	a1, a1, a7
+	sub	a3, a6, a7
 	li	a6, 4
 	j	.LBB0_6
 .LBB0_5:                                # %cond.end
@@ -47,12 +47,11 @@ example_a2:                             # @example_a2
 	lbu	a5, 0(a2)
 	j	.LBB0_5
 .LBB0_8:                                # %vector.ph
-	addi	a3, t1, -1
-	and	a6, a7, a3
-	sub	t0, a7, a6
+	neg	a3, t0
+	and	a7, a3, a6
 	vsetvli	a3, zero, e8, m2, ta, ma
 	vmv.v.i	v8, 1
-	mv	t2, t0
+	mv	t1, a7
 	mv	a5, a1
 	mv	a3, a2
 	mv	a4, a0
@@ -63,18 +62,18 @@ example_a2:                             # @example_a2
 	vle8.v	v10, (a3), v0.t
 	vmerge.vvm	v10, v8, v10, v0
 	vs2r.v	v10, (a5)
-	add	a4, a4, t1
-	add	a3, a3, t1
-	sub	t2, t2, t1
-	add	a5, a5, t1
-	bnez	t2, .LBB0_9
+	add	a4, a4, t0
+	add	a3, a3, t0
+	sub	t1, t1, t0
+	add	a5, a5, t0
+	bnez	t1, .LBB0_9
 # %bb.10:                               # %middle.block
-	bnez	a6, .LBB0_4
+	bne	a7, a6, .LBB0_4
 .LBB0_11:                               # %for.cond.cleanup
 	ret
 .Lfunc_end0:
 	.size	example_a2, .Lfunc_end0-example_a2
                                         # -- End function
-	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"
+	.ident	"clang version 18.0.0 (https://github.com/llvm/llvm-project.git 660b740e4b3c4b23dfba36940ae0fe2ad41bfedf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

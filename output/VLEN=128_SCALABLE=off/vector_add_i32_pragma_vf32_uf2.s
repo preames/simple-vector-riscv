@@ -35,7 +35,7 @@ vector_add_i32:                         # @vector_add_i32
 	bnez	a5, .LBB0_4
 # %bb.5:                                # %middle.block
 	beq	a7, a6, .LBB0_8
-.LBB0_6:                                # %for.body.preheader8
+.LBB0_6:                                # %for.body.preheader6
 	sh2add	a0, a7, a0
 	sub	a1, a6, a7
 .LBB0_7:                                # %for.body
@@ -51,6 +51,6 @@ vector_add_i32:                         # @vector_add_i32
 .Lfunc_end0:
 	.size	vector_add_i32, .Lfunc_end0-vector_add_i32
                                         # -- End function
-	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"
+	.ident	"clang version 18.0.0 (https://github.com/llvm/llvm-project.git 660b740e4b3c4b23dfba36940ae0fe2ad41bfedf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

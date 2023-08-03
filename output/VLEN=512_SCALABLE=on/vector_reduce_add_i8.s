@@ -10,34 +10,35 @@ vector_reduce_add_i32:                  # @vector_reduce_add_i32
 	beqz	a1, .LBB0_8
 # %bb.1:                                # %for.body.preheader
 	zext.w	a2, a1
-	csrr	a4, vlenb
-	srli	a4, a4, 1
-	bgeu	a2, a4, .LBB0_3
+	csrr	a3, vlenb
+	srli	a1, a3, 1
+	bgeu	a2, a1, .LBB0_3
 # %bb.2:
 	li	a3, 0
 	li	a1, 0
 	j	.LBB0_6
 .LBB0_3:                                # %vector.ph
-	addi	a1, a4, -1
-	and	a6, a2, a1
-	sub	a3, a2, a6
-	vsetvli	a1, zero, e32, m2, ta, ma
+	srli	a3, a3, 3
+	slli	a3, a3, 2
+	neg	a3, a3
+	and	a3, a3, a2
+	vsetvli	a4, zero, e32, m2, ta, ma
 	vmv.v.i	v8, 0
-	mv	a5, a3
-	mv	a1, a0
+	mv	a4, a3
+	mv	a5, a0
 .LBB0_4:                                # %vector.body
                                         # =>This Inner Loop Header: Depth=1
-	vle8.v	v10, (a1)
+	vle8.v	v10, (a5)
 	vzext.vf4	v12, v10
 	vadd.vv	v8, v8, v12
-	sub	a5, a5, a4
-	add	a1, a1, a4
-	bnez	a5, .LBB0_4
+	sub	a4, a4, a1
+	add	a5, a5, a1
+	bnez	a4, .LBB0_4
 # %bb.5:                                # %middle.block
 	vmv.s.x	v10, zero
 	vredsum.vs	v8, v8, v10
 	vmv.x.s	a1, v8
-	beqz	a6, .LBB0_8
+	beq	a3, a2, .LBB0_8
 .LBB0_6:                                # %for.body.preheader7
 	add	a0, a0, a3
 	sub	a2, a2, a3
@@ -54,6 +55,6 @@ vector_reduce_add_i32:                  # @vector_reduce_add_i32
 .Lfunc_end0:
 	.size	vector_reduce_add_i32, .Lfunc_end0-vector_reduce_add_i32
                                         # -- End function
-	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"
+	.ident	"clang version 18.0.0 (https://github.com/llvm/llvm-project.git 660b740e4b3c4b23dfba36940ae0fe2ad41bfedf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

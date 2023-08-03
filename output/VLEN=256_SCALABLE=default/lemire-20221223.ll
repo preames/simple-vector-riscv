@@ -30,31 +30,30 @@ vector.memcheck:                                  ; preds = %for.body.preheader
 
 vector.ph:                                        ; preds = %vector.memcheck
   %4 = tail call i64 @llvm.vscale.i64()
-  %5 = shl nuw nsw i64 %4, 3
-  %n.mod.vf = urem i64 %len, %5
-  %n.vec = sub nuw i64 %len, %n.mod.vf
-  %6 = shl i64 %n.vec, 1
-  %ind.end = getelementptr i8, ptr %target, i64 %6
-  %7 = tail call i64 @llvm.vscale.i64()
-  %8 = shl nuw nsw i64 %7, 3
+  %.neg = mul nsw i64 %4, -8
+  %n.vec = and i64 %.neg, %len
+  %5 = shl i64 %n.vec, 1
+  %ind.end = getelementptr i8, ptr %target, i64 %5
+  %6 = tail call i64 @llvm.vscale.i64()
+  %7 = shl nuw nsw i64 %6, 3
   br label %vector.body
 
 vector.body:                                      ; preds = %vector.body, %vector.ph
   %index = phi i64 [ 0, %vector.ph ], [ %index.next, %vector.body ]
-  %9 = shl i64 %index, 1
-  %next.gep = getelementptr i8, ptr %target, i64 %9
-  %10 = getelementptr inbounds i8, ptr %source, i64 %index
-  %wide.load = load <vscale x 8 x i8>, ptr %10, align 1, !tbaa !4, !alias.scope !7
-  %11 = zext <vscale x 8 x i8> %wide.load to <vscale x 8 x i64>
-  %12 = getelementptr inbounds [256 x i16], ptr @__const.encode_byte_table.table, i64 0, <vscale x 8 x i64> %11
-  %wide.masked.gather = tail call <vscale x 8 x i16> @llvm.masked.gather.nxv8i16.nxv8p0(<vscale x 8 x ptr> %12, i32 2, <vscale x 8 x i1> shufflevector (<vscale x 8 x i1> insertelement (<vscale x 8 x i1> poison, i1 true, i64 0), <vscale x 8 x i1> poison, <vscale x 8 x i32> zeroinitializer), <vscale x 8 x i16> poison), !tbaa !10
+  %8 = shl i64 %index, 1
+  %next.gep = getelementptr i8, ptr %target, i64 %8
+  %9 = getelementptr inbounds i8, ptr %source, i64 %index
+  %wide.load = load <vscale x 8 x i8>, ptr %9, align 1, !tbaa !4, !alias.scope !7
+  %10 = zext <vscale x 8 x i8> %wide.load to <vscale x 8 x i64>
+  %11 = getelementptr inbounds [256 x i16], ptr @__const.encode_byte_table.table, i64 0, <vscale x 8 x i64> %10
+  %wide.masked.gather = tail call <vscale x 8 x i16> @llvm.masked.gather.nxv8i16.nxv8p0(<vscale x 8 x ptr> %11, i32 2, <vscale x 8 x i1> shufflevector (<vscale x 8 x i1> insertelement (<vscale x 8 x i1> poison, i1 true, i64 0), <vscale x 8 x i1> poison, <vscale x 8 x i32> zeroinitializer), <vscale x 8 x i16> poison), !tbaa !10
   store <vscale x 8 x i16> %wide.masked.gather, ptr %next.gep, align 1, !alias.scope !12, !noalias !7
-  %index.next = add nuw i64 %index, %8
-  %13 = icmp eq i64 %index.next, %n.vec
-  br i1 %13, label %middle.block, label %vector.body, !llvm.loop !14
+  %index.next = add nuw i64 %index, %7
+  %12 = icmp eq i64 %index.next, %n.vec
+  br i1 %12, label %middle.block, label %vector.body, !llvm.loop !14
 
 middle.block:                                     ; preds = %vector.body
-  %cmp.n = icmp eq i64 %n.mod.vf, 0
+  %cmp.n = icmp eq i64 %n.vec, %len
   br i1 %cmp.n, label %for.cond.cleanup, label %for.body.preheader10
 
 for.body.preheader10:                             ; preds = %vector.memcheck, %for.body.preheader, %middle.block
@@ -69,11 +68,11 @@ for.body:                                         ; preds = %for.body.preheader1
   %target.addr.07 = phi ptr [ %add.ptr, %for.body ], [ %target.addr.07.ph, %for.body.preheader10 ]
   %i.06 = phi i64 [ %inc, %for.body ], [ %i.06.ph, %for.body.preheader10 ]
   %arrayidx = getelementptr inbounds i8, ptr %source, i64 %i.06
-  %14 = load i8, ptr %arrayidx, align 1, !tbaa !4
-  %idxprom = zext i8 %14 to i64
+  %13 = load i8, ptr %arrayidx, align 1, !tbaa !4
+  %idxprom = zext i8 %13 to i64
   %arrayidx1 = getelementptr inbounds [256 x i16], ptr @__const.encode_byte_table.table, i64 0, i64 %idxprom
-  %15 = load i16, ptr %arrayidx1, align 2, !tbaa !10
-  store i16 %15, ptr %target.addr.07, align 1
+  %14 = load i16, ptr %arrayidx1, align 2, !tbaa !10
+  store i16 %14, ptr %target.addr.07, align 1
   %add.ptr = getelementptr inbounds i8, ptr %target.addr.07, i64 2
   %inc = add nuw i64 %i.06, 1
   %exitcond.not = icmp eq i64 %inc, %len
@@ -104,40 +103,39 @@ vector.memcheck:                                  ; preds = %for.body.preheader
 
 vector.ph:                                        ; preds = %vector.memcheck
   %4 = tail call i64 @llvm.vscale.i64()
-  %5 = shl nuw nsw i64 %4, 2
-  %n.mod.vf = urem i64 %len, %5
-  %n.vec = sub nuw i64 %len, %n.mod.vf
-  %6 = shl i64 %n.vec, 2
-  %ind.end = getelementptr i8, ptr %target, i64 %6
-  %7 = tail call i64 @llvm.vscale.i64()
-  %8 = shl nuw nsw i64 %7, 2
+  %.neg = mul nsw i64 %4, -4
+  %n.vec = and i64 %.neg, %len
+  %5 = shl i64 %n.vec, 2
+  %ind.end = getelementptr i8, ptr %target, i64 %5
+  %6 = tail call i64 @llvm.vscale.i64()
+  %7 = shl nuw nsw i64 %6, 2
   br label %vector.body
 
 vector.body:                                      ; preds = %vector.body, %vector.ph
   %index = phi i64 [ 0, %vector.ph ], [ %index.next, %vector.body ]
-  %9 = shl i64 %index, 2
-  %next.gep = getelementptr i8, ptr %target, i64 %9
-  %10 = getelementptr inbounds i8, ptr %source, i64 %index
-  %wide.load = load <vscale x 4 x i8>, ptr %10, align 1, !tbaa !4, !alias.scope !19
-  %11 = and <vscale x 4 x i8> %wide.load, shufflevector (<vscale x 4 x i8> insertelement (<vscale x 4 x i8> poison, i8 15, i64 0), <vscale x 4 x i8> poison, <vscale x 4 x i32> zeroinitializer)
-  %12 = lshr <vscale x 4 x i8> %wide.load, shufflevector (<vscale x 4 x i8> insertelement (<vscale x 4 x i8> poison, i8 4, i64 0), <vscale x 4 x i8> poison, <vscale x 4 x i32> zeroinitializer)
-  %13 = zext <vscale x 4 x i8> %11 to <vscale x 4 x i64>
-  %14 = getelementptr inbounds [16 x i16], ptr @__const.encode_nibble_table.table, i64 0, <vscale x 4 x i64> %13
-  %wide.masked.gather = tail call <vscale x 4 x i16> @llvm.masked.gather.nxv4i16.nxv4p0(<vscale x 4 x ptr> %14, i32 2, <vscale x 4 x i1> shufflevector (<vscale x 4 x i1> insertelement (<vscale x 4 x i1> poison, i1 true, i64 0), <vscale x 4 x i1> poison, <vscale x 4 x i32> zeroinitializer), <vscale x 4 x i16> poison), !tbaa !10
-  %15 = zext <vscale x 4 x i8> %12 to <vscale x 4 x i64>
-  %16 = getelementptr inbounds [16 x i16], ptr @__const.encode_nibble_table.table, i64 0, <vscale x 4 x i64> %15
-  %wide.masked.gather18 = tail call <vscale x 4 x i16> @llvm.masked.gather.nxv4i16.nxv4p0(<vscale x 4 x ptr> %16, i32 2, <vscale x 4 x i1> shufflevector (<vscale x 4 x i1> insertelement (<vscale x 4 x i1> poison, i1 true, i64 0), <vscale x 4 x i1> poison, <vscale x 4 x i32> zeroinitializer), <vscale x 4 x i16> poison), !tbaa !10
-  %17 = zext <vscale x 4 x i16> %wide.masked.gather to <vscale x 4 x i32>
-  %18 = zext <vscale x 4 x i16> %wide.masked.gather18 to <vscale x 4 x i32>
-  %19 = shl nuw <vscale x 4 x i32> %18, shufflevector (<vscale x 4 x i32> insertelement (<vscale x 4 x i32> poison, i32 16, i64 0), <vscale x 4 x i32> poison, <vscale x 4 x i32> zeroinitializer)
-  %20 = or <vscale x 4 x i32> %19, %17
-  store <vscale x 4 x i32> %20, ptr %next.gep, align 1, !alias.scope !22, !noalias !19
-  %index.next = add nuw i64 %index, %8
-  %21 = icmp eq i64 %index.next, %n.vec
-  br i1 %21, label %middle.block, label %vector.body, !llvm.loop !24
+  %8 = shl i64 %index, 2
+  %next.gep = getelementptr i8, ptr %target, i64 %8
+  %9 = getelementptr inbounds i8, ptr %source, i64 %index
+  %wide.load = load <vscale x 4 x i8>, ptr %9, align 1, !tbaa !4, !alias.scope !19
+  %10 = and <vscale x 4 x i8> %wide.load, shufflevector (<vscale x 4 x i8> insertelement (<vscale x 4 x i8> poison, i8 15, i64 0), <vscale x 4 x i8> poison, <vscale x 4 x i32> zeroinitializer)
+  %11 = lshr <vscale x 4 x i8> %wide.load, shufflevector (<vscale x 4 x i8> insertelement (<vscale x 4 x i8> poison, i8 4, i64 0), <vscale x 4 x i8> poison, <vscale x 4 x i32> zeroinitializer)
+  %12 = zext <vscale x 4 x i8> %10 to <vscale x 4 x i64>
+  %13 = getelementptr inbounds [16 x i16], ptr @__const.encode_nibble_table.table, i64 0, <vscale x 4 x i64> %12
+  %wide.masked.gather = tail call <vscale x 4 x i16> @llvm.masked.gather.nxv4i16.nxv4p0(<vscale x 4 x ptr> %13, i32 2, <vscale x 4 x i1> shufflevector (<vscale x 4 x i1> insertelement (<vscale x 4 x i1> poison, i1 true, i64 0), <vscale x 4 x i1> poison, <vscale x 4 x i32> zeroinitializer), <vscale x 4 x i16> poison), !tbaa !10
+  %14 = zext <vscale x 4 x i8> %11 to <vscale x 4 x i64>
+  %15 = getelementptr inbounds [16 x i16], ptr @__const.encode_nibble_table.table, i64 0, <vscale x 4 x i64> %14
+  %wide.masked.gather18 = tail call <vscale x 4 x i16> @llvm.masked.gather.nxv4i16.nxv4p0(<vscale x 4 x ptr> %15, i32 2, <vscale x 4 x i1> shufflevector (<vscale x 4 x i1> insertelement (<vscale x 4 x i1> poison, i1 true, i64 0), <vscale x 4 x i1> poison, <vscale x 4 x i32> zeroinitializer), <vscale x 4 x i16> poison), !tbaa !10
+  %16 = zext <vscale x 4 x i16> %wide.masked.gather to <vscale x 4 x i32>
+  %17 = zext <vscale x 4 x i16> %wide.masked.gather18 to <vscale x 4 x i32>
+  %18 = shl nuw <vscale x 4 x i32> %17, shufflevector (<vscale x 4 x i32> insertelement (<vscale x 4 x i32> poison, i32 16, i64 0), <vscale x 4 x i32> poison, <vscale x 4 x i32> zeroinitializer)
+  %19 = or <vscale x 4 x i32> %18, %16
+  store <vscale x 4 x i32> %19, ptr %next.gep, align 1, !alias.scope !22, !noalias !19
+  %index.next = add nuw i64 %index, %7
+  %20 = icmp eq i64 %index.next, %n.vec
+  br i1 %20, label %middle.block, label %vector.body, !llvm.loop !24
 
 middle.block:                                     ; preds = %vector.body
-  %cmp.n = icmp eq i64 %n.mod.vf, 0
+  %cmp.n = icmp eq i64 %n.vec, %len
   br i1 %cmp.n, label %for.cond.cleanup, label %for.body.preheader19
 
 for.body.preheader19:                             ; preds = %vector.memcheck, %for.body.preheader, %middle.block
@@ -152,17 +150,17 @@ for.body:                                         ; preds = %for.body.preheader1
   %target.addr.015 = phi ptr [ %add.ptr, %for.body ], [ %target.addr.015.ph, %for.body.preheader19 ]
   %i.014 = phi i64 [ %inc, %for.body ], [ %i.014.ph, %for.body.preheader19 ]
   %arrayidx = getelementptr inbounds i8, ptr %source, i64 %i.014
-  %22 = load i8, ptr %arrayidx, align 1, !tbaa !4
-  %and = and i8 %22, 15
-  %23 = lshr i8 %22, 4
+  %21 = load i8, ptr %arrayidx, align 1, !tbaa !4
+  %and = and i8 %21, 15
+  %22 = lshr i8 %21, 4
   %idxprom = zext i8 %and to i64
   %arrayidx4 = getelementptr inbounds [16 x i16], ptr @__const.encode_nibble_table.table, i64 0, i64 %idxprom
-  %24 = load i16, ptr %arrayidx4, align 2, !tbaa !10
-  %idxprom5 = zext i8 %23 to i64
+  %23 = load i16, ptr %arrayidx4, align 2, !tbaa !10
+  %idxprom5 = zext i8 %22 to i64
   %arrayidx6 = getelementptr inbounds [16 x i16], ptr @__const.encode_nibble_table.table, i64 0, i64 %idxprom5
-  %25 = load i16, ptr %arrayidx6, align 2, !tbaa !10
-  %conv7 = zext i16 %24 to i32
-  %conv8 = zext i16 %25 to i32
+  %24 = load i16, ptr %arrayidx6, align 2, !tbaa !10
+  %conv7 = zext i16 %23 to i32
+  %conv8 = zext i16 %24 to i32
   %shl = shl nuw i32 %conv8, 16
   %or = or i32 %shl, %conv7
   store i32 %or, ptr %target.addr.015, align 1
@@ -184,7 +182,7 @@ declare <vscale x 8 x i16> @llvm.masked.gather.nxv8i16.nxv8p0(<vscale x 8 x ptr>
 ; Function Attrs: nocallback nofree nosync nounwind willreturn memory(read)
 declare <vscale x 4 x i16> @llvm.masked.gather.nxv4i16.nxv4p0(<vscale x 4 x ptr>, i32 immarg, <vscale x 4 x i1>, <vscale x 4 x i16>) #3
 
-attributes #0 = { nofree norecurse nosync nounwind memory(write, argmem: readwrite, inaccessiblemem: none) vscale_range(2,1024) "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zicsr,+zifencei,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl32b,+zvl64b,-e,-experimental-smaia,-experimental-ssaia,-experimental-zacas,-experimental-zfa,-experimental-zfbfmin,-experimental-zicond,-experimental-zihintntl,-experimental-ztso,-experimental-zvbb,-experimental-zvbc,-experimental-zvfbfmin,-experimental-zvfbfwma,-experimental-zvfh,-experimental-zvkg,-experimental-zvkn,-experimental-zvknc,-experimental-zvkned,-experimental-zvkng,-experimental-zvknha,-experimental-zvknhb,-experimental-zvks,-experimental-zvksc,-experimental-zvksed,-experimental-zvksg,-experimental-zvksh,-experimental-zvkt,-h,-save-restore,-svinval,-svnapot,-svpbmt,-xsfcie,-xsfvcp,-xtheadba,-xtheadbb,-xtheadbs,-xtheadcmo,-xtheadcondmov,-xtheadfmemidx,-xtheadmac,-xtheadmemidx,-xtheadmempair,-xtheadsync,-xtheadvdot,-xventanacondops,-zawrs,-zbkb,-zbkc,-zbkx,-zca,-zcb,-zcd,-zcf,-zcmp,-zcmt,-zdinx,-zfh,-zfhmin,-zfinx,-zhinx,-zhinxmin,-zicbom,-zicbop,-zicboz,-zicntr,-zihintpause,-zihpm,-zk,-zkn,-zknd,-zkne,-zknh,-zkr,-zks,-zksed,-zksh,-zkt,-zmmul,-zvl1024b,-zvl16384b,-zvl2048b,-zvl256b,-zvl32768b,-zvl4096b,-zvl512b,-zvl65536b,-zvl8192b" }
+attributes #0 = { nofree norecurse nosync nounwind memory(write, argmem: readwrite, inaccessiblemem: none) vscale_range(2,1024) "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zicsr,+zifencei,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl32b,+zvl64b,-e,-experimental-smaia,-experimental-ssaia,-experimental-zacas,-experimental-zfa,-experimental-zfbfmin,-experimental-zicond,-experimental-zihintntl,-experimental-ztso,-experimental-zvbb,-experimental-zvbc,-experimental-zvfbfmin,-experimental-zvfbfwma,-experimental-zvkg,-experimental-zvkn,-experimental-zvknc,-experimental-zvkned,-experimental-zvkng,-experimental-zvknha,-experimental-zvknhb,-experimental-zvks,-experimental-zvksc,-experimental-zvksed,-experimental-zvksg,-experimental-zvksh,-experimental-zvkt,-h,-save-restore,-svinval,-svnapot,-svpbmt,-xcvalu,-xcvbi,-xcvbitmanip,-xcvmac,-xcvsimd,-xsfcie,-xsfvcp,-xtheadba,-xtheadbb,-xtheadbs,-xtheadcmo,-xtheadcondmov,-xtheadfmemidx,-xtheadmac,-xtheadmemidx,-xtheadmempair,-xtheadsync,-xtheadvdot,-xventanacondops,-zawrs,-zbkb,-zbkc,-zbkx,-zca,-zcb,-zcd,-zce,-zcf,-zcmp,-zcmt,-zdinx,-zfh,-zfhmin,-zfinx,-zhinx,-zhinxmin,-zicbom,-zicbop,-zicboz,-zicntr,-zihintpause,-zihpm,-zk,-zkn,-zknd,-zkne,-zknh,-zkr,-zks,-zksed,-zksh,-zkt,-zmmul,-zvfh,-zvl1024b,-zvl16384b,-zvl2048b,-zvl256b,-zvl32768b,-zvl4096b,-zvl512b,-zvl65536b,-zvl8192b" }
 attributes #1 = { nocallback nofree nosync nounwind willreturn memory(none) }
 attributes #2 = { nocallback nofree nosync nounwind speculatable willreturn memory(none) }
 attributes #3 = { nocallback nofree nosync nounwind willreturn memory(read) }
@@ -195,7 +193,7 @@ attributes #3 = { nocallback nofree nosync nounwind willreturn memory(read) }
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64d"}
 !2 = !{i32 8, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"}
+!3 = !{!"clang version 18.0.0 (https://github.com/llvm/llvm-project.git 660b740e4b3c4b23dfba36940ae0fe2ad41bfedf)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"omnipotent char", !6, i64 0}
 !6 = !{!"Simple C/C++ TBAA"}

@@ -27,29 +27,28 @@ vector.memcheck:                                  ; preds = %for.body.preheader
 
 vector.ph:                                        ; preds = %vector.memcheck
   %4 = tail call i64 @llvm.vscale.i64()
-  %5 = shl nuw nsw i64 %4, 2
-  %n.mod.vf = urem i64 %n, %5
-  %n.vec = sub nuw i64 %n, %n.mod.vf
+  %.neg = mul nsw i64 %4, -4
+  %n.vec = and i64 %.neg, %n
   %broadcast.splatinsert = insertelement <vscale x 4 x float> poison, float %a, i64 0
   %broadcast.splat = shufflevector <vscale x 4 x float> %broadcast.splatinsert, <vscale x 4 x float> poison, <vscale x 4 x i32> zeroinitializer
-  %6 = tail call i64 @llvm.vscale.i64()
-  %7 = shl nuw nsw i64 %6, 2
+  %5 = tail call i64 @llvm.vscale.i64()
+  %6 = shl nuw nsw i64 %5, 2
   br label %vector.body
 
 vector.body:                                      ; preds = %vector.body, %vector.ph
   %index = phi i64 [ 0, %vector.ph ], [ %index.next, %vector.body ]
-  %8 = getelementptr inbounds float, ptr %x, i64 %index
-  %wide.load = load <vscale x 4 x float>, ptr %8, align 4, !tbaa !4, !alias.scope !8
-  %9 = getelementptr inbounds float, ptr %y, i64 %index
-  %wide.load11 = load <vscale x 4 x float>, ptr %9, align 4, !tbaa !4, !alias.scope !11, !noalias !8
-  %10 = tail call <vscale x 4 x float> @llvm.fmuladd.nxv4f32(<vscale x 4 x float> %broadcast.splat, <vscale x 4 x float> %wide.load, <vscale x 4 x float> %wide.load11)
-  store <vscale x 4 x float> %10, ptr %9, align 4, !tbaa !4, !alias.scope !11, !noalias !8
-  %index.next = add nuw i64 %index, %7
-  %11 = icmp eq i64 %index.next, %n.vec
-  br i1 %11, label %middle.block, label %vector.body, !llvm.loop !13
+  %7 = getelementptr inbounds float, ptr %x, i64 %index
+  %wide.load = load <vscale x 4 x float>, ptr %7, align 4, !tbaa !4, !alias.scope !8
+  %8 = getelementptr inbounds float, ptr %y, i64 %index
+  %wide.load11 = load <vscale x 4 x float>, ptr %8, align 4, !tbaa !4, !alias.scope !11, !noalias !8
+  %9 = tail call <vscale x 4 x float> @llvm.fmuladd.nxv4f32(<vscale x 4 x float> %broadcast.splat, <vscale x 4 x float> %wide.load, <vscale x 4 x float> %wide.load11)
+  store <vscale x 4 x float> %9, ptr %8, align 4, !tbaa !4, !alias.scope !11, !noalias !8
+  %index.next = add nuw i64 %index, %6
+  %10 = icmp eq i64 %index.next, %n.vec
+  br i1 %10, label %middle.block, label %vector.body, !llvm.loop !13
 
 middle.block:                                     ; preds = %vector.body
-  %cmp.n = icmp eq i64 %n.mod.vf, 0
+  %cmp.n = icmp eq i64 %n.vec, %n
   br i1 %cmp.n, label %for.end, label %for.body.preheader12
 
 for.body.preheader12:                             ; preds = %vector.memcheck, %for.body.preheader, %middle.block
@@ -59,11 +58,11 @@ for.body.preheader12:                             ; preds = %vector.memcheck, %f
 for.body:                                         ; preds = %for.body.preheader12, %for.body
   %i.09 = phi i64 [ %inc, %for.body ], [ %i.09.ph, %for.body.preheader12 ]
   %arrayidx = getelementptr inbounds float, ptr %x, i64 %i.09
-  %12 = load float, ptr %arrayidx, align 4, !tbaa !4
+  %11 = load float, ptr %arrayidx, align 4, !tbaa !4
   %arrayidx1 = getelementptr inbounds float, ptr %y, i64 %i.09
-  %13 = load float, ptr %arrayidx1, align 4, !tbaa !4
-  %14 = tail call float @llvm.fmuladd.f32(float %a, float %12, float %13)
-  store float %14, ptr %arrayidx1, align 4, !tbaa !4
+  %12 = load float, ptr %arrayidx1, align 4, !tbaa !4
+  %13 = tail call float @llvm.fmuladd.f32(float %a, float %11, float %12)
+  store float %13, ptr %arrayidx1, align 4, !tbaa !4
   %inc = add nuw nsw i64 %i.09, 1
   %exitcond.not = icmp eq i64 %inc, %n
   br i1 %exitcond.not, label %for.end, label %for.body, !llvm.loop !17
@@ -84,7 +83,7 @@ declare i64 @llvm.umax.i64(i64, i64) #3
 ; Function Attrs: nocallback nofree nosync nounwind speculatable willreturn memory(none)
 declare <vscale x 4 x float> @llvm.fmuladd.nxv4f32(<vscale x 4 x float>, <vscale x 4 x float>, <vscale x 4 x float>) #3
 
-attributes #0 = { nofree nosync nounwind memory(argmem: readwrite) vscale_range(2,1024) "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zicsr,+zifencei,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl32b,+zvl64b,-e,-experimental-smaia,-experimental-ssaia,-experimental-zacas,-experimental-zfa,-experimental-zfbfmin,-experimental-zicond,-experimental-zihintntl,-experimental-ztso,-experimental-zvbb,-experimental-zvbc,-experimental-zvfbfmin,-experimental-zvfbfwma,-experimental-zvfh,-experimental-zvkg,-experimental-zvkn,-experimental-zvknc,-experimental-zvkned,-experimental-zvkng,-experimental-zvknha,-experimental-zvknhb,-experimental-zvks,-experimental-zvksc,-experimental-zvksed,-experimental-zvksg,-experimental-zvksh,-experimental-zvkt,-h,-save-restore,-svinval,-svnapot,-svpbmt,-xsfcie,-xsfvcp,-xtheadba,-xtheadbb,-xtheadbs,-xtheadcmo,-xtheadcondmov,-xtheadfmemidx,-xtheadmac,-xtheadmemidx,-xtheadmempair,-xtheadsync,-xtheadvdot,-xventanacondops,-zawrs,-zbkb,-zbkc,-zbkx,-zca,-zcb,-zcd,-zcf,-zcmp,-zcmt,-zdinx,-zfh,-zfhmin,-zfinx,-zhinx,-zhinxmin,-zicbom,-zicbop,-zicboz,-zicntr,-zihintpause,-zihpm,-zk,-zkn,-zknd,-zkne,-zknh,-zkr,-zks,-zksed,-zksh,-zkt,-zmmul,-zvl1024b,-zvl16384b,-zvl2048b,-zvl256b,-zvl32768b,-zvl4096b,-zvl512b,-zvl65536b,-zvl8192b" }
+attributes #0 = { nofree nosync nounwind memory(argmem: readwrite) vscale_range(2,1024) "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zicsr,+zifencei,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl32b,+zvl64b,-e,-experimental-smaia,-experimental-ssaia,-experimental-zacas,-experimental-zfa,-experimental-zfbfmin,-experimental-zicond,-experimental-zihintntl,-experimental-ztso,-experimental-zvbb,-experimental-zvbc,-experimental-zvfbfmin,-experimental-zvfbfwma,-experimental-zvkg,-experimental-zvkn,-experimental-zvknc,-experimental-zvkned,-experimental-zvkng,-experimental-zvknha,-experimental-zvknhb,-experimental-zvks,-experimental-zvksc,-experimental-zvksed,-experimental-zvksg,-experimental-zvksh,-experimental-zvkt,-h,-save-restore,-svinval,-svnapot,-svpbmt,-xcvalu,-xcvbi,-xcvbitmanip,-xcvmac,-xcvsimd,-xsfcie,-xsfvcp,-xtheadba,-xtheadbb,-xtheadbs,-xtheadcmo,-xtheadcondmov,-xtheadfmemidx,-xtheadmac,-xtheadmemidx,-xtheadmempair,-xtheadsync,-xtheadvdot,-xventanacondops,-zawrs,-zbkb,-zbkc,-zbkx,-zca,-zcb,-zcd,-zce,-zcf,-zcmp,-zcmt,-zdinx,-zfh,-zfhmin,-zfinx,-zhinx,-zhinxmin,-zicbom,-zicbop,-zicboz,-zicntr,-zihintpause,-zihpm,-zk,-zkn,-zknd,-zkne,-zknh,-zkr,-zks,-zksed,-zksh,-zkt,-zmmul,-zvfh,-zvl1024b,-zvl16384b,-zvl2048b,-zvl256b,-zvl32768b,-zvl4096b,-zvl512b,-zvl65536b,-zvl8192b" }
 attributes #1 = { mustprogress nocallback nofree nosync nounwind speculatable willreturn memory(none) }
 attributes #2 = { nocallback nofree nosync nounwind willreturn memory(none) }
 attributes #3 = { nocallback nofree nosync nounwind speculatable willreturn memory(none) }
@@ -95,7 +94,7 @@ attributes #3 = { nocallback nofree nosync nounwind speculatable willreturn memo
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64d"}
 !2 = !{i32 8, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"}
+!3 = !{!"clang version 18.0.0 (https://github.com/llvm/llvm-project.git 660b740e4b3c4b23dfba36940ae0fe2ad41bfedf)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"float", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}

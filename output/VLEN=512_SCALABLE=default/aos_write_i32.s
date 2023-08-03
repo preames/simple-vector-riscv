@@ -9,38 +9,39 @@ aos_init_i32:                           # @aos_init_i32
 # %bb.0:                                # %entry
 	beqz	a0, .LBB0_8
 # %bb.1:                                # %for.body.preheader
-	zext.w	t0, a0
+	zext.w	a6, a0
 	csrr	a0, vlenb
 	srli	a3, a0, 1
-	bgeu	t0, a3, .LBB0_3
+	bgeu	a6, a3, .LBB0_3
 # %bb.2:
 	li	a7, 0
 	j	.LBB0_6
 .LBB0_3:                                # %vector.ph
-	addi	a2, a3, -1
-	and	a6, t0, a2
-	sub	a7, t0, a6
-	addi	a5, a1, 48
+	srli	a2, a0, 3
+	slli	a2, a2, 2
+	neg	a2, a2
+	and	a7, a2, a6
+	addi	a4, a1, 48
 	li	a2, 28
-	mul	a4, a0, a2
+	mul	a5, a0, a2
 	vsetvli	a0, zero, e32, m2, ta, ma
 	vmv.v.i	v8, 0
-	li	a2, 56
-	mv	a0, a7
+	li	a0, 56
+	mv	a2, a7
 .LBB0_4:                                # %vector.body
                                         # =>This Inner Loop Header: Depth=1
-	vsse32.v	v8, (a5), a2
-	sub	a0, a0, a3
-	add	a5, a5, a4
-	bnez	a0, .LBB0_4
+	vsse32.v	v8, (a4), a0
+	sub	a2, a2, a3
+	add	a4, a4, a5
+	bnez	a2, .LBB0_4
 # %bb.5:                                # %middle.block
-	beqz	a6, .LBB0_8
+	beq	a7, a6, .LBB0_8
 .LBB0_6:                                # %for.body.preheader5
 	li	a0, 56
 	mul	a0, a7, a0
 	add	a0, a0, a1
 	addi	a1, a0, 48
-	sub	a0, t0, a7
+	sub	a0, a6, a7
 .LBB0_7:                                # %for.body
                                         # =>This Inner Loop Header: Depth=1
 	sw	zero, 0(a1)
@@ -52,6 +53,6 @@ aos_init_i32:                           # @aos_init_i32
 .Lfunc_end0:
 	.size	aos_init_i32, .Lfunc_end0-aos_init_i32
                                         # -- End function
-	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"
+	.ident	"clang version 18.0.0 (https://github.com/llvm/llvm-project.git 660b740e4b3c4b23dfba36940ae0fe2ad41bfedf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

@@ -9,20 +9,21 @@ vector_splat_ptr:                       # @vector_splat_ptr
 # %bb.0:                                # %entry
 	beqz	a2, .LBB0_8
 # %bb.1:                                # %for.body.preheader
-	zext.w	t0, a2
-	csrr	a2, vlenb
-	srli	a4, a2, 2
-	bgeu	t0, a4, .LBB0_3
+	zext.w	a6, a2
+	csrr	a5, vlenb
+	srli	a4, a5, 2
+	bgeu	a6, a4, .LBB0_3
 # %bb.2:
 	li	a7, 0
 	j	.LBB0_6
 .LBB0_3:                                # %vector.ph
-	addi	a3, a4, -1
-	and	a6, t0, a3
-	sub	a7, t0, a6
-	vsetvli	a3, zero, e64, m2, ta, ma
-	vmv.v.x	v8, a1
+	srli	a2, a5, 3
 	slli	a2, a2, 1
+	neg	a2, a2
+	and	a7, a2, a6
+	vsetvli	a2, zero, e64, m2, ta, ma
+	vmv.v.x	v8, a1
+	slli	a2, a5, 1
 	mv	a3, a7
 	mv	a5, a0
 .LBB0_4:                                # %vector.body
@@ -32,10 +33,10 @@ vector_splat_ptr:                       # @vector_splat_ptr
 	add	a5, a5, a2
 	bnez	a3, .LBB0_4
 # %bb.5:                                # %middle.block
-	beqz	a6, .LBB0_8
+	beq	a7, a6, .LBB0_8
 .LBB0_6:                                # %for.body.preheader5
 	sh3add	a0, a7, a0
-	sub	a2, t0, a7
+	sub	a2, a6, a7
 .LBB0_7:                                # %for.body
                                         # =>This Inner Loop Header: Depth=1
 	sd	a1, 0(a0)
@@ -47,6 +48,6 @@ vector_splat_ptr:                       # @vector_splat_ptr
 .Lfunc_end0:
 	.size	vector_splat_ptr, .Lfunc_end0-vector_splat_ptr
                                         # -- End function
-	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"
+	.ident	"clang version 18.0.0 (https://github.com/llvm/llvm-project.git 660b740e4b3c4b23dfba36940ae0fe2ad41bfedf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

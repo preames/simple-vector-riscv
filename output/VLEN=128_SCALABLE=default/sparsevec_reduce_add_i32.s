@@ -9,42 +9,43 @@ sparsevec_reduce_add_i32:               # @sparsevec_reduce_add_i32
 # %bb.0:                                # %entry
 	beqz	a0, .LBB0_8
 # %bb.1:                                # %for.body.preheader
-	zext.w	t0, a0
-	csrr	a3, vlenb
-	srli	a0, a3, 1
-	bgeu	t0, a0, .LBB0_3
+	zext.w	a6, a0
+	csrr	a5, vlenb
+	srli	a3, a5, 1
+	bgeu	a6, a3, .LBB0_3
 # %bb.2:
 	li	a7, 0
 	li	a0, 0
 	j	.LBB0_6
 .LBB0_3:                                # %vector.ph
-	addi	a4, a0, -1
-	and	a6, t0, a4
-	sub	a7, t0, a6
-	vsetvli	a4, zero, e32, m2, ta, ma
+	srli	a0, a5, 3
+	slli	a0, a0, 2
+	neg	a0, a0
+	and	a7, a0, a6
+	vsetvli	a0, zero, e32, m2, ta, ma
 	vmv.v.i	v8, 0
 	mv	a4, a7
-	mv	a5, a2
+	mv	a0, a2
 .LBB0_4:                                # %vector.body
                                         # =>This Inner Loop Header: Depth=1
-	vl1re16.v	v10, (a5)
+	vl1re16.v	v10, (a0)
 	vsetvli	zero, zero, e64, m4, ta, ma
 	vsext.vf4	v12, v10
 	vsll.vi	v12, v12, 2
 	vsetvli	zero, zero, e32, m2, ta, ma
 	vluxei64.v	v10, (a1), v12
 	vadd.vv	v8, v10, v8
-	sub	a4, a4, a0
-	add	a5, a5, a3
+	sub	a4, a4, a3
+	add	a0, a0, a5
 	bnez	a4, .LBB0_4
 # %bb.5:                                # %middle.block
 	vmv.s.x	v10, zero
 	vredsum.vs	v8, v8, v10
 	vmv.x.s	a0, v8
-	beqz	a6, .LBB0_8
+	beq	a7, a6, .LBB0_8
 .LBB0_6:                                # %for.body.preheader9
 	sh1add	a2, a7, a2
-	sub	a3, t0, a7
+	sub	a3, a6, a7
 .LBB0_7:                                # %for.body
                                         # =>This Inner Loop Header: Depth=1
 	lh	a4, 0(a2)
@@ -59,6 +60,6 @@ sparsevec_reduce_add_i32:               # @sparsevec_reduce_add_i32
 .Lfunc_end0:
 	.size	sparsevec_reduce_add_i32, .Lfunc_end0-sparsevec_reduce_add_i32
                                         # -- End function
-	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"
+	.ident	"clang version 18.0.0 (https://github.com/llvm/llvm-project.git 660b740e4b3c4b23dfba36940ae0fe2ad41bfedf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

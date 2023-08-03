@@ -9,9 +9,9 @@ encode_byte_table:                      # @encode_byte_table
 # %bb.0:                                # %entry
 	beqz	a1, .LBB0_6
 # %bb.1:                                # %for.body.preheader
-	csrr	t2, vlenb
+	csrr	t1, vlenb
 	li	a3, 16
-	maxu	a3, t2, a3
+	maxu	a3, t1, a3
 	bltu	a1, a3, .LBB0_3
 # %bb.2:                                # %vector.memcheck
 	sh1add	a3, a1, a2
@@ -21,11 +21,11 @@ encode_byte_table:                      # @encode_byte_table
 	and	a3, a3, a4
 	beqz	a3, .LBB0_7
 .LBB0_3:
-	li	a7, 0
+	li	a6, 0
 	mv	a3, a2
 .LBB0_4:                                # %for.body.preheader10
-	sub	a1, a1, a7
-	add	a0, a0, a7
+	sub	a1, a1, a6
+	add	a0, a0, a6
 	lui	a2, %hi(.L__const.encode_byte_table.table)
 	addi	a2, a2, %lo(.L__const.encode_byte_table.table)
 .LBB0_5:                                # %for.body
@@ -43,30 +43,28 @@ encode_byte_table:                      # @encode_byte_table
 .LBB0_6:                                # %for.cond.cleanup
 	ret
 .LBB0_7:                                # %vector.ph
-	addi	a3, t2, -1
-	and	a6, a1, a3
-	sub	a7, a1, a6
-	sh1add	a3, a7, a2
-	slli	t0, t2, 1
+	neg	a3, t1
+	and	a6, a3, a1
+	sh1add	a3, a6, a2
+	slli	a7, t1, 1
 	lui	a4, %hi(.L__const.encode_byte_table.table)
-	addi	t1, a4, %lo(.L__const.encode_byte_table.table)
-	mv	t3, a7
+	addi	t0, a4, %lo(.L__const.encode_byte_table.table)
+	mv	t2, a6
 	mv	a4, a0
 .LBB0_8:                                # %vector.body
                                         # =>This Inner Loop Header: Depth=1
 	vl1r.v	v8, (a4)
-	vsetvli	a5, zero, e64, m8, ta, ma
-	vzext.vf8	v16, v8
-	vadd.vv	v8, v16, v16
+	vsetvli	a5, zero, e8, m1, ta, ma
+	vwaddu.vv	v10, v8, v8
 	vsetvli	zero, zero, e16, m2, ta, ma
-	vluxei64.v	v16, (t1), v8
-	vs2r.v	v16, (a2)
-	add	a4, a4, t2
-	sub	t3, t3, t2
-	add	a2, a2, t0
-	bnez	t3, .LBB0_8
+	vluxei16.v	v8, (t0), v10
+	vs2r.v	v8, (a2)
+	add	a4, a4, t1
+	sub	t2, t2, t1
+	add	a2, a2, a7
+	bnez	t2, .LBB0_8
 # %bb.9:                                # %middle.block
-	bnez	a6, .LBB0_4
+	bne	a6, a1, .LBB0_4
 	j	.LBB0_6
 .Lfunc_end0:
 	.size	encode_byte_table, .Lfunc_end0-encode_byte_table
@@ -78,10 +76,10 @@ encode_nibble_table:                    # @encode_nibble_table
 # %bb.0:                                # %entry
 	beqz	a1, .LBB1_6
 # %bb.1:                                # %for.body.preheader
-	csrr	t0, vlenb
-	srli	t1, t0, 1
+	csrr	a7, vlenb
+	srli	t0, a7, 1
 	li	a3, 8
-	maxu	a3, t1, a3
+	maxu	a3, t0, a3
 	bltu	a1, a3, .LBB1_3
 # %bb.2:                                # %vector.memcheck
 	sh2add	a3, a1, a2
@@ -91,11 +89,11 @@ encode_nibble_table:                    # @encode_nibble_table
 	and	a3, a3, a4
 	beqz	a3, .LBB1_7
 .LBB1_3:
-	li	a7, 0
+	li	a6, 0
 	mv	a3, a2
 .LBB1_4:                                # %for.body.preheader19
-	sub	a1, a1, a7
-	add	a0, a0, a7
+	sub	a1, a1, a6
+	add	a0, a0, a6
 	lui	a2, %hi(.L__const.encode_nibble_table.table)
 	addi	a2, a2, %lo(.L__const.encode_nibble_table.table)
 .LBB1_5:                                # %for.body
@@ -121,14 +119,13 @@ encode_nibble_table:                    # @encode_nibble_table
 .LBB1_6:                                # %for.cond.cleanup
 	ret
 .LBB1_7:                                # %vector.ph
-	addi	a3, t1, -1
-	and	a6, a1, a3
-	sub	a7, a1, a6
-	sh2add	a3, a7, a2
-	slli	t0, t0, 1
+	neg	a3, t0
+	and	a6, a3, a1
+	sh2add	a3, a6, a2
+	slli	a7, a7, 1
 	lui	a4, %hi(.L__const.encode_nibble_table.table)
-	addi	t2, a4, %lo(.L__const.encode_nibble_table.table)
-	mv	t3, a7
+	addi	t1, a4, %lo(.L__const.encode_nibble_table.table)
+	mv	t2, a6
 	mv	a5, a0
 .LBB1_8:                                # %vector.body
                                         # =>This Inner Loop Header: Depth=1
@@ -136,28 +133,25 @@ encode_nibble_table:                    # @encode_nibble_table
 	vle8.v	v8, (a5)
 	vand.vi	v9, v8, 15
 	vsrl.vi	v8, v8, 4
-	vsetvli	zero, zero, e64, m4, ta, ma
-	vzext.vf8	v12, v9
-	vadd.vv	v12, v12, v12
+	vwaddu.vv	v10, v9, v9
 	vsetvli	zero, zero, e16, m1, ta, ma
-	vluxei64.v	v9, (t2), v12
-	vsetvli	zero, zero, e64, m4, ta, ma
-	vzext.vf8	v12, v8
-	vadd.vv	v12, v12, v12
+	vluxei16.v	v9, (t1), v10
+	vsetvli	zero, zero, e8, mf2, ta, ma
+	vwaddu.vv	v10, v8, v8
 	vsetvli	zero, zero, e16, m1, ta, ma
-	vluxei64.v	v8, (t2), v12
+	vluxei16.v	v8, (t1), v10
 	vsetvli	zero, zero, e32, m2, ta, ma
 	vzext.vf2	v10, v9
 	vzext.vf2	v12, v8
 	vsll.vi	v8, v12, 16
 	vor.vv	v8, v8, v10
 	vs2r.v	v8, (a2)
-	add	a5, a5, t1
-	sub	t3, t3, t1
-	add	a2, a2, t0
-	bnez	t3, .LBB1_8
+	add	a5, a5, t0
+	sub	t2, t2, t0
+	add	a2, a2, a7
+	bnez	t2, .LBB1_8
 # %bb.9:                                # %middle.block
-	bnez	a6, .LBB1_4
+	bne	a6, a1, .LBB1_4
 	j	.LBB1_6
 .Lfunc_end1:
 	.size	encode_nibble_table, .Lfunc_end1-encode_nibble_table
@@ -446,6 +440,6 @@ encode_nibble_table:                    # @encode_nibble_table
 	.half	48                              # 0x30
 	.size	.L__const.encode_nibble_table.table, 32
 
-	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"
+	.ident	"clang version 18.0.0 (https://github.com/llvm/llvm-project.git 660b740e4b3c4b23dfba36940ae0fe2ad41bfedf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

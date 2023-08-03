@@ -9,38 +9,40 @@ test:                                   # @test
 # %bb.0:                                # %entry
 	blez	a3, .LBB0_8
 # %bb.1:                                # %for.body.preheader
-	csrr	t2, vlenb
-	srli	t1, t2, 2
-	bgeu	a3, t1, .LBB0_3
+	csrr	t1, vlenb
+	srli	a7, t1, 2
+	bgeu	a3, a7, .LBB0_3
 # %bb.2:
 	li	a6, 0
 	j	.LBB0_6
 .LBB0_3:                                # %vector.ph
-	addi	a4, t1, -1
-	and	a7, a3, a4
-	sub	a6, a3, a7
-	slli	t0, t2, 1
-	mv	t3, a6
+	srli	a4, t1, 3
+	slli	a5, a4, 1
+	slli	a4, a4, 32
+	sub	a4, a4, a5
+	and	a6, a4, a3
+	slli	t0, t1, 1
+	mv	t2, a6
 	mv	a5, a0
-	mv	t4, a2
-	mv	t5, a1
+	mv	t3, a2
+	mv	t4, a1
 .LBB0_4:                                # %vector.body
                                         # =>This Inner Loop Header: Depth=1
-	vl1re32.v	v8, (t5)
-	vl1re32.v	v9, (t4)
+	vl1re32.v	v8, (t4)
+	vl1re32.v	v9, (t3)
 	vsetvli	a4, zero, e32, m1, ta, ma
 	vl2re64.v	v10, (a5)
 	vwadd.vv	v12, v9, v8
 	vsetvli	zero, zero, e64, m2, ta, ma
 	vadd.vv	v8, v12, v10
 	vs2r.v	v8, (a5)
-	add	t5, t5, t2
-	add	t4, t4, t2
-	sub	t3, t3, t1
+	add	t4, t4, t1
+	add	t3, t3, t1
+	sub	t2, t2, a7
 	add	a5, a5, t0
-	bnez	t3, .LBB0_4
+	bnez	t2, .LBB0_4
 # %bb.5:                                # %middle.block
-	beqz	a7, .LBB0_8
+	beq	a6, a3, .LBB0_8
 .LBB0_6:                                # %for.body.preheader15
 	sh3add	a0, a6, a0
 	sh2add	a2, a6, a2
@@ -64,6 +66,6 @@ test:                                   # @test
 .Lfunc_end0:
 	.size	test, .Lfunc_end0-test
                                         # -- End function
-	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"
+	.ident	"clang version 18.0.0 (https://github.com/llvm/llvm-project.git 660b740e4b3c4b23dfba36940ae0fe2ad41bfedf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

@@ -9,20 +9,21 @@ my_memset:                              # @my_memset
 # %bb.0:                                # %entry
 	beqz	a1, .LBB0_8
 # %bb.1:                                # %for.body.preheader
-	zext.w	t0, a1
-	csrr	a1, vlenb
-	srli	a4, a1, 1
-	bgeu	t0, a4, .LBB0_3
+	zext.w	a6, a1
+	csrr	a5, vlenb
+	srli	a4, a5, 1
+	bgeu	a6, a4, .LBB0_3
 # %bb.2:
 	li	a7, 0
 	j	.LBB0_6
 .LBB0_3:                                # %vector.ph
-	addi	a3, a4, -1
-	and	a6, t0, a3
-	sub	a7, t0, a6
-	vsetvli	a3, zero, e32, m2, ta, ma
+	srli	a1, a5, 3
+	slli	a1, a1, 2
+	neg	a1, a1
+	and	a7, a1, a6
+	vsetvli	a1, zero, e32, m2, ta, ma
 	vmv.v.x	v8, a2
-	slli	a1, a1, 1
+	slli	a1, a5, 1
 	mv	a3, a7
 	mv	a5, a0
 .LBB0_4:                                # %vector.body
@@ -32,10 +33,10 @@ my_memset:                              # @my_memset
 	add	a5, a5, a1
 	bnez	a3, .LBB0_4
 # %bb.5:                                # %middle.block
-	beqz	a6, .LBB0_8
+	beq	a7, a6, .LBB0_8
 .LBB0_6:                                # %for.body.preheader5
 	sh2add	a0, a7, a0
-	sub	a1, t0, a7
+	sub	a1, a6, a7
 .LBB0_7:                                # %for.body
                                         # =>This Inner Loop Header: Depth=1
 	sw	a2, 0(a0)
@@ -47,6 +48,6 @@ my_memset:                              # @my_memset
 .Lfunc_end0:
 	.size	my_memset, .Lfunc_end0-my_memset
                                         # -- End function
-	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"
+	.ident	"clang version 18.0.0 (https://github.com/llvm/llvm-project.git 660b740e4b3c4b23dfba36940ae0fe2ad41bfedf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

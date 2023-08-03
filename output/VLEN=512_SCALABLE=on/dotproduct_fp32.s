@@ -9,45 +9,46 @@ dotproduct_fp32:                        # @dotproduct_fp32
 # %bb.0:                                # %entry
 	beqz	a0, .LBB0_3
 # %bb.1:                                # %for.body.preheader
-	zext.w	a7, a0
-	csrr	a5, vlenb
-	srli	t1, a5, 1
-	bgeu	a7, t1, .LBB0_4
+	zext.w	a6, a0
+	csrr	a4, vlenb
+	srli	t0, a4, 1
+	bgeu	a6, t0, .LBB0_4
 # %bb.2:
-	li	t0, 0
+	li	a7, 0
 	fmv.w.x	fa0, zero
 	j	.LBB0_7
 .LBB0_3:
 	fmv.w.x	fa0, zero
 	ret
 .LBB0_4:                                # %vector.ph
-	addi	a0, t1, -1
-	and	a6, a7, a0
-	sub	t0, a7, a6
-	slli	a5, a5, 1
+	srli	a0, a4, 3
+	slli	a0, a0, 2
+	neg	a0, a0
+	and	a7, a0, a6
+	slli	a4, a4, 1
 	fmv.w.x	fa0, zero
 	vsetvli	a0, zero, e32, m2, ta, ma
-	mv	a3, t0
-	mv	a4, a2
+	mv	a3, a7
+	mv	a5, a2
 	mv	a0, a1
 .LBB0_5:                                # %vector.body
                                         # =>This Inner Loop Header: Depth=1
 	vl2re32.v	v8, (a0)
-	vl2re32.v	v10, (a4)
+	vl2re32.v	v10, (a5)
 	vfmul.vv	v8, v8, v10
 	vfmv.s.f	v10, fa0
 	vfredosum.vs	v8, v8, v10
 	vfmv.f.s	fa0, v8
-	add	a0, a0, a5
-	sub	a3, a3, t1
-	add	a4, a4, a5
+	add	a0, a0, a4
+	sub	a3, a3, t0
+	add	a5, a5, a4
 	bnez	a3, .LBB0_5
 # %bb.6:                                # %middle.block
-	beqz	a6, .LBB0_9
+	beq	a7, a6, .LBB0_9
 .LBB0_7:                                # %for.body.preheader11
-	sh2add	a1, t0, a1
-	sh2add	a2, t0, a2
-	sub	a0, a7, t0
+	sh2add	a1, a7, a1
+	sh2add	a2, a7, a2
+	sub	a0, a6, a7
 .LBB0_8:                                # %for.body
                                         # =>This Inner Loop Header: Depth=1
 	flw	fa5, 0(a1)
@@ -62,6 +63,6 @@ dotproduct_fp32:                        # @dotproduct_fp32
 .Lfunc_end0:
 	.size	dotproduct_fp32, .Lfunc_end0-dotproduct_fp32
                                         # -- End function
-	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"
+	.ident	"clang version 18.0.0 (https://github.com/llvm/llvm-project.git 660b740e4b3c4b23dfba36940ae0fe2ad41bfedf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

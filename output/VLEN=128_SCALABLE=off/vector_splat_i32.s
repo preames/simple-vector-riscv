@@ -31,7 +31,7 @@ vector_splat_i32:                       # @vector_splat_i32
 	bnez	a4, .LBB0_4
 # %bb.5:                                # %middle.block
 	beq	a2, a6, .LBB0_8
-.LBB0_6:                                # %for.body.preheader7
+.LBB0_6:                                # %for.body.preheader5
 	sh2add	a0, a2, a0
 	sub	a3, a6, a2
 .LBB0_7:                                # %for.body
@@ -45,6 +45,6 @@ vector_splat_i32:                       # @vector_splat_i32
 .Lfunc_end0:
 	.size	vector_splat_i32, .Lfunc_end0-vector_splat_i32
                                         # -- End function
-	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"
+	.ident	"clang version 18.0.0 (https://github.com/llvm/llvm-project.git 660b740e4b3c4b23dfba36940ae0fe2ad41bfedf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

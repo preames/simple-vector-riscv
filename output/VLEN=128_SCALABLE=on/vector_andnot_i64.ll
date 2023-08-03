@@ -28,28 +28,27 @@ vector.memcheck:                                  ; preds = %for.body.preheader
 
 vector.ph:                                        ; preds = %vector.memcheck
   %4 = tail call i64 @llvm.vscale.i64()
-  %5 = shl nuw nsw i64 %4, 1
-  %n.mod.vf = urem i64 %wide.trip.count, %5
-  %n.vec = sub nuw nsw i64 %wide.trip.count, %n.mod.vf
-  %6 = tail call i64 @llvm.vscale.i64()
-  %7 = shl nuw nsw i64 %6, 1
+  %.neg = mul nuw nsw i64 %4, 4294967294
+  %n.vec = and i64 %.neg, %wide.trip.count
+  %5 = tail call i64 @llvm.vscale.i64()
+  %6 = shl nuw nsw i64 %5, 1
   br label %vector.body
 
 vector.body:                                      ; preds = %vector.body, %vector.ph
   %index = phi i64 [ 0, %vector.ph ], [ %index.next, %vector.body ]
-  %8 = getelementptr inbounds i64, ptr %a, i64 %index
-  %wide.load = load <vscale x 2 x i64>, ptr %8, align 8, !tbaa !4, !alias.scope !8, !noalias !11
-  %9 = getelementptr inbounds i64, ptr %b, i64 %index
-  %wide.load13 = load <vscale x 2 x i64>, ptr %9, align 8, !tbaa !4, !alias.scope !11
-  %10 = xor <vscale x 2 x i64> %wide.load13, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 -1, i64 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
-  %11 = and <vscale x 2 x i64> %wide.load, %10
-  store <vscale x 2 x i64> %11, ptr %8, align 8, !tbaa !4, !alias.scope !8, !noalias !11
-  %index.next = add nuw i64 %index, %7
-  %12 = icmp eq i64 %index.next, %n.vec
-  br i1 %12, label %middle.block, label %vector.body, !llvm.loop !13
+  %7 = getelementptr inbounds i64, ptr %a, i64 %index
+  %wide.load = load <vscale x 2 x i64>, ptr %7, align 8, !tbaa !4, !alias.scope !8, !noalias !11
+  %8 = getelementptr inbounds i64, ptr %b, i64 %index
+  %wide.load13 = load <vscale x 2 x i64>, ptr %8, align 8, !tbaa !4, !alias.scope !11
+  %9 = xor <vscale x 2 x i64> %wide.load13, shufflevector (<vscale x 2 x i64> insertelement (<vscale x 2 x i64> poison, i64 -1, i64 0), <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer)
+  %10 = and <vscale x 2 x i64> %wide.load, %9
+  store <vscale x 2 x i64> %10, ptr %7, align 8, !tbaa !4, !alias.scope !8, !noalias !11
+  %index.next = add nuw i64 %index, %6
+  %11 = icmp eq i64 %index.next, %n.vec
+  br i1 %11, label %middle.block, label %vector.body, !llvm.loop !13
 
 middle.block:                                     ; preds = %vector.body
-  %cmp.n = icmp eq i64 %n.mod.vf, 0
+  %cmp.n = icmp eq i64 %n.vec, %wide.trip.count
   br i1 %cmp.n, label %for.cond.cleanup, label %for.body.preheader14
 
 for.body.preheader14:                             ; preds = %vector.memcheck, %for.body.preheader, %middle.block
@@ -62,11 +61,11 @@ for.cond.cleanup:                                 ; preds = %for.body, %middle.b
 for.body:                                         ; preds = %for.body.preheader14, %for.body
   %indvars.iv = phi i64 [ %indvars.iv.next, %for.body ], [ %indvars.iv.ph, %for.body.preheader14 ]
   %arrayidx = getelementptr inbounds i64, ptr %a, i64 %indvars.iv
-  %13 = load i64, ptr %arrayidx, align 8, !tbaa !4
+  %12 = load i64, ptr %arrayidx, align 8, !tbaa !4
   %arrayidx2 = getelementptr inbounds i64, ptr %b, i64 %indvars.iv
-  %14 = load i64, ptr %arrayidx2, align 8, !tbaa !4
-  %not = xor i64 %14, -1
-  %and = and i64 %13, %not
+  %13 = load i64, ptr %arrayidx2, align 8, !tbaa !4
+  %not = xor i64 %13, -1
+  %and = and i64 %12, %not
   store i64 %and, ptr %arrayidx, align 8, !tbaa !4
   %indvars.iv.next = add nuw nsw i64 %indvars.iv, 1
   %exitcond.not = icmp eq i64 %indvars.iv.next, %wide.trip.count
@@ -79,7 +78,7 @@ declare i64 @llvm.vscale.i64() #1
 ; Function Attrs: nocallback nofree nosync nounwind speculatable willreturn memory(none)
 declare i64 @llvm.umax.i64(i64, i64) #2
 
-attributes #0 = { nofree norecurse nosync nounwind memory(argmem: readwrite) vscale_range(2,1024) "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zicsr,+zifencei,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl32b,+zvl64b,-e,-experimental-smaia,-experimental-ssaia,-experimental-zacas,-experimental-zfa,-experimental-zfbfmin,-experimental-zicond,-experimental-zihintntl,-experimental-ztso,-experimental-zvbb,-experimental-zvbc,-experimental-zvfbfmin,-experimental-zvfbfwma,-experimental-zvfh,-experimental-zvkg,-experimental-zvkn,-experimental-zvknc,-experimental-zvkned,-experimental-zvkng,-experimental-zvknha,-experimental-zvknhb,-experimental-zvks,-experimental-zvksc,-experimental-zvksed,-experimental-zvksg,-experimental-zvksh,-experimental-zvkt,-h,-save-restore,-svinval,-svnapot,-svpbmt,-xsfcie,-xsfvcp,-xtheadba,-xtheadbb,-xtheadbs,-xtheadcmo,-xtheadcondmov,-xtheadfmemidx,-xtheadmac,-xtheadmemidx,-xtheadmempair,-xtheadsync,-xtheadvdot,-xventanacondops,-zawrs,-zbkb,-zbkc,-zbkx,-zca,-zcb,-zcd,-zcf,-zcmp,-zcmt,-zdinx,-zfh,-zfhmin,-zfinx,-zhinx,-zhinxmin,-zicbom,-zicbop,-zicboz,-zicntr,-zihintpause,-zihpm,-zk,-zkn,-zknd,-zkne,-zknh,-zkr,-zks,-zksed,-zksh,-zkt,-zmmul,-zvl1024b,-zvl16384b,-zvl2048b,-zvl256b,-zvl32768b,-zvl4096b,-zvl512b,-zvl65536b,-zvl8192b" }
+attributes #0 = { nofree norecurse nosync nounwind memory(argmem: readwrite) vscale_range(2,1024) "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="generic-rv64" "target-features"="+64bit,+a,+c,+d,+f,+m,+relax,+v,+zba,+zbb,+zbc,+zbs,+zicsr,+zifencei,+zve32f,+zve32x,+zve64d,+zve64f,+zve64x,+zvl128b,+zvl32b,+zvl64b,-e,-experimental-smaia,-experimental-ssaia,-experimental-zacas,-experimental-zfa,-experimental-zfbfmin,-experimental-zicond,-experimental-zihintntl,-experimental-ztso,-experimental-zvbb,-experimental-zvbc,-experimental-zvfbfmin,-experimental-zvfbfwma,-experimental-zvkg,-experimental-zvkn,-experimental-zvknc,-experimental-zvkned,-experimental-zvkng,-experimental-zvknha,-experimental-zvknhb,-experimental-zvks,-experimental-zvksc,-experimental-zvksed,-experimental-zvksg,-experimental-zvksh,-experimental-zvkt,-h,-save-restore,-svinval,-svnapot,-svpbmt,-xcvalu,-xcvbi,-xcvbitmanip,-xcvmac,-xcvsimd,-xsfcie,-xsfvcp,-xtheadba,-xtheadbb,-xtheadbs,-xtheadcmo,-xtheadcondmov,-xtheadfmemidx,-xtheadmac,-xtheadmemidx,-xtheadmempair,-xtheadsync,-xtheadvdot,-xventanacondops,-zawrs,-zbkb,-zbkc,-zbkx,-zca,-zcb,-zcd,-zce,-zcf,-zcmp,-zcmt,-zdinx,-zfh,-zfhmin,-zfinx,-zhinx,-zhinxmin,-zicbom,-zicbop,-zicboz,-zicntr,-zihintpause,-zihpm,-zk,-zkn,-zknd,-zkne,-zknh,-zkr,-zks,-zksed,-zksh,-zkt,-zmmul,-zvfh,-zvl1024b,-zvl16384b,-zvl2048b,-zvl256b,-zvl32768b,-zvl4096b,-zvl512b,-zvl65536b,-zvl8192b" }
 attributes #1 = { nocallback nofree nosync nounwind willreturn memory(none) }
 attributes #2 = { nocallback nofree nosync nounwind speculatable willreturn memory(none) }
 
@@ -89,7 +88,7 @@ attributes #2 = { nocallback nofree nosync nounwind speculatable willreturn memo
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 1, !"target-abi", !"lp64d"}
 !2 = !{i32 8, !"SmallDataLimit", i32 8}
-!3 = !{!"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"}
+!3 = !{!"clang version 18.0.0 (https://github.com/llvm/llvm-project.git 660b740e4b3c4b23dfba36940ae0fe2ad41bfedf)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"long", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}

@@ -9,25 +9,25 @@ vector_andnot_i64:                      # @vector_andnot_i64
 # %bb.0:                                # %entry
 	beqz	a2, .LBB0_6
 # %bb.1:                                # %for.body.preheader
-	zext.w	a7, a2
-	csrr	a3, vlenb
-	srli	t1, a3, 2
-	li	a2, 8
-	maxu	a2, t1, a2
-	bltu	a7, a2, .LBB0_3
+	zext.w	a6, a2
+	csrr	a2, vlenb
+	srli	t0, a2, 2
+	li	a3, 8
+	maxu	a3, t0, a3
+	bltu	a6, a3, .LBB0_3
 # %bb.2:                                # %vector.memcheck
-	sh3add	a2, a7, a0
-	sh3add	a4, a7, a1
+	sh3add	a3, a6, a0
+	sh3add	a4, a6, a1
 	sltu	a4, a0, a4
-	sltu	a2, a1, a2
-	and	a2, a2, a4
-	beqz	a2, .LBB0_7
+	sltu	a3, a1, a3
+	and	a3, a3, a4
+	beqz	a3, .LBB0_7
 .LBB0_3:
-	li	t0, 0
+	li	a7, 0
 .LBB0_4:                                # %for.body.preheader14
-	sh3add	a0, t0, a0
-	sh3add	a1, t0, a1
-	sub	a2, a7, t0
+	sh3add	a0, a7, a0
+	sh3add	a1, a7, a1
+	sub	a2, a6, a7
 .LBB0_5:                                # %for.body
                                         # =>This Inner Loop Header: Depth=1
 	ld	a3, 0(a0)
@@ -41,12 +41,13 @@ vector_andnot_i64:                      # @vector_andnot_i64
 .LBB0_6:                                # %for.cond.cleanup
 	ret
 .LBB0_7:                                # %vector.ph
-	addi	a2, t1, -1
-	and	a6, a7, a2
-	sub	t0, a7, a6
+	srli	a3, a2, 3
 	slli	a3, a3, 1
+	neg	a3, a3
+	and	a7, a3, a6
+	slli	a3, a2, 1
 	vsetvli	a2, zero, e64, m2, ta, ma
-	mv	a4, t0
+	mv	a4, a7
 	mv	a5, a1
 	mv	a2, a0
 .LBB0_8:                                # %vector.body
@@ -57,15 +58,15 @@ vector_andnot_i64:                      # @vector_andnot_i64
 	vand.vv	v8, v10, v8
 	vs2r.v	v8, (a2)
 	add	a2, a2, a3
-	sub	a4, a4, t1
+	sub	a4, a4, t0
 	add	a5, a5, a3
 	bnez	a4, .LBB0_8
 # %bb.9:                                # %middle.block
-	bnez	a6, .LBB0_4
-	j	.LBB0_6
+	beq	a7, a6, .LBB0_6
+	j	.LBB0_4
 .Lfunc_end0:
 	.size	vector_andnot_i64, .Lfunc_end0-vector_andnot_i64
                                         # -- End function
-	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"
+	.ident	"clang version 18.0.0 (https://github.com/llvm/llvm-project.git 660b740e4b3c4b23dfba36940ae0fe2ad41bfedf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

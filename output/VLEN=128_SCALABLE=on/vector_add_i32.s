@@ -9,17 +9,18 @@ vector_add_i32:                         # @vector_add_i32
 # %bb.0:                                # %entry
 	beqz	a1, .LBB0_8
 # %bb.1:                                # %for.body.preheader
-	zext.w	t0, a1
+	zext.w	a6, a1
 	csrr	a1, vlenb
 	srli	a4, a1, 1
-	bgeu	t0, a4, .LBB0_3
+	bgeu	a6, a4, .LBB0_3
 # %bb.2:
 	li	a7, 0
 	j	.LBB0_6
 .LBB0_3:                                # %vector.ph
-	addi	a3, a4, -1
-	and	a6, t0, a3
-	sub	a7, t0, a6
+	srli	a3, a1, 3
+	slli	a3, a3, 2
+	neg	a3, a3
+	and	a7, a3, a6
 	slli	a1, a1, 1
 	vsetvli	a3, zero, e32, m2, ta, ma
 	mv	a3, a7
@@ -33,10 +34,10 @@ vector_add_i32:                         # @vector_add_i32
 	add	a5, a5, a1
 	bnez	a3, .LBB0_4
 # %bb.5:                                # %middle.block
-	beqz	a6, .LBB0_8
+	beq	a7, a6, .LBB0_8
 .LBB0_6:                                # %for.body.preheader5
 	sh2add	a0, a7, a0
-	sub	a1, t0, a7
+	sub	a1, a6, a7
 .LBB0_7:                                # %for.body
                                         # =>This Inner Loop Header: Depth=1
 	lw	a3, 0(a0)
@@ -50,6 +51,6 @@ vector_add_i32:                         # @vector_add_i32
 .Lfunc_end0:
 	.size	vector_add_i32, .Lfunc_end0-vector_add_i32
                                         # -- End function
-	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"
+	.ident	"clang version 18.0.0 (https://github.com/llvm/llvm-project.git 660b740e4b3c4b23dfba36940ae0fe2ad41bfedf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

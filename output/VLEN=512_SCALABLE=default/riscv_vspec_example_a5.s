@@ -10,9 +10,9 @@ saxpy:                                  # @saxpy
 	blez	a0, .LBB0_6
 # %bb.1:                                # %for.body.preheader
 	csrr	a3, vlenb
-	srli	t0, a3, 1
+	srli	a7, a3, 1
 	li	a4, 8
-	maxu	a4, t0, a4
+	maxu	a4, a7, a4
 	bltu	a0, a4, .LBB0_3
 # %bb.2:                                # %vector.memcheck
 	sh2add	a4, a0, a2
@@ -22,11 +22,11 @@ saxpy:                                  # @saxpy
 	and	a4, a4, a5
 	beqz	a4, .LBB0_7
 .LBB0_3:
-	li	a7, 0
+	li	a6, 0
 .LBB0_4:                                # %for.body.preheader12
-	sub	a0, a0, a7
-	sh2add	a2, a7, a2
-	sh2add	a1, a7, a1
+	sub	a0, a0, a6
+	sh2add	a2, a6, a2
+	sh2add	a1, a6, a1
 .LBB0_5:                                # %for.body
                                         # =>This Inner Loop Header: Depth=1
 	flw	fa5, 0(a1)
@@ -40,13 +40,12 @@ saxpy:                                  # @saxpy
 .LBB0_6:                                # %for.end
 	ret
 .LBB0_7:                                # %vector.ph
-	addi	a4, t0, -1
-	and	a6, a0, a4
-	sub	a7, a0, a6
+	neg	a4, a7
+	and	a6, a4, a0
 	vsetvli	a4, zero, e32, m2, ta, ma
 	vfmv.v.f	v8, fa0
-	slli	t1, a3, 1
-	mv	a4, a7
+	slli	t0, a3, 1
+	mv	a4, a6
 	mv	a5, a2
 	mv	a3, a1
 .LBB0_8:                                # %vector.body
@@ -55,16 +54,16 @@ saxpy:                                  # @saxpy
 	vl2re32.v	v12, (a5)
 	vfmacc.vv	v12, v8, v10
 	vs2r.v	v12, (a5)
-	add	a3, a3, t1
-	sub	a4, a4, t0
-	add	a5, a5, t1
+	add	a3, a3, t0
+	sub	a4, a4, a7
+	add	a5, a5, t0
 	bnez	a4, .LBB0_8
 # %bb.9:                                # %middle.block
-	bnez	a6, .LBB0_4
-	j	.LBB0_6
+	beq	a6, a0, .LBB0_6
+	j	.LBB0_4
 .Lfunc_end0:
 	.size	saxpy, .Lfunc_end0-saxpy
                                         # -- End function
-	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"
+	.ident	"clang version 18.0.0 (https://github.com/llvm/llvm-project.git 660b740e4b3c4b23dfba36940ae0fe2ad41bfedf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig

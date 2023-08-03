@@ -20,7 +20,7 @@ saxpy:                                  # @saxpy
 	beqz	a3, .LBB0_7
 .LBB0_3:
 	li	a6, 0
-.LBB0_4:                                # %for.body.preheader16
+.LBB0_4:                                # %for.body.preheader14
 	sub	a0, a0, a6
 	sh2add	a2, a6, a2
 	sh2add	a1, a6, a1
@@ -65,6 +65,6 @@ saxpy:                                  # @saxpy
 .Lfunc_end0:
 	.size	saxpy, .Lfunc_end0-saxpy
                                         # -- End function
-	.ident	"clang version 17.0.0 (https://github.com/llvm/llvm-project.git e2d7d988115c1b67b0175be5d6bc95153945b5be)"
+	.ident	"clang version 18.0.0 (https://github.com/llvm/llvm-project.git 660b740e4b3c4b23dfba36940ae0fe2ad41bfedf)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig
