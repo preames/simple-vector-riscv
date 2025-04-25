@@ -1,0 +1,74 @@
+	.attribute	4, 16
+	.attribute	5, "rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_b1p0_v1p0_zicsr2p0_zifencei2p0_zmmul1p0_zaamo1p0_zalrsc1p0_zca1p0_zcd1p0_zba1p0_zbb1p0_zbs1p0_zve32f1p0_zve32x1p0_zve64d1p0_zve64f1p0_zve64x1p0_zvl128b1p0_zvl32b1p0_zvl64b1p0"
+	.file	"aos_reduce_sum_i64.c"
+	.text
+	.globl	aos_reduce_sum_i64              # -- Begin function aos_reduce_sum_i64
+	.p2align	1
+	.type	aos_reduce_sum_i64,@function
+aos_reduce_sum_i64:                     # @aos_reduce_sum_i64
+	.cfi_startproc
+# %bb.0:                                # %entry
+	beqz	a0, .LBB0_10
+# %bb.1:                                # %for.body.preheader
+	zext.w	a7, a0
+	csrr	a2, vlenb
+	srli	a0, a2, 2
+	bgeu	a0, a7, .LBB0_7
+# %bb.2:                                # %vector.ph
+	addi	a3, a0, -1
+	and	a4, a3, a7
+	mv	a3, a0
+	beqz	a4, .LBB0_4
+# %bb.3:                                # %vector.ph
+	mv	a3, a4
+.LBB0_4:                                # %vector.ph
+	sub	a6, a7, a3
+	addi	a4, a1, 48
+	slli	a3, a2, 1
+	slli	a2, a2, 4
+	vsetvli	a5, zero, e64, m2, ta, ma
+	vmv.v.i	v8, 0
+	sub	a5, a2, a3
+	li	a3, 56
+	mv	a2, a6
+.LBB0_5:                                # %vector.body
+                                        # =>This Inner Loop Header: Depth=1
+	vlse64.v	v10, (a4), a3
+	sub	a2, a2, a0
+	vadd.vv	v8, v10, v8
+	add	a4, a4, a5
+	bnez	a2, .LBB0_5
+# %bb.6:                                # %middle.block
+	vmv.s.x	v10, zero
+	vredsum.vs	v8, v8, v10
+	vmv.x.s	a0, v8
+	j	.LBB0_8
+.LBB0_7:
+	li	a6, 0
+	li	a0, 0
+.LBB0_8:                                # %for.body.preheader7
+	slli	a2, a6, 3
+	slli	a6, a6, 6
+	sub	a2, a6, a2
+	slli	a3, a7, 3
+	slli	a7, a7, 6
+	sub	a3, a7, a3
+	add	a2, a2, a1
+	add	a3, a3, a1
+	addi	a1, a2, 48
+	addi	a2, a3, 48
+.LBB0_9:                                # %for.body
+                                        # =>This Inner Loop Header: Depth=1
+	ld	a3, 0(a1)
+	addi	a1, a1, 56
+	addw	a0, a0, a3
+	bne	a1, a2, .LBB0_9
+.LBB0_10:                               # %for.cond.cleanup
+	ret
+.Lfunc_end0:
+	.size	aos_reduce_sum_i64, .Lfunc_end0-aos_reduce_sum_i64
+	.cfi_endproc
+                                        # -- End function
+	.ident	"clang version 21.0.0git (https://github.com/llvm/llvm-project.git 2f7e674a3a2862bccde1dfdb190c3f08f4fa3307)"
+	.section	".note.GNU-stack","",@progbits
+	.addrsig

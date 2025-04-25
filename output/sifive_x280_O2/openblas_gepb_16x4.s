@@ -1,0 +1,100 @@
+	.attribute	4, 16
+	.attribute	5, "rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_v1p0_zicsr2p0_zifencei2p0_zmmul1p0_zaamo1p0_zalrsc1p0_zfh1p0_zfhmin1p0_zca1p0_zcd1p0_zba1p0_zbb1p0_zve32f1p0_zve32x1p0_zve64d1p0_zve64f1p0_zve64x1p0_zvfh1p0_zvfhmin1p0_zvl128b1p0_zvl256b1p0_zvl32b1p0_zvl512b1p0_zvl64b1p0"
+	.file	"openblas_gepb_16x4.c"
+	.text
+	.globl	test                            # -- Begin function test
+	.p2align	1
+	.type	test,@function
+test:                                   # @test
+	.cfi_startproc
+# %bb.0:                                # %entry
+	li	a3, 64
+	vsetivli	zero, 4, e32, mf2, ta, ma
+	vle32.v	v8, (a1)
+	flw	fa1, 0(a0)
+	flw	fa0, 4(a0)
+	addi	a1, a2, 4
+	flw	ft0, 8(a0)
+	vlse32.v	v9, (a2), a3
+	flw	ft1, 12(a0)
+	flw	fa2, 48(a0)
+	flw	fa3, 52(a0)
+	flw	fa4, 56(a0)
+	flw	fa5, 60(a0)
+	flw	ft5, 16(a0)
+	flw	ft6, 20(a0)
+	flw	ft7, 24(a0)
+	flw	fa6, 28(a0)
+	flw	ft2, 36(a0)
+	flw	ft3, 40(a0)
+	vfmacc.vf	v9, fa1, v8
+	flw	ft4, 44(a0)
+	flw	fa1, 32(a0)
+	addi	a0, a2, 8
+	vsse32.v	v9, (a2), a3
+	vlse32.v	v9, (a1), a3
+	vfmacc.vf	v9, fa0, v8
+	vsse32.v	v9, (a1), a3
+	addi	a1, a2, 12
+	vlse32.v	v9, (a0), a3
+	vfmacc.vf	v9, ft0, v8
+	vsse32.v	v9, (a0), a3
+	addi	a0, a2, 16
+	vlse32.v	v9, (a1), a3
+	vfmacc.vf	v9, ft1, v8
+	vsse32.v	v9, (a1), a3
+	addi	a1, a2, 20
+	vlse32.v	v9, (a0), a3
+	vfmacc.vf	v9, ft5, v8
+	vsse32.v	v9, (a0), a3
+	addi	a0, a2, 24
+	vlse32.v	v9, (a1), a3
+	vfmacc.vf	v9, ft6, v8
+	vsse32.v	v9, (a1), a3
+	addi	a1, a2, 28
+	vlse32.v	v9, (a0), a3
+	vfmacc.vf	v9, ft7, v8
+	vsse32.v	v9, (a0), a3
+	addi	a0, a2, 32
+	vlse32.v	v9, (a1), a3
+	vfmacc.vf	v9, fa6, v8
+	vsse32.v	v9, (a1), a3
+	addi	a1, a2, 36
+	vlse32.v	v9, (a0), a3
+	vfmacc.vf	v9, fa1, v8
+	vsse32.v	v9, (a0), a3
+	addi	a0, a2, 40
+	vlse32.v	v9, (a1), a3
+	vfmacc.vf	v9, ft2, v8
+	vsse32.v	v9, (a1), a3
+	addi	a1, a2, 44
+	vlse32.v	v9, (a0), a3
+	vfmacc.vf	v9, ft3, v8
+	vsse32.v	v9, (a0), a3
+	addi	a0, a2, 48
+	vlse32.v	v9, (a1), a3
+	vfmacc.vf	v9, ft4, v8
+	vsse32.v	v9, (a1), a3
+	addi	a1, a2, 52
+	vlse32.v	v9, (a0), a3
+	vfmacc.vf	v9, fa2, v8
+	vsse32.v	v9, (a0), a3
+	addi	a0, a2, 56
+	vlse32.v	v9, (a1), a3
+	vfmacc.vf	v9, fa3, v8
+	vsse32.v	v9, (a1), a3
+	addi	a1, a2, 60
+	vlse32.v	v9, (a0), a3
+	vfmacc.vf	v9, fa4, v8
+	vsse32.v	v9, (a0), a3
+	vlse32.v	v9, (a1), a3
+	vfmacc.vf	v9, fa5, v8
+	vsse32.v	v9, (a1), a3
+	ret
+.Lfunc_end0:
+	.size	test, .Lfunc_end0-test
+	.cfi_endproc
+                                        # -- End function
+	.ident	"clang version 21.0.0git (https://github.com/llvm/llvm-project.git 2f7e674a3a2862bccde1dfdb190c3f08f4fa3307)"
+	.section	".note.GNU-stack","",@progbits
+	.addrsig

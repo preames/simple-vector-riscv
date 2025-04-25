@@ -1,0 +1,43 @@
+	.attribute	4, 16
+	.attribute	5, "rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_zicsr2p0_zifencei2p0_zmmul1p0_zaamo1p0_zalrsc1p0_zca1p0_zcd1p0"
+	.file	"pairwise_dotproduct_fp32.c"
+	.text
+	.globl	pairwise_dotproduct_fp32        # -- Begin function pairwise_dotproduct_fp32
+	.p2align	1
+	.type	pairwise_dotproduct_fp32,@function
+pairwise_dotproduct_fp32:               # @pairwise_dotproduct_fp32
+	.cfi_startproc
+# %bb.0:                                # %entry
+	andi	a4, a0, -2
+	beqz	a4, .LBB0_3
+# %bb.1:                                # %for.body.preheader
+	addi	a0, a2, 4
+	addi	a3, a3, 4
+	slli	a4, a4, 32
+	srli	a4, a4, 30
+	addi	a4, a4, -4
+	andi	a4, a4, -8
+	add	a2, a2, a4
+	addi	a2, a2, 12
+.LBB0_2:                                # %for.body
+                                        # =>This Inner Loop Header: Depth=1
+	flw	fa5, -4(a0)
+	flw	fa4, 0(a0)
+	flw	fa3, 0(a3)
+	flw	fa2, -4(a3)
+	addi	a0, a0, 8
+	addi	a3, a3, 8
+	fmul.s	fa4, fa4, fa3
+	fmadd.s	fa5, fa5, fa2, fa4
+	fsw	fa5, 0(a1)
+	addi	a1, a1, 4
+	bne	a0, a2, .LBB0_2
+.LBB0_3:                                # %for.cond.cleanup
+	ret
+.Lfunc_end0:
+	.size	pairwise_dotproduct_fp32, .Lfunc_end0-pairwise_dotproduct_fp32
+	.cfi_endproc
+                                        # -- End function
+	.ident	"clang version 21.0.0git (https://github.com/llvm/llvm-project.git 2f7e674a3a2862bccde1dfdb190c3f08f4fa3307)"
+	.section	".note.GNU-stack","",@progbits
+	.addrsig

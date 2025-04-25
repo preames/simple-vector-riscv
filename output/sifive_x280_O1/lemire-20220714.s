@@ -1,0 +1,39 @@
+	.attribute	4, 16
+	.attribute	5, "rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_v1p0_zicsr2p0_zifencei2p0_zmmul1p0_zaamo1p0_zalrsc1p0_zfh1p0_zfhmin1p0_zca1p0_zcd1p0_zba1p0_zbb1p0_zve32f1p0_zve32x1p0_zve64d1p0_zve64f1p0_zve64x1p0_zvfh1p0_zvfhmin1p0_zvl128b1p0_zvl256b1p0_zvl32b1p0_zvl512b1p0_zvl64b1p0"
+	.file	"lemire-20220714.c"
+	.text
+	.globl	remove_negatives_scalar         # -- Begin function remove_negatives_scalar
+	.p2align	1
+	.type	remove_negatives_scalar,@function
+remove_negatives_scalar:                # @remove_negatives_scalar
+	.cfi_startproc
+# %bb.0:                                # %entry
+	blez	a1, .LBB0_5
+# %bb.1:                                # %for.body.preheader
+	li	a3, 0
+	sh2add	a6, a1, a0
+	j	.LBB0_3
+.LBB0_2:                                # %for.inc
+                                        #   in Loop: Header=BB0_3 Depth=1
+	addi	a0, a0, 4
+	beq	a0, a6, .LBB0_5
+.LBB0_3:                                # %for.body
+                                        # =>This Inner Loop Header: Depth=1
+	lw	a4, 0(a0)
+	bltz	a4, .LBB0_2
+# %bb.4:                                # %if.then
+                                        #   in Loop: Header=BB0_3 Depth=1
+	addi	a5, a3, 1
+	sh2add	a1, a3, a2
+	mv	a3, a5
+	sw	a4, 0(a1)
+	j	.LBB0_2
+.LBB0_5:                                # %for.end
+	ret
+.Lfunc_end0:
+	.size	remove_negatives_scalar, .Lfunc_end0-remove_negatives_scalar
+	.cfi_endproc
+                                        # -- End function
+	.ident	"clang version 21.0.0git (https://github.com/llvm/llvm-project.git 2f7e674a3a2862bccde1dfdb190c3f08f4fa3307)"
+	.section	".note.GNU-stack","",@progbits
+	.addrsig
